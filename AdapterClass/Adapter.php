@@ -1,156 +1,105 @@
-<?php
-class Adapter
-{
-	public $servername = 'localhost';
-	public $username = 'root';
-	public $pass = '';
-	public $db = 'Product';
-	public $con;
-	#Connection function
-	public function connection()
-	{
-		$this->con= mysqli_connect($this->servername,$this->username,$this->pass,$this->db);
-		if(!$this->con)
-		{
-			return false; 
-		}
-		else
-		{
-			return $this->con;
-		}
+<?php 
+class Adapter{
+
+    public $config = [];
+    private $connect = NULL;
+    
+    public function connect()
+    {
+        $connect = mysqli_connect($this->config['host'],$this->config['username'],$this->config['password'],$this->config['dbname']);
+        $this->setConnect($connect);
+        return $connect;
+    }
+
+    public function setConnect($connect)
+    {
+        $this->connect = $connect;
+        return $this;
+    }
+
+    public function getConnect()     
+    {
+        return $this->connect;
+    }
 
 
+    public function setConfig($config)
+    {
+        $this->config = $config;
+        return $this;
+    }
 
-	}
-	# Insert Function
-	public function insert($query)
-	{
-		$res=mysqli_query($this->con,$query);
-		if(!$res)
-		{
+    public function getConfig()     
+    {
+        return $this->config;
+    }
 
-			return false;
-		}
-		else
-		{
-			$last_id = $this->con->insert_id;
-			return $last_id;
+    public function query($query)
+    {
+        if(!$this->getConnect()){
+            $this->connect();
+        }
+        $result = $this->getConnect()->query($query);
+        return $result;
+ 
+    }
 
-		}
-					
-	}
+    public function insert($query)
+    {
 
-	# Update Function
-	public function update($query)
-	{
-		$res=mysqli_query($this->con,$query);
-		if(!$res)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-					
-	}
+        $result = $this->query($query);
+        if($result){
+            return $this->getConnect()->insert_id;
+        }
+        return $result;
+    }
 
-	#Delete Function
-	public function delete($query)
-	{
-		$res=mysqli_query($this->con,$query);
-		if (!$res)		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-					
-	}
+    public function update($query)
+    {
+        $result = $this->query($query);
+        return $result;
+    }
 
-	#Fetch Function
-	public function fetch($query)
-	{
-		$res=mysqli_query($this->con,$query);
-		if ($res->num_rows > 0) {
-	  		return $res;
-		}
+    public function delete($query)
+    {
+        $result = $this->query($query);
+        return $result;
+    }
 
-		else
-		{
-			return false;
-		}
-					
-	}
+    public function fetchRow($query)
+    {
+        $result = $this->query($query);
+        if($result->num_rows){
+            return $result->fetch_assoc();
+        }
+        return false;
+    }
 
+     public function fetchAll($query)
+    {
+        $result = $this->query($query);
+        if($result->num_rows){
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
+        return false;
+    }
 
 } 
+echo "<pre>";
+$adapter = new Adapter();
+$adapter->setConfig([
+		'host' => 'localhost',
+		'username' => 'root',
+		'password' => '',
+		'dbname' => 'Product'
+	]);
 
+#$adapter->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) values ('Redmi19',16000,50,'2020-02-01','2022-01-01',1)");
 
-# Create object 
-$a = new Adapter();
+#$adapter->update("update Product set status = 2 where id = 20");
 
-#Connection function call
-/*$conn=$a->connection();
-if($conn)
-{
-	echo "Connect Successfully <br>";
-}
-else
-{
-	echo "Can't connect ";
-}
+#$adapter->delete("DELETE FROM product where id=17");
 
-# Insert Function call
-$ins = $a->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) values ('Redmi9',16000,50,'2020-02-01','2022-01-01',1)");
-if($ins)
-{
-	echo "Last inserted record id =".$ins;
-}
-else
-{
-	echo "Can not insert record";
-}
-*/
-# Update function call
-#$upd = $a->update("update Product set name='realme'where id=1");
-/*if($upd)
-{
-	echo "Record Updated Successfully";
-}
-
-else
-{
-	echo "Can not update record";
-}
-*/
-
-# Delete function call
-/*$del = $a->delete("delete from Product where id = 10"); 
-if($del)
-{
-
-	echo "Deleted  Successfully";
-}
-else
-{
-	echo "Can not delete record";
-}
-*/
-
-# Fetch function call
-/*
-$result = $a-> fetch("Select * from Product where id = 1");
-if($result)
-{
-			while($row = $result->fetch_assoc()) {
-	  			echo '<br> id = ' . $row['id'] . ', name = ' . $row['name']. ', price = ' . $row['price']. ', quantity = ' . $row['quantity']. ', createdAt = ' . $row['createdAt']. ', updatedAt = ' . $row['updatedAt']. ', status = ' . $row['status'];
-			}
-}
-else
-{
-	echo "Can not find record";
-}
-*/
-?>
+#$data = $adapter->fetchAll("SELECT * FROM product");
+#$data = $adapter->fetchRow("SELECT * FROM product where id = 15");
+#print_r($data);
