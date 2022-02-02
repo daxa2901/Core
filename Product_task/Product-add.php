@@ -44,13 +44,6 @@
     background-color: green;
   }
 
-  .cancelbtn {
-    
-    
-    background-color: #f44336;
-    margin-left: 10px;
-  }
-
   .container {
     padding: 16px;
   }
@@ -64,9 +57,7 @@
   <form action="Product-save.php" method="post" >
     <div class="container">
 
-	 <label for="eid"><b>ID</b></label><br>
-      <input type="number" placeholder="Enter Product id" name="id" required><br>
-
+	 
       <label for="name"><b>Name</b></label><br>
       <input type="text" placeholder="Enter Product Name" name="name" required><br>
 
@@ -89,7 +80,6 @@
       </select>
 
       <button type="submit" class="Registerbtn" value="Register" name="add">Register</button>
-      <button type="button" class="cancelbtn" name = 'cancel'>Cancel</button>
      
     </div>
   </form>

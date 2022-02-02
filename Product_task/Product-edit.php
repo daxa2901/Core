@@ -1,6 +1,5 @@
 <html>
 <head>
-<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>    
 <style>
 	form {
     
@@ -8,7 +7,7 @@
     background-color:#f1f1f1;
     margin-left: 500px;
     margin-top: 50px;
-    padding-left: 0px;
+    padding-left: 20px;
   		 
   }
 
@@ -54,23 +53,23 @@
 </head>
 <body>
 <?php
-$con= mysqli_connect("localhost","root","");
-				
-		$db=mysqli_select_db($con,"Product");
-
+			include 'C:\xampp\htdocs\PHP\Practice\AdapterClass\Adapter.php';
+			$a = new Adapter();
+			$conn=$a->connection();
+			if(!$conn)
+			{
+				echo "can't connect  <br>";
+			}
 
 			$pid=$_GET['id'];
-			$sql="select * from Product  where id=".$pid;
-			$result=$con->query($sql);
-			if ($result->num_rows > 0) {
-  			// output data of each row
+			$result = $a-> fetch("select * from Product  where id=".$pid);
   			while($row = $result->fetch_assoc())
   			{
 				echo "<form action='Product-save.php' method='POST' enctype='multipart/form-data'>";
 				echo "<div class='container text-align = center'>";
 				
 				 echo" <label for='pid'><b>ID</b></label><br>
-				  <input type='number' placeholder='Enter Product ID' value='" . $row['id'] ."'name='id' required><br>
+				  <input type='number' placeholder='Enter Product ID' value='" . $row['id'] ."'name='id' required hidden><br>
 
 				  <label for='name'><b>Name</b></label><br>
 				  <input type='text' placeholder='Enter Product Name' value='".$row['name']."' name='name' required><br>
@@ -106,9 +105,9 @@ $con= mysqli_connect("localhost","root","");
 				<button type='submit' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button>";
 				echo "</div></body></html>";
 				}
-			}
+
 				
 echo '</body></html>';
-	mysqli_close($con);
+	mysqli_close($conn);
 
 ?>

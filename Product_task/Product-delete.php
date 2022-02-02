@@ -1,12 +1,13 @@
 <?php
-	$con= mysqli_connect("localhost","root","");
-	$db=mysqli_select_db($con,"Product");
+	include 'C:\xampp\htdocs\PHP\Practice\AdapterClass\Adapter.php';
+	$a = new Adapter();
+	$conn=$a->connection();
 	$id=$_GET['id'];
 
-	$sql="delete from Product where id=".$id;
-	$res=$con->query($sql);
-	if($res)
+	$del = $a->delete("delete from Product where id = ".$id); 
+	if($del)
 	{
+
 		?>
 		echo
 		<script type='text/javascript'>
@@ -17,6 +18,11 @@
 		<?php
 			
 	}
+	else
+	{
+		echo mysqli_error();
+	}
+
 	
-	mysqli_close($con);
+	mysqli_close($conn);
 ?>

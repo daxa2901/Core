@@ -1,5 +1,6 @@
 <html>
 <head>
+
 		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 		<style>
 		#info{
@@ -52,13 +53,16 @@
 	<button type="submit" name="Add" class="Registerbtn"> Add Product</button>
 </form>
 	<?php
-	$con= mysqli_connect("localhost","root","");
-					
-			$db=mysqli_select_db($con,"Product");
+	include 'C:\xampp\htdocs\PHP\Practice\AdapterClass\Adapter.php';
+	$a = new Adapter();
+	$conn=$a->connection();
+	if(!$conn)
+	{
+		echo "can't connect  <br>";
+	}
+	 
+	$result = $a-> fetch("Select * from Product");
 
-
-	$sql = "SELECT * FROM Product";
-	$result = $con->query($sql);
 	echo "<div id='info'>";
 	echo '<table border=1>';
 		echo '<tr>';
@@ -71,13 +75,18 @@
 			echo'<th> Status </th>';
 			echo'<th> Action </th>';
 		echo '</tr>';
-	if ($result->num_rows > 0) {
-	  // output data of each row
-	  while($row = $result->fetch_assoc()) {
-	  	echo '<tr>';
-	    echo  '<td>' . $row["id"] . '<td>' . $row["name"] . '<td>' . $row['price'] .'<td>' . $row["quantity"] .'<td>' . $row["createdAt"] . '<td>' . $row["updatedAt"] .'<td>' . $row["status"] .'<td><a href="Product-delete.php?id='.$row['id'].'">Delete</a> <a href="Product-edit.php?id='.$row['id'].'">Update</a></td></tr>' ;
-	  }
-	} 
+		if($result)
+		{
+		  while($row = $result->fetch_assoc()) {
+		  	echo '<tr>';
+		    echo  '<td>' . $row["id"] . '<td>' . $row["name"] . '<td>' . $row['price'] .'<td>' . $row["quantity"] .'<td>' . $row["createdAt"] . '<td>' . $row["updatedAt"] .'<td>' . $row["status"] .'<td><a href="Product-delete.php?id='.$row['id'].'">Delete</a> <a href="Product-edit.php?id='.$row['id'].'">Update</a></td></tr>' ;
+		  }
+		}
+
+		else
+		{
+			echo "Can not find record";
+		} 
 	echo '</div></div></body></html>';
-	$con->close();
-	?>
+
+?>
