@@ -1,22 +1,16 @@
 <?php
-	$con= mysqli_connect("localhost","root","");
-	$db=mysqli_select_db($con,"Product");
+	include 'C:\xampp\htdocs\PHP\Practice\AdapterClass\Adapter.php';
 	$id=$_GET['id'];
 
-	$sql="delete from Product where id=".$id;
-	$res=$con->query($sql);
-	if($res)
+	$del = $adapter->delete("delete from Product where id = ".$id); 
+	if($del)
 	{
 		?>
 		echo
 		<script type='text/javascript'>
 			alert('Product Deleted successsfully..!!');
-		
-		window.location="Product-grid.php";
+			window.location="Product-grid.php";
 		</script>
-		<?php
-			
-	}
-	
-	mysqli_close($con);
+		<?php			
+	}	
 ?>

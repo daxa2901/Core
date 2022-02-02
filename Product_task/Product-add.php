@@ -13,7 +13,7 @@
   }
 
 
-  input[type=text],select,input[type=number],input[type=date]{
+  input[type=text],select,input[type=number],input[type=float],input[type=date]{
     width: 300px;
     padding: 12px 20px;
     margin: 8px 0;
@@ -44,13 +44,10 @@
     background-color: green;
   }
 
-  .cancelbtn {
-    
-    
-    background-color: #f44336;
-    margin-left: 10px;
+  .cancelbtn
+  {
+    background-color: red;
   }
-
   .container {
     padding: 16px;
   }
@@ -64,14 +61,12 @@
   <form action="Product-save.php" method="post" >
     <div class="container">
 
-	 <label for="eid"><b>ID</b></label><br>
-      <input type="number" placeholder="Enter Product id" name="id" required><br>
-
+	 
       <label for="name"><b>Name</b></label><br>
       <input type="text" placeholder="Enter Product Name" name="name" required><br>
 
       <label for="price"><b>Price</b></label><br>
-      <input type="number" placeholder="Enter Product Price" name="price" required><br>
+      <input type="float" placeholder="Enter Product Price" name="price" required><br>
 
       <label for="quantity"><b>Quantity</b></label><br>
       <input type="number" placeholder="Enter Product Quantity" name="quantity" required><br>
@@ -84,13 +79,12 @@
 
       <label for="Status"><b>Status</b></label><br>
       <select name="status">
-        <option value=1>1</option>
-        <option value=2>2</option>
+        <option value=1>InActive</option>
+        <option value=2>Active</option>
       </select>
 
-      <button type="submit" class="Registerbtn" value="Register" name="add">Register</button>
-      <button type="button" class="cancelbtn" name = 'cancel'>Cancel</button>
-     
+      <button type="submit" class="Registerbtn" value="Register" name="add">Add</button>
+     <a href = 'Product-grid.php'><button type="button" class="cancelbtn" value="Cancel" name="cancel">Cancel</button></a>
     </div>
   </form>
   </body>
