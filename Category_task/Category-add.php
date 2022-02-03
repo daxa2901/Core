@@ -52,21 +52,16 @@
     padding: 16px;
   }
 
+
 </style>
 </head>
 <body>
-  <form action="Product.php?a=saveAction" method="post" >
+  <form action="Category.php?a=saveAction" method="post" >
     <div class="container">
 
 	 
       <label for="name"><b>Name</b></label><br>
-      <input type="text" placeholder="Enter Product Name" name="name" required><br>
-
-      <label for="price"><b>Price</b></label><br>
-      <input type="float" placeholder="Enter Product Price" name="price" required><br>
-
-      <label for="quantity"><b>Quantity</b></label><br>
-      <input type="number" placeholder="Enter Product Quantity" name="quantity" required><br>
+      <input type="text" placeholder="Enter Category Name" name="name" required><br>
 
       
       <label for="Status"><b>Status</b></label><br>
@@ -76,7 +71,7 @@
       </select>
 
       <button type="submit" class="Registerbtn" value="Register" name="add">Add</button>
-     <a href = 'Product.php?a=gridAction'><button type="button" class="cancelbtn">Cancel</button></a>
+     <a href = 'Category.php?a=gridAction'><button type="button" class="cancelbtn" value="Cancel" name="cancel">Cancel</button></a>
     </div>
   </form>
   </body>
