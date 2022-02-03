@@ -52,13 +52,10 @@
     padding: 16px;
   }
 
-  
-  
-  }
 </style>
 </head>
 <body>
-  <form action="Product-save.php" method="post" >
+  <form action="Product.php?a=saveAction" method="post" >
     <div class="container">
 
 	 
@@ -79,7 +76,7 @@
       </select>
 
       <button type="submit" class="Registerbtn" value="Register" name="add">Add</button>
-     <a href = 'Product-grid.php'><button type="button" class="cancelbtn" value="Cancel" name="cancel">Cancel</button></a>
+     <a href = 'Product.php?a=gridAction'><button type="button" class="cancelbtn">Cancel</button></a>
     </div>
   </form>
   </body>

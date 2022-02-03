@@ -7,19 +7,20 @@
 			?>
 			<script type='text/javascript'>
 				alert('Product Info Update successsfully..!!');
-				window.location="Product-grid.php";
+				window.location="Product.php?a=gridAction";
 			</script>
 			<?php
 
 		}
 	}
 	else{
-		$res=$adapter->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) Values('".$_POST['name']."',".$_POST['price'].",'".$_POST['quantity']."','".$adapter->currentDate()."','".$adapter->currentDate()."','".$_POST['status']."')");
+
+		$res=$adapter->insert("insert into Product(name,price,quantity,createdAt,status) Values('".$_POST['name']."',".$_POST['price'].",'".$_POST['quantity']."','".$adapter->currentDate()."','".$_POST['status']."')");
 		if($res){
 			?>
 			<script type='text/javascript'>
 				alert('Product Info Inserted successsfully..!!');
-				window.location="Product-grid.php";
+				window.location="Product.php?a=gridAction";
 			</script>
 			<?php
 

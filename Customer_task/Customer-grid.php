@@ -43,39 +43,45 @@
 </head>
 <body>
 	<div class='container' style="text-align: center; ">
-	<h1> Category Details </h1> 
-	<form action="Category.php?a=addAction" method="POST">
+	<h1> Customer Details </h1> 
+	<form action="Customer.php?a=addAction" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
-	<?php
+<?php
 	global $adapter; 
-	$result = $adapter-> fetchAll("Select * from Category");
+	$result = $adapter-> fetchAll("Select * from Customer");
 
 	echo "<div id='info'>
 	<table border=1 width=100%>
 		<tr>
 			<th> Id </th>
-			<th> Name </th>
-			<th> Created_At </th>
-			<th> Updated_At </th>
+			<th> First Name </th>
+			<th> Last Name </th>
+			<th> Email </th>
+			<th> Mobile </th>
 			<th> Status </th>
+			<th> Create Date </th>
+			<th> Update Date </th>
 			<th> Action </th>
 		</tr>";
 		if($result):
 			foreach ($result as $row):
-		
-			echo '<tr>
-		      		<td> '. $row["id"] . '</td>
-		    		<td>' . $row["name"] . '</td>
-		    		<td>' . $row["createdAt"] . '</td>
-		    		<td>' . $row["updatedAt"] .'</td><td>';
+				echo '<tr>
+		      		<td>' . $row["customer_id"] . '</td>
+		    		<td>' . $row["firstName"] . '</td>
+		    		<td>' . $row["lastName"] . '</td>
+		    		<td>' . $row["email"] .'</td>
+		    		<td>' . $row["mobile"] .'</td>
+		    		<td>' . $row["createdDate"] .'</td>
+		    		<td>' . $row["updatedDate"] .'</td><td>';
 		    		if ($row['status'] == 1):
-		    			echo ' InActive ';
+		    			echo 'InActive';
 		    		else:
-		    			echo ' Active ';
+		    			echo 'Active';
 		    		endif;
-		    		echo '</td><td><a href="Category.php?a=deleteAction&id='.$row['id'].'">Delete</a> 
-		    		<a href="Category.php?a=editAction&id='.$row['id'].'">Update</a></td>
+		    		echo '</td><td>
+		    			<a href="Customer.php?a=deleteAction&id='.$row['customer_id'].'">Delete</a> 
+		    			<a href="Customer.php?a=editAction&id='.$row['customer_id'].'">Update</a></td>
 		   		</tr>' ;
 		  endforeach;
 		else:
