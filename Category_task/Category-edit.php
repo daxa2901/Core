@@ -1,7 +1,7 @@
 <html>
 <head>
 <style>
-form {
+ 	form {
     
     width: 350px;
     background-color:#f1f1f1;
@@ -54,19 +54,19 @@ form {
 			include 'C:\xampp\htdocs\Cybercom\Core\AdapterClass\Adapter.php';
 			
 			$pid=$_GET['id'];
-			$row = $adapter-> fetchRow("select * from Product  where id=".$pid);
+			$row = $adapter-> fetchRow("select * from Category  where id=".$pid);
 
 		  echo 
-		  "<form action='Product-save.php' method='post'>
+		  "<form action='Category-save.php' method='post'>
           <div class='container'>
       <label for='name'><b>Name</b></label><br>
-      <input type='text' placeholder='Enter Product Name' value='".$row['name']."' name='name' required><br>
+      <input type='text' placeholder='Enter Category Name' value='".$row['name']."' name='name' required><br>
 
       <label for='price'><b>Price</b></label><br>
-      <input type='float' placeholder='Enter Product Price' value='". $row['price'] ."' name='price' required><br>
+      <input type='float' placeholder='Enter Category Price' value='". $row['price'] ."' name='price' required><br>
 
       <label for='quantity'><b>Quantity</b></label><br>
-      <input type='number' placeholder='Enter Product Quantity' value='".$row['quantity']."' name='quantity' required><br>
+      <input type='number' placeholder='Enter Category Quantity' value='".$row['quantity']."' name='quantity' required><br>
 
       <label for='Status'><b>Status</b></label><br>
       <select id='status' name='status'>";
@@ -84,7 +84,7 @@ form {
 				echo "</select><br>";
       echo "<input type='hidden' value='".$row['id']."' name='id' required>";
 
-      echo "<button type='submit' class='Registerbtn' value='Update' name='update'>Update</button> <a href = 'Product-grid.php'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
+      echo "<button type='submit' class='Registerbtn' value='Update' name='update'>Update</button> <a href = 'Category-grid.php'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
    </div>  
   </form>
   </body>

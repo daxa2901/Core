@@ -5,7 +5,7 @@
 	<style>	
 		#info tr:nth-child(even){
 			background-color:#eeee;
-		}
+		}           		
 
 		#info tr:nth-child(odd){
 			background-color:#3498db;	
@@ -43,14 +43,14 @@
 </head>
 <body>
 	<div class='container' style="text-align: center; ">
-	<h1> Product Details </h1> 
-	<form action="Product-add.php" method="POST">
+	<h1> Category Details </h1> 
+	<form action="Category-add.php" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
 	<?php
 	include 'C:\xampp\htdocs\Cybercom\Core\AdapterClass\Adapter.php';
  
-	$result = $adapter-> fetchAll("Select * from Product");
+	$result = $adapter-> fetchAll("Select * from Category");
 
 	echo "<div id='info'>";
 	echo '<table border=1 width=100%>';
@@ -83,8 +83,8 @@
 		    			echo ' Active ';
 
 		    		}
-		    		echo '</td><td><a href="Product-delete.php?id='.$row['id'].'">Delete</a> 
-		    		<a href="Product-edit.php?id='.$row['id'].'">Update</a></td>
+		    		echo '</td><td><a href="Category-delete.php?id='.$row['id'].'">Delete</a> 
+		    		<a href="Category-edit.php?id='.$row['id'].'">Update</a></td>
 		    		</tr>' ;
 		  }
 		}

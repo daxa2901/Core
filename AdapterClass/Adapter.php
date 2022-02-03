@@ -14,7 +14,7 @@ class Adapter{
     public function setConnect($connect)
     {
         $this->connect = $connect;
-        return $this;
+        return $this->connect;
     }
 
     public function getConnect()     
@@ -22,11 +22,10 @@ class Adapter{
         return $this->connect;
     }
 
-
     public function setConfig($config)
     {
         $this->config = $config;
-        return $this;
+        return $this->config;
     }
 
     public function getConfig()     
@@ -84,14 +83,20 @@ class Adapter{
         return false;
     }
 
+    public function currentDate()
+    {
+    	date_default_timezone_set("Asia/Kolkata");
+		Return date('Y-m-d H:i:s');
+    }
+
 } 
-echo "<pre>";
+#echo "<pre>";
 $adapter = new Adapter();
 $adapter->setConfig([
 		'host' => 'localhost',
 		'username' => 'root',
 		'password' => '',
-		'dbname' => 'Product'
+		'dbname' => 'cybercom'
 	]);
 
 #$adapter->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) values ('Redmi19',16000,50,'2020-02-01','2022-01-01',1)");
