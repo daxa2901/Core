@@ -19,50 +19,73 @@ class Category{
 
 	public function saveAction()
 	{
+		try {
+			if (!isset($_POST['category'])) {
+			throw new Exception("Invalid Request.", 1);				
+			}
 			global $adapter;
-			if($_POST['id']){
-				$upd = $adapter->update("update Category set name='".$_POST['name']."',updatedAt='".$adapter->currentDate()."',status='".$_POST['status']."' where id='".$_POST['id']."'");
-				if($upd){
-					?>
-					<script type='text/javascript'>
-						alert('Category Info Update successsfully..!!');
-						window.location="Category.php?a=gridAction";
-					</script>
-					<?php
-
+			$row = $_POST['category'];
+			if (array_key_exists('id', $row)) {
+				if(!(int)$row['id']){
+					throw new Exception("Invalid Request.", 1);
+				}
+				$query = "UPDATE Category 
+					SET name='".$row['name']."',
+						updatedAt='".$adapter->currentDate()."',
+						status='".$row['status']."' 
+					WHERE id='".$row['id']."'";
+				$update = $adapter->update($query);
+				if(!$update){
+					throw new Exception("System is unable to update.", 1);
 				}
 			}
 			else{
-
-				$res=$adapter->insert("insert into Category(name,createdAt,status) Values('".$_POST['name']."','".$adapter->currentDate()."','".$_POST['status']."')");
-				if($res){
-					?>
-					<script type='text/javascript'>
-						alert('Category Info Inserted successsfully..!!');
-						window.location="Category.php?a=gridAction";
-					</script>
-					<?php
-
+				$query = "INSERT INTO Category(name,createdAt,status) 
+					VALUES('".$row['name']."',
+						   '".$adapter->currentDate()."',
+						   '".$row['status']."')";
+				$insert=$adapter->insert($query);
+				if(!$insert){
+					throw new Exception("System is unable to insert.", 1);			
 				}
 			}
+		$this->redirect("Category.php?a=gridAction");
+		
+		} catch (Exception $e) {
+			$this->redirect("Category.php?a=gridAction");	
+		}
 	}
+	
 
 	public function deleteAction()
 	{
-		global $adapter;
-		$id=$_GET['id'];
-		$del = $adapter->delete("delete from Category where id = ".$id); 
-		if($del)
-		{
-			?>
+		try {
+			if (!isset($_GET['id'])) {
+				throw new Exception("Invalid Request.", 1);
+			}
+			global $adapter;
+			$id=$_GET['id'];
+			$query = "DELETE FROM Category WHERE id = ".$id;
+			$delete = $adapter->delete($query); 
+			if(!$delete)
+			{
+				throw new Exception("System is unable to  delete.", 1);
+				
+			}
+			$this->redirect("Category.php?a=gridAction");		
+		} catch (Exception $e) {
+			$this->redirect("Category.php?a=gridAction");		
+		}
 			
-			<script type='text/javascript'>
-				alert('Category Deleted successsfully..!!');
-				window.location="Category.php?a=gridAction";
-			</script>
-			<?php			
-		}	
 	}
+
+	public function redirect($url)
+	{
+	
+		header('location:'.$url);	
+		exit();			
+	}
+
 
 	public function errorAction()
 	{
