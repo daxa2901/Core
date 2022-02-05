@@ -1,6 +1,12 @@
+<?php
+	global $adapter; 
+	$query = "SELECT 
+				* 
+			FROM Category";
+	$result = $adapter->fetchAll($query);
+?>
 <html>
 <head>
-
 	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 	<style>	
 		#info tr:nth-child(even){
@@ -47,11 +53,7 @@
 	<form action="Category.php?a=addAction" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
-	<?php
-	global $adapter; 
-	$result = $adapter-> fetchAll("Select * from Category");
-
-	echo "<div id='info'>
+	<div id='info'>
 	<table border=1 width=100%>
 		<tr>
 			<th> Id </th>
@@ -60,28 +62,30 @@
 			<th> Updated_At </th>
 			<th> Status </th>
 			<th> Action </th>
-		</tr>";
-		if($result):
-			foreach ($result as $row):
-		
-			echo '<tr>
-		      		<td> '. $row["id"] . '</td>
-		    		<td>' . $row["name"] . '</td>
-		    		<td>' . $row["createdAt"] . '</td>
-		    		<td>' . $row["updatedAt"] .'</td><td>';
-		    		if ($row['status'] == 1):
-		    			echo ' InActive ';
-		    		else:
+		</tr>
+		<?php if($result): ?>
+			<?php foreach ($result as $row):?>
+				<tr>
+		      		<td> <?php echo $row["id"] ?></td>
+		    		<td><?php echo $row["name"] ?></td>
+		    		<td><?php echo $row["createdAt"] ?></td>
+		    		<td><?php echo $row["updatedAt"] ?></td><td>
+		    		<?php if ($row['status'] == 1): 
 		    			echo ' Active ';
-		    		endif;
-		    		echo '</td><td><a href="Category.php?a=deleteAction&id='.$row['id'].'">Delete</a> 
-		    		<a href="Category.php?a=editAction&id='.$row['id'].'">Update</a></td>
-		   		</tr>' ;
-		  endforeach;
-		else:
-			echo "<tr><td colspan='8'>No Record Available</td></tr>";			
-		endif;
- 
-	echo "</table></div></body></html>";
-
-?>
+		    		else:
+		    			echo ' InActive ';
+		    		endif;?>
+		    		</td>
+		    		<td><a href="Category.php?a=deleteAction&id=<?php echo $row['id'] ?>">Delete</a> 
+		    		<a href="Category.php?a=editAction&id=<?php echo $row['id'] ?>">Update</a></td>
+		   		</tr>
+		  <?php endforeach; ?>
+		<?php else: ?>
+			<tr>
+				<td colspan='8'>No Record Available</td>
+			</tr>		
+		<?php endif; ?>
+	</table>
+	</div>
+</body>
+</html>

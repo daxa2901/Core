@@ -19,49 +19,71 @@ class Product{
 
 	public function saveAction()
 	{
+		try {
+			if (!isset($_POST['product'])) {
+			throw new Exception("Invalid Request.", 1);				
+			}
 			global $adapter;
-			if($_POST['id']){
-				$upd = $adapter->update("update Product set name='".$_POST['name']."',price=".$_POST['price'].",quantity='".$_POST['quantity']."',updatedAt='".$adapter->currentDate()."',status='".$_POST['status']."' where id='".$_POST['id']."'");
-				if($upd){
-					?>
-					<script type='text/javascript'>
-						alert('Product Info Update successsfully..!!');
-						window.location="Product.php?a=gridAction";
-					</script>
-					<?php
-
+			$row = $_POST['product'];
+			if (array_key_exists('id', $row)) {
+				if(!(int)$row['id']){
+					throw new Exception("Invalid Request.", 1);
+				}
+				$query = "UPDATE Product 
+					SET name='".$row['name']."',
+						price=".$row['price'].",
+						quantity='".$row['quantity']."',
+						updatedAt='".$adapter->currentDate()."',
+						status='".$row['status']."' 
+					Where id='".$row['id']."'";	
+				$update = $adapter->update($query);
+				if(!$update){
+					throw new Exception("System is unable to update.", 1);					
 				}
 			}
 			else{
-
-				$res=$adapter->insert("insert into Product(name,price,quantity,createdAt,status) Values('".$_POST['name']."',".$_POST['price'].",'".$_POST['quantity']."','".$adapter->currentDate()."','".$_POST['status']."')");
-				if($res){
-					?>
-					<script type='text/javascript'>
-						alert('Product Info Inserted successsfully..!!');
-						window.location="Product.php?a=gridAction";
-					</script>
-					<?php
-
+				$query = "INSERT INTO Product(name,price,quantity,createdAt,status) 
+				VALUES('".$row['name']."',
+					   ".$row['price'].",
+					   '".$row['quantity']."',
+					   '".$adapter->currentDate()."',
+					   '".$row['status']."')";
+				$insert=$adapter->insert($query);
+				if(!$insert){
+					throw new Exception("System is unable to insert.", 1);					
 				}
 			}
+			$this->redirect("Product.php?a=gridAction");
+			
+		} catch (Exception $e) {
+			$this->redirect("Product.php?a=gridAction");
+		}
 	}
 
 	public function deleteAction()
 	{
-		global $adapter;
-		$id=$_GET['id'];
-		$del = $adapter->delete("delete from Product where id = ".$id); 
-		if($del)
-		{
-			?>
+		try {
+			if (!isset($_GET['id'])) {
+				throw new Exception("Invalid Request.", 1);
+			}
+			global $adapter;
+			$id=$_GET['id'];
+			$query = "DELETE FROM Product WHERE id = ".$id;
+			$delete = $adapter->delete($query); 
+			if(!$delete){
+				throw new Exception("System is unable to delete.", 1);							
+			}
 			
-			<script type='text/javascript'>
-				alert('Product Deleted successsfully..!!');
-				window.location="Product.php?a=gridAction";
-			</script>
-			<?php			
-		}	
+			$this->redirect("Product.php?a=gridAction");
+		} catch (Exception $e) {
+			$this->redirect("Product.php?a=gridAction");
+		}
+			
+	}
+	public function redirect($url)
+	{
+		header('location:'.$url);	
+		exit();			
 	}
 
 	public function errorAction()

@@ -1,6 +1,7 @@
 <?php
 
 #Local variable which will point to value.
+echo ' simple variable';
 $p1 = 10; // address 1
 
 echo '<br>';
@@ -20,12 +21,6 @@ echo '<br>';
 echo $p1;	//it will print 10
 
 
-
-
-
-
-
-/*
 class B {
 	public $price = 0;
 	public $name = 10;
@@ -44,50 +39,48 @@ class B {
 $obj = new B();
 
 
+// class variable with an object
+//objects are reference variable
+echo 'class variable with an object'; 
+$obj->price = 10;
+
+echo '<br>';
 echo $obj->price;
 
-print_r($obj->setPrice(20));
-
-
+$obj2 = $obj; // copy
 
 echo '<br>';
-echo $obj->getPrice();
+echo $obj2->price;
 
-$obj2 = $obj;
-
-echo '<br>';
-echo $obj2->getPrice();
-
-$obj2->setPrice(40);
-
+$obj2->price = 20;
 
 echo '<br>';
-echo $obj2->getPrice();
-
-
+echo $obj2->price;
 
 echo '<br>';
-echo $obj->getPrice();
+echo $obj->price;
 
+// class method with an object
+echo '<br>class method with an object'; 
 
-// objects are reference variable 
-// $obj->price = 10;
+echo $obj->price;
+echo '<br>';
+print_r($obj->setPrice(20));  //obj price set to 20
 
-// echo '<br>';
-// echo $obj->price;
+echo '<br>';
+echo $obj->getPrice();  // print 20
 
-// $obj2 = $obj; // copy
+$obj2 = $obj;  // copy obj to obj2
 
-// echo '<br>';
-// echo $obj2->price;
+echo '<br>';
+echo $obj2->getPrice(); // print 20 
 
-// $obj2->price = 20;
+$obj2->setPrice(40);   // change price of obj2
 
-// echo '<br>';
-// echo $obj2->price;
+echo '<br>';
+echo $obj2->getPrice(); // print 20
 
-
-// echo '<br>';
-// echo $obj->price;
+echo '<br>';
+echo $obj->getPrice();	// print 20
 
 ?>

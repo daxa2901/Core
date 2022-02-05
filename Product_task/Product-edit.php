@@ -1,3 +1,9 @@
+<?php
+      global $adapter;
+      $pid=$_GET['id'];
+      $query = "SELECT * FROM Product WHERE id=".$pid;
+      $row = $adapter-> fetchRow($query);
+?>
 <html>
 <head>
 <style>
@@ -50,38 +56,31 @@ form {
 </style>
 </head>
   <body>
-	<?php
-			global $adapter;
-			$pid=$_GET['id'];
-			$row = $adapter-> fetchRow("select * from Product  where id=".$pid);
+   <form action='Product.php?a=saveAction' method='post'>
+        <div class='container'>
+          <label for='name'><b>Name</b></label><br>
+          <input type='text' placeholder='Enter Product Name' value="<?php echo $row['name'] ?>" name='product[name]' required><br>
 
-		  echo 
-		  "<form action='Product.php?a=saveAction' method='post'>
-          <div class='container'>
-            <label for='name'><b>Name</b></label><br>
-            <input type='text' placeholder='Enter Product Name' value='".$row['name']."' name='name' required><br>
+          <label for='price'><b>Price</b></label><br>
+          <input type='float' placeholder='Enter Product Price' value="<?php echo $row['price'] ?>" name='product[price]' required><br>
 
-            <label for='price'><b>Price</b></label><br>
-            <input type='float' placeholder='Enter Product Price' value='". $row['price'] ."' name='price' required><br>
+          <label for='quantity'><b>Quantity</b></label><br>
+          <input type='number' placeholder='Enter Product Quantity' value="<?php echo $row['quantity']?>" name='product[quantity]' required><br>
 
-            <label for='quantity'><b>Quantity</b></label><br>
-            <input type='number' placeholder='Enter Product Quantity' value='".$row['quantity']."' name='quantity' required><br>
+          <label for='Status'><b>Status</b></label><br>
+          <select id='status' name='product[status]'>
+    				  <?php if ($row['status'] == 1): ?>
+    				  	<option value='1'>InActive</option>
+    			      <option value='2'>Active</option>
+    				  <?php else:?>
+    				  	<option value='2'>Active</option>
+    				 		<option value='1'>InActive</option>
+              <?php endif ?>
+    				</select><br>
+            <input type='hidden' value="<?php echo $row['id']?>" name='product[id]'required>
 
-            <label for='Status'><b>Status</b></label><br>
-            <select id='status' name='status'>";
-      				  if ($row['status'] == 1):
-      				  	echo "<option value='1'>InActive</option>
-      				  	      <option value='2'>Active</option>";
-      				  else:
-      				  	echo "<option value='2'>Active</option>
-      				 		      <option value='1'>InActive</option>";
-                endif;
-      				echo "</select><br>";
-              echo "<input type='hidden' value='".$row['id']."' name='id' required>";
-
-               echo "<button type='submit' class='Registerbtn' value='Update' name='update'>Update</button> <a href = 'Product.php?a=gridAction'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
-             </div>  
-          </form>
-     </body>
-  </html>";
-?>
+            <button type='submit' class='Registerbtn' value='Update' name='update'>Update</button><a href = 'Product.php?a=gridAction'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
+        </div>  
+    </form>
+  </body>
+</html>

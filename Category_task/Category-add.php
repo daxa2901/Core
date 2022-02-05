@@ -1,29 +1,25 @@
-
 <html>
 <head>
 <style>
- 
+     
   form {
     
-    width: 350px;
+    width: 650px;
     background-color:#f1f1f1;
-    margin-left: 500px;
-    margin-top: 50px;
-    padding-left: 10px;
+    margin-left: 400px;
+    margin-top: 20px;
+  
   }
-
-
-  input[type=text],select,input[type=number],input[type=float],input[type=date]{
+  input[type=text],select,input[type=number],input[type=tel],input[type=date],input[type=email]{
     width: 300px;
     padding: 12px 20px;
-    margin: 8px 0;
+    margin: 2px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
-
   }
 
- 
+
   button {
     
     color: white;
@@ -34,8 +30,7 @@
     width: 85px;
   }
 
-   
-    button:hover {
+  button:hover {
     opacity: 0.8;
   }
 
@@ -48,31 +43,34 @@
   {
     background-color: red;
   }
-  .container {
-    padding: 16px;
-  }
-
 
 </style>
 </head>
 <body>
-  <form action="Category.php?a=saveAction" method="post" >
-    <div class="container">
-
-	 
-      <label for="name"><b>Name</b></label><br>
-      <input type="text" placeholder="Enter Category Name" name="name" required><br>
-
-      
-      <label for="Status"><b>Status</b></label><br>
-      <select name="status">
-        <option value=1>InActive</option>
-        <option value=2>Active</option>
-      </select>
-
-      <button type="submit" class="Registerbtn" value="Register" name="add">Add</button>
-     <a href = 'Category.php?a=gridAction'><button type="button" class="cancelbtn" value="Cancel" name="cancel">Cancel</button></a>
-    </div>
-  </form>
-  </body>
-  </html>
+  <form action="Category.php?a=saveAction" method="POST">
+  <table border="1" width="100%" cellspacing="4">
+    <tr>
+      <td width="10%"> Name</td>
+      <td><input type="text" name="category[name]"></td>
+    </tr>
+    
+    <tr>
+      <td width="10%">Status</td>
+      <td>
+        <select name="category[status]">
+          <option value="1">Active</option>
+          <option value="2">Inactive</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td width="25%">&nbsp;</td>
+      <td>
+        <button type="submit" name="submit" class="Registerbtn">Save </button>
+        <a href="Category.php?a=gridAction"><button type="button" class="cancelbtn">Cancel</button></a>
+      </td>
+    </tr>    
+  </table>  
+</form>
+</body>
+  </html

@@ -19,47 +19,109 @@ class Customer{
 
 	public function saveAction()
 	{
-		global $adapter;
-		if($_POST['customer_id']){
-			$upd = $adapter->update("update Customer set firstName='".$_POST['firstName']."',lastName='".$_POST['lastName']."',email='".$_POST['email']."',mobile='".$_POST['mobile']."',status='".$_POST['status']."',updatedAt='".$adapter->currentDate()."' where customer_id='".$_POST['customer_id']."'");
-			if($upd){ ?>
-				<script type='text/javascript'>
-					alert('Customer Info Update successsfully..!!');
-					window.location="Customer.php?a=gridAction";
-				</script>
-			<?php
-
+		try {
+			if (!isset($_POST['customer'])) {
+				throw new Exception("Invalid Request.", 1);				
 			}
-		}
-		else{
+						
+			global $adapter;
+			$row = $_POST['customer'];
+			if (array_key_exists('customer_id', $row)) {
+				if(!(int)$row['customer_id']){
+					throw new Exception("Invalid Request.", 1);
+				}
+				$query = "UPDATE Customer 
+					SET firstName='".$row['firstName']."',
+						lastName='".$row['lastName']."',
+						email='".$row['email']."',
+						mobile='".$row['mobile']."',
+						status='".$row['status']."',
+						updatedDate='".$adapter->currentDate()."' 
+					WHERE customer_id='".$row['customer_id']."'";
 
-			$res=$adapter->insert("insert into Customer(name,createdAt,status) Values('".$_POST['name']."','".$adapter->currentDate()."','".$_POST['status']."')");
-			if($res){	?>
-				<script type='text/javascript'>
-					alert('Customer Info Inserted successsfully..!!');
-					window.location="Customer.php?a=gridAction";
-				</script>
-			<?php
-
+				$update = $adapter->update($query);
+				if(!$update){ 
+					throw new Exception("System is unable to update.", 1);
+				}
 			}
+			else{
+				$query = "INSERT INTO Customer(firstName,lastName,email,mobile,status,createdDate) 	VALUES('".$row['firstName']."',
+						   '".$row['lastName']."',
+						   '".$row['email']."',
+						   '".$row['mobile']."',
+						   '".$row['status']."',
+						   '".$adapter->currentDate()."')";
+				$insert=$adapter->insert($query);
+				if(!$insert){	
+						throw new Exception("System is unable to insert.", 1);
+				}
+				$shipping = 2;
+				$billing = 2;
+				$address = $_POST['address'];
+				if (array_key_exists('billing', $address)) {
+
+						$billing = 1;			
+				}
+				if (array_key_exists('shipping', $address)) {
+						$shipping = 1;
+				}
+				$query = "INSERT INTO Address(customerId,address,city,state,country,postalCode,billing,shipping) 	
+					
+					VALUES($insert,
+						   '".$address['address']."',
+						   '".$address['city']."',
+						   '".$address['state']."',
+						   '".$address['country']."',
+						   '".$address['postalCode']."',
+						   '".$billing."',
+						   '".$shipping."')";
+				$result=$adapter->insert($query);
+				if (!$result) {
+					print_r($result);
+					exit();
+					throw new Exception("System is unable to insert", 1);
+				}
+				
+			}
+			$this->redirect('Customer.php?a=gridAction');
+			
+		} catch (Exception $e) {
+			$this->redirect('Customer.php?a=gridAction');
 		}
 	}
 
 	public function deleteAction()
 	{
-		global $adapter;
-		$id=$_GET['id'];
-		$del = $adapter->delete("delete from Customer where id = ".$id); 
-		if($del)
-		{
-			?>
+		try {
 			
-			<script type='text/javascript'>
-				alert('Customer Deleted successsfully..!!');
-				window.location="Customer.php?a=gridAction";
-			</script>
-			<?php			
-		}	
+			if (!isset($_GET['id'])) {
+				throw new Exception("Invalid Request.", 1);
+			}
+			
+			global $adapter;
+			$id=$_GET['id'];
+			$query = "DELETE FROM Customer WHERE customer_id = ".$id;
+			$delete = $adapter->delete($query); 
+			if(!$delete)
+			{
+				throw new Exception("System is unable to delete record.", 1);
+										
+			}
+			$this->redirect('Customer.php?a=gridAction');	
+				
+		} catch (Exception $e) {
+			$this->redirect('Customer.php?a=gridAction');	
+			//echo $e->getMessage();
+		}
+
+		
+	}
+
+	public function redirect($url)
+	{
+	
+		header('location:'.$url);	
+		exit();			
 	}
 
 	public function errorAction()

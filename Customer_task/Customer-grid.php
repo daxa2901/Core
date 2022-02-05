@@ -1,3 +1,16 @@
+<?php
+	global $adapter; 
+	$query = "SELECT 
+				* 
+			FROM Customer";
+	$query2 = "SELECT a.address 
+			FROM Customer c 
+				JOIN  
+			address a ON c.customer_id = a.customerId";
+	$result = $adapter-> fetchAll($query);
+	$address = $adapter-> fetchAll($query2);
+
+?>
 <html>
 <head>
 
@@ -47,11 +60,8 @@
 	<form action="Customer.php?a=addAction" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
-<?php
-	global $adapter; 
-	$result = $adapter-> fetchAll("Select * from Customer");
 
-	echo "<div id='info'>
+	<div id='info'>
 	<table border=1 width=100%>
 		<tr>
 			<th> Id </th>
@@ -60,34 +70,40 @@
 			<th> Email </th>
 			<th> Mobile </th>
 			<th> Status </th>
+			<th> Address </th>
 			<th> Create Date </th>
 			<th> Update Date </th>
 			<th> Action </th>
-		</tr>";
-		if($result):
-			foreach ($result as $row):
-				echo '<tr>
-		      		<td>' . $row["customer_id"] . '</td>
-		    		<td>' . $row["firstName"] . '</td>
-		    		<td>' . $row["lastName"] . '</td>
-		    		<td>' . $row["email"] .'</td>
-		    		<td>' . $row["mobile"] .'</td>
-		    		<td>' . $row["createdDate"] .'</td>
-		    		<td>' . $row["updatedDate"] .'</td><td>';
-		    		if ($row['status'] == 1):
-		    			echo 'InActive';
-		    		else:
-		    			echo 'Active';
-		    		endif;
-		    		echo '</td><td>
-		    			<a href="Customer.php?a=deleteAction&id='.$row['customer_id'].'">Delete</a> 
-		    			<a href="Customer.php?a=editAction&id='.$row['customer_id'].'">Update</a></td>
-		   		</tr>' ;
-		  endforeach;
-		else:
-			echo "<tr><td colspan='8'>No Record Available</td></tr>";			
-		endif;
+		</tr>
+		<?php if($result):
+			foreach ($result as $index => $value): ?>
+				 
+				<tr>
+		      		<td><?php echo $result[$index]["customer_id"] ?></td>
+		    		<td><?php echo $result[$index]["firstName"] ?></td>
+		    		<td><?php echo $result[$index]["lastName"] ?></td>
+		    		<td><?php echo $result[$index]["email"] ?></td>
+		    		<td><?php echo $result[$index]["mobile"] ?></td>
+		    		<td>
+			    		<?php if ($result[$index]['status'] == 1):
+			    			echo 'Active';
+			    		else:
+			    			echo 'InActive';
+			    		endif; ?>
+		    		</td>
+		    		<td> <?php echo $address[$index]['address'] ?> </td>
+		    		<td><?php echo $result[$index]["createdDate"] ?></td>
+		    		<td><?php echo $result[$index]["updatedDate"] ?></td>
+		    		<td>
+		    			<a href="Customer.php?a=deleteAction&id=<?php echo $result[$index]['customer_id'] ?>">Delete</a> 
+		    			<a href="Customer.php?a=editAction&id=<?php echo $result[$index]['customer_id']?>">Update</a></td>
+		   		</tr>
+		 <?php endforeach;?>
+		<?php else:?>
+			<tr><td colspan='10'>No Record Available</td></tr>			
+		<?php endif; ?>
  
-	echo "</table></div></body></html>";
-
-?>
+	</table>
+	</div>
+</body>
+</html>
