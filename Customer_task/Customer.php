@@ -43,6 +43,33 @@ class Customer{
 				if(!$update){ 
 					throw new Exception("System is unable to update.", 1);
 				}
+				$row2 = $_POST['address'];	
+				$billing=2;	
+				$shipping=2;		
+				if (array_key_exists('billing', $row2) && $row2['billing'] == 1) {
+
+						$row2['billing'] = 1;			
+				}
+				if (array_key_exists('shipping', $row2) && $row2['shipping'] == 1) {
+						$row2['shipping'] = 1;
+				}
+				print_r($row2);
+				$query2 = "UPDATE Address 
+						SET address='".$row2['address']."',
+							city='".$row2['city']."',
+							state='".$row2['state']."',
+							country='".$row2['country']."',
+							postalCode='".$row2['postalCode']."',
+							billing='".$billing."',
+							shipping='".$shipping."',
+						WHERE addressId='".$row2['address_id']."'";
+				echo $row2['address_id'];
+				$update2 = $adapter->update($query2);
+				if(!$update2){ 
+					var_dump($update2);
+					exit();
+					throw new Exception("System is unable to update.", 1);
+				}
 			}
 			else{
 				$query = "INSERT INTO Customer(firstName,lastName,email,mobile,status,createdDate) 	VALUES('".$row['firstName']."',

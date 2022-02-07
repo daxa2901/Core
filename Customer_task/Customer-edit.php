@@ -4,6 +4,13 @@
       $query = "SELECT * FROM Customer  
             WHERE customer_id=".$pid;
       $row = $adapter-> fetchRow($query);
+      $query2 = "SELECT 
+                  a.* 
+                FROM 
+              Address a 
+                JOIN 
+              Customer c ON a.customerId = c.customer_id";  
+      $row2 = $adapter-> fetchRow($query2);     
 ?>
 <html>
 <head>
@@ -99,33 +106,45 @@ form {
     </tr>
     <tr>
       <td width="10%">Address</td>
-      <td><input type="text" name="address[address]"></td>
+      <td><input type="text" name="address[address]" value="<?php echo $row2['address'] ?>"></td>
     </tr>
     
     <tr>
       <td width="10%">City</td>
-      <td><input type="text" name="address[city]"></td>
+      <td><input type="text" name="address[city]" value="<?php echo $row2['city'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">State</td>
-      <td><input type="text" name="address[state]"></td>
+      <td><input type="text" name="address[state]" value="<?php echo $row2['state'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Postal Code</td>
-      <td><input type="text" name="address[postalCode]"></td>
+      <td><input type="text" name="address[postalCode]" value="<?php echo $row2['postalCode'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Country</td>
-      <td><input type="text" name="address[country]"></td>
+      <td><input type="text" name="address[country]" value="<?php echo $row2['country'] ?>"></td>
     </tr>
     <tr>    
-      <td><input type="checkbox" name="address[billingAddress]">Billing Addres</td>
-      <td><input type="checkbox" name="address[shippingAddress]"> Shipping Address</td>
+      <td>
+        <?php if($row2['billing'] == 1): ?>
+          <input type="checkbox" name="address[billing]" value="1" checked>Billing Addres</td>
+        <?php else: ?>
+          <input type="checkbox" name="address[billing]" value="1">Billing Addres</td>
+        <?php endif; ?>
+
+      <td>
+        <?php if($row2['shipping'] == 1): ?>
+          <input type="checkbox" name="address[shipping] checked" value="1"> Shipping Address</td>
+        <?php else: ?>
+          <input type="checkbox" name="address[shipping]" value="1"> Shipping Address</td>
+        <?php endif; ?>
+
     </tr>
     <tr>
       <td width="25%">&nbsp;</td>
       <input type="hidden" name="customer[customer_id]" value="<?php echo $row['customer_id'] ?>">
-              
+      <input type="hidden" name="address[address_id]" value="<?php echo $row2['addressId'] ?>">
       <td>
         <button type="submit" name="submit" class="Registerbtn">Update </button>
         <a href="Customer.php?a=gridAction"><button type="button" class="cancelbtn">Cancel</button></a>
