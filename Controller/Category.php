@@ -1,20 +1,20 @@
 <?php
-	require_once('C:\xampp\htdocs\Cybercom\Core\AdapterClass\Adapter.php');
+	require_once('Model\Core\Adapter.php');
 
-class Category{
+class Controller_Category{
 	public function gridAction()
 	{
-		require_once('Category-grid.php');
+		require_once('view/category/grid.php');
 	}
 
 	public function addAction()
 	{
-		require_once('Category-add.php');
+		require_once('view/category/add.php');
 	}
 
 	public function editAction()
 	{
-		require_once('Category-edit.php');
+		require_once('view/category/edit.php');
 	}
 
 	public function saveAction()
@@ -33,7 +33,7 @@ class Category{
 					SET name='".$row['name']."',
 						updatedAt='".$adapter->currentDate()."',
 						status='".$row['status']."' 
-					WHERE id='".$row['id']."'";
+					WHERE categoryId='".$row['id']."'";
 				$update = $adapter->update($query);
 				if(!$update){
 					throw new Exception("System is unable to update.", 1);
@@ -49,10 +49,10 @@ class Category{
 					throw new Exception("System is unable to insert.", 1);			
 				}
 			}
-		$this->redirect("Category.php?a=gridAction");
+		$this->redirect("index.php?c=category&a=grid");
 		
 		} catch (Exception $e) {
-			$this->redirect("Category.php?a=gridAction");	
+			$this->redirect("index.php?c=category&a=grid");	
 		}
 	}
 	
@@ -65,16 +65,16 @@ class Category{
 			}
 			global $adapter;
 			$id=$_GET['id'];
-			$query = "DELETE FROM Category WHERE id = ".$id;
+			$query = "DELETE FROM Category WHERE categoryId = ".$id;
 			$delete = $adapter->delete($query); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to  delete.", 1);
 				
 			}
-			$this->redirect("Category.php?a=gridAction");		
+			$this->redirect("index.php?c=category&a=grid");		
 		} catch (Exception $e) {
-			$this->redirect("Category.php?a=gridAction");		
+			$this->redirect("index.php?c=category&a=grid");		
 		}
 			
 	}
@@ -93,7 +93,4 @@ class Category{
 	}
 }
 
-$category = new Category();
-$action = ($_GET['a']) ? $_GET['a'] : 'errorAction';
-$category->$action(); 
 ?>

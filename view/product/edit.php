@@ -1,7 +1,7 @@
 <?php
       global $adapter;
       $pid=$_GET['id'];
-      $query = "SELECT * FROM Product WHERE id=".$pid;
+      $query = "SELECT * FROM Product WHERE productId=".$pid;
       $row = $adapter-> fetchRow($query);
 ?>
 <html>
@@ -56,7 +56,7 @@ form {
 </style>
 </head>
   <body>
-   <form action='Product.php?a=saveAction' method='post'>
+   <form action='index.php?c=product&a=save' method='post'>
         <div class='container'>
           <label for='name'><b>Name</b></label><br>
           <input type='text' placeholder='Enter Product Name' value="<?php echo $row['name'] ?>" name='product[name]' required><br>
@@ -77,9 +77,9 @@ form {
     				 		<option value='1'>InActive</option>
               <?php endif ?>
     				</select><br>
-            <input type='hidden' value="<?php echo $row['id']?>" name='product[id]'required>
+            <input type='hidden' value="<?php echo $row['productId']?>" name='product[id]'required>
 
-            <button type='submit' class='Registerbtn' value='Update' name='update'>Update</button><a href = 'Product.php?a=gridAction'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
+            <button type='submit' class='Registerbtn' value='Update' name='update'>Update</button><a href = 'index.php?c=product&a=grid'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
         </div>  
     </form>
   </body>

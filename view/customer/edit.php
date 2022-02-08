@@ -2,14 +2,14 @@
       global $adapter;
       $pid=$_GET['id'];
       $query = "SELECT * FROM Customer  
-            WHERE customer_id=".$pid;
+            WHERE customerId=".$pid;
       $row = $adapter-> fetchRow($query);
       $query2 = "SELECT 
                   a.* 
                 FROM 
               Address a 
                 JOIN 
-              Customer c ON a.customerId = c.customer_id";  
+              Customer c ON a.customerId = c.customerId WHERE a.customerId =".$pid;  
       $row2 = $adapter-> fetchRow($query2);     
 ?>
 <html>
@@ -64,7 +64,7 @@ form {
 </style>
 </head>
 <body>
-  <form action="Customer.php?a=saveAction" method="POST">
+  <form action="index.php?a=save" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
       <td colspan="2"><b>Personal Information</b></td>
@@ -127,27 +127,26 @@ form {
     </tr>
     <tr>    
       <td>
-        <?php if($row2['billing'] == 1): ?>
-          <input type="checkbox" name="address[billing]" value="1" checked>Billing Addres</td>
+        <?php if($row2['billing'] == '1'): ?>
+          <input type="checkbox" name="address[billing]" value=1 checked>Billing Addres</td>
         <?php else: ?>
-          <input type="checkbox" name="address[billing]" value="1">Billing Addres</td>
+          <input type="checkbox" name="address[billing]" value=1>Billing Addres</td>
         <?php endif; ?>
 
       <td>
-        <?php if($row2['shipping'] == 1): ?>
-          <input type="checkbox" name="address[shipping] checked" value="1"> Shipping Address</td>
+        <?php if($row2['shipping'] == '1'): ?>
+          <input type="checkbox" name="address[shipping]" checked value=1> Shipping Address</td>
         <?php else: ?>
-          <input type="checkbox" name="address[shipping]" value="1"> Shipping Address</td>
+          <input type="checkbox" name="address[shipping]" value=1> Shipping Address</td>
         <?php endif; ?>
 
     </tr>
     <tr>
       <td width="25%">&nbsp;</td>
-      <input type="hidden" name="customer[customer_id]" value="<?php echo $row['customer_id'] ?>">
-      <input type="hidden" name="address[address_id]" value="<?php echo $row2['addressId'] ?>">
+      <input type="hidden" name="customer[customerId]" value="<?php echo $row['customerId'] ?>">
       <td>
         <button type="submit" name="submit" class="Registerbtn">Update </button>
-        <a href="Customer.php?a=gridAction"><button type="button" class="cancelbtn">Cancel</button></a>
+        <a href="index.php?c=customer&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
       </td>
     </tr>    
   </table>  
