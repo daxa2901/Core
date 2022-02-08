@@ -1,4 +1,4 @@
-<?php require_once('C:\xampp\htdocs\Cybercom\Core\Model\Core\Adapter.php');  ?>
+<?php require_once('Model\Core\Adapter.php');  ?>
 <?php 
 
 class Ccc
@@ -16,7 +16,7 @@ class Ccc
 	{
 		$actionName = (isset($_GET['a'])) ? $_GET['a'].'Action' : 'errorAction';
 		$controllerName = (isset($_GET['c'])) ? ucfirst($_GET['c']) : 'Customer';
-		$controllerPath = 'Controller/'.$controllerName.'.php';
+		//$controllerPath = 'Controller/'.$controllerName.'.php';
 		$controllerClassName = 'Controller_'.$controllerName;
 		Ccc::loadClass($controllerClassName);
 		$controller = new $controllerClassName();
