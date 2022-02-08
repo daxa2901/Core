@@ -3,7 +3,7 @@
       $pid=$_GET['id'];
       $query = "SELECT 
                   * 
-      FROM Category WHERE id=".$pid;
+      FROM Category WHERE categoryId=".$pid;
       $row = $adapter-> fetchRow($query);
 ?>
 
@@ -59,13 +59,13 @@
 </style>
 </head>
   <body>
-    <form action="Category.php?a=saveAction" method="POST">
+    <form action="index.php?c=category&a=save" method="POST">
       <table border="1" width="100%" cellspacing="4">
         <tr>
           <td width="10%"> Name</td>
           <td><input type="text" name="category[name]" value="<?php echo $row['name'] ?>"></td>
         </tr>
-        <input type="hidden" name="category[id]" value="<?php echo $row['id'] ?>">
+        <input type="hidden" name="category[id]" value="<?php echo $row['categoryId'] ?>">
         <tr>
           <td width="10%">Status</td>
           <td>
@@ -84,7 +84,7 @@
           <td width="25%">&nbsp;</td>
           <td>
             <button type="submit" name="submit" class="Registerbtn">Save </button>
-            <a href="Category.php?a=gridAction"><button type="button" class="cancelbtn">Cancel</button></a>
+            <a href="index.php?c=category&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
           </td>
         </tr>    
       </table>  

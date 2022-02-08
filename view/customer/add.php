@@ -47,7 +47,7 @@
 </style>
 </head>
 <body>
-  <form action="Customer.php?a=saveAction" method="POST">
+  <form action="index.php?c=customer&a=save" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
       <td colspan="2"><b>Personal Information</b></td>
@@ -110,7 +110,7 @@
       <td width="25%">&nbsp;</td>
       <td>
         <button type="submit" name="submit" class="Registerbtn">Save </button>
-        <a href="Customer.php?a=gridAction"><button type="button" class="cancelbtn">Cancel</button></a>
+        <a href="index.php?c=customer&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
       </td>
     </tr>    
   </table>  

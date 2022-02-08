@@ -1,20 +1,20 @@
 <?php
-	require_once('C:\xampp\htdocs\Cybercom\Core\AdapterClass\Adapter.php');
+	require_once('Model\Core\Adapter.php');
 
-class Product{
+class Controller_Product{
 	public function gridAction()
 	{
-		require_once('Product-grid.php');
+		require_once('view/product/grid.php');
 	}
 
 	public function addAction()
 	{
-		require_once('Product-add.php');
+		require_once('view/product/add.php');
 	}
 
 	public function editAction()
 	{
-		require_once('Product-edit.php');
+		require_once('view/product/edit.php');
 	}
 
 	public function saveAction()
@@ -35,7 +35,7 @@ class Product{
 						quantity='".$row['quantity']."',
 						updatedAt='".$adapter->currentDate()."',
 						status='".$row['status']."' 
-					Where id='".$row['id']."'";	
+					Where productId='".$row['id']."'";	
 				$update = $adapter->update($query);
 				if(!$update){
 					throw new Exception("System is unable to update.", 1);					
@@ -53,10 +53,10 @@ class Product{
 					throw new Exception("System is unable to insert.", 1);					
 				}
 			}
-			$this->redirect("Product.php?a=gridAction");
+			$this->redirect("index.php?c=product&a=grid");
 			
 		} catch (Exception $e) {
-			$this->redirect("Product.php?a=gridAction");
+			$this->redirect("index.php?c=product&a=grid");
 		}
 	}
 
@@ -68,15 +68,15 @@ class Product{
 			}
 			global $adapter;
 			$id=$_GET['id'];
-			$query = "DELETE FROM Product WHERE id = ".$id;
+			$query = "DELETE FROM Product WHERE productId = ".$id;
 			$delete = $adapter->delete($query); 
 			if(!$delete){
 				throw new Exception("System is unable to delete.", 1);							
 			}
 			
-			$this->redirect("Product.php?a=gridAction");
+			$this->redirect("index.php?c=product&a=grid");
 		} catch (Exception $e) {
-			$this->redirect("Product.php?a=gridAction");
+			$this->redirect("index.php?c=product&a=grid");
 		}
 			
 	}
@@ -92,7 +92,4 @@ class Product{
 	}
 }
 
-$product = new Product();
-$action = ($_GET['a']) ? $_GET['a'] : 'errorAction';
-$product->$action(); 
 ?>

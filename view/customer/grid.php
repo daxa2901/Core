@@ -6,7 +6,7 @@
 	$query2 = "SELECT a.address 
 			FROM Customer c 
 				JOIN  
-			address a ON c.customer_id = a.customerId";
+			address a ON c.customerId = a.customerId";
 	$result = $adapter-> fetchAll($query);
 	$address = $adapter-> fetchAll($query2);
 
@@ -57,7 +57,7 @@
 <body>
 	<div class='container' style="text-align: center; ">
 	<h1> Customer Details </h1> 
-	<form action="Customer.php?a=addAction" method="POST">
+	<form action="index.php?c=customer&a=add" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
 
@@ -79,7 +79,7 @@
 			foreach ($result as $index => $value): ?>
 				 
 				<tr>
-		      		<td><?php echo $result[$index]["customer_id"] ?></td>
+		      		<td><?php echo $result[$index]["customerId"] ?></td>
 		    		<td><?php echo $result[$index]["firstName"] ?></td>
 		    		<td><?php echo $result[$index]["lastName"] ?></td>
 		    		<td><?php echo $result[$index]["email"] ?></td>
@@ -95,8 +95,8 @@
 		    		<td><?php echo $result[$index]["createdDate"] ?></td>
 		    		<td><?php echo $result[$index]["updatedDate"] ?></td>
 		    		<td>
-		    			<a href="Customer.php?a=deleteAction&id=<?php echo $result[$index]['customer_id'] ?>">Delete</a> 
-		    			<a href="Customer.php?a=editAction&id=<?php echo $result[$index]['customer_id']?>">Update</a></td>
+		    			<a href="index.php?a=delete&id=<?php echo $result[$index]['customerId'] ?>">Delete</a> 
+		    			<a href="index.php?a=edit&id=<?php echo $result[$index]['customerId']?>">Update</a></td>
 		   		</tr>
 		 <?php endforeach;?>
 		<?php else:?>
