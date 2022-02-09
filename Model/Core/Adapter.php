@@ -48,6 +48,7 @@ class Adapter{
 
     public function update($query){
         $result = $this->query($query);
+    
         return $result;
     }
 
