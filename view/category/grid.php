@@ -1,9 +1,30 @@
 <?php
+	$path = "";
 	global $adapter; 
 	$query = "SELECT 
 				* 
 			FROM Category";
 	$result = $adapter->fetchAll($query);
+	function categoryTree($category)
+	{
+		global $adapter;
+		$result = $adapter->fetchAll("SELECT * FROM Category");
+		global $path;
+		foreach ($result as $row) {
+			if($row['categoryId'] == $category){
+				if ($row['parentId'] == NULL) {
+					$path = $row['name']."=>".$path;
+					return false;
+				}
+				else{
+		
+					$path = $row['name']."=>".$path;
+				}	return categoryTree($row['parentId']);				
+			}	
+						
+		}
+	}	
+		
 ?>
 <html>
 <head>
@@ -66,8 +87,12 @@
 		<?php if($result): ?>
 			<?php foreach ($result as $row):?>
 				<tr>
-		      		<td> <?php echo $row["categoryId"] ?></td>
-		    		<td><?php echo $row["name"] ?></td>
+		    		<td><?php echo $row["categoryId"] ?></td>
+		      		<td> <?php categoryTree($row["categoryId"]); 
+		      					global $path;
+		      					echo $path;
+		      					$path = ""; 
+		      					?></td>
 		    		<td><?php echo $row["createdAt"] ?></td>
 		    		<td><?php echo $row["updatedAt"] ?></td><td>
 		    		<?php if ($row['status'] == 1): 

@@ -1,3 +1,30 @@
+<?php 
+  global $adapter; 
+  $query = "SELECT 
+        * 
+      FROM Category";
+  $result = $adapter->fetchAll($query);
+  function categoryTree($category)
+  {
+    global $adapter;
+    $result = $adapter->fetchAll("SELECT * FROM Category");
+    global $path;
+    foreach ($result as $row) {
+      if($row['categoryId'] == $category){
+        if ($row['parentId'] == NULL) {
+          $path = $row['name']."=>".$path;
+          return false;
+        }
+        else{
+    
+          $path = $row['name']."=>".$path;
+        } return categoryTree($row['parentId']);        
+      } 
+            
+    }
+  } 
+    
+  ?>
 <html>
 <head>
 <style>
@@ -60,6 +87,19 @@
         <select name="category[status]">
           <option value="1">Active</option>
           <option value="2">Inactive</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td width="10%">Parent Category</td>
+      <td>
+        <select name="category[parentId]">
+          <option value="NULL">Root</option>
+          <?php foreach ($result as $row):?>
+            <?php categoryTree($row["categoryId"]); 
+                    global $path; ?>           
+          <option value=<?php echo $row['categoryId']?>><?php echo $path; $path = "";?></option>
+        <?php endforeach;?>
         </select>
       </td>
     </tr>

@@ -29,21 +29,44 @@ class Controller_Category{
 				if(!(int)$row['id']){
 					throw new Exception("Invalid Request.", 1);
 				}
+				if($row['parentId'] == 'NULL'){
+					$query = "UPDATE Category 
+					SET name='".$row['name']."',
+						updatedAt='".$adapter->currentDate()."',
+						status='".$row['status']."', 
+						parentId='".NULL."' 
+					WHERE categoryId='".$row['id']."'";
+					
+				}
+				else{
 				$query = "UPDATE Category 
 					SET name='".$row['name']."',
 						updatedAt='".$adapter->currentDate()."',
-						status='".$row['status']."' 
+						status='".$row['status']."', 
+						parentId='".$row['parentId']."' 
 					WHERE categoryId='".$row['id']."'";
+				}
 				$update = $adapter->update($query);
 				if(!$update){
+					echo 'error';
+					exit();
 					throw new Exception("System is unable to update.", 1);
 				}
 			}
 			else{
-				$query = "INSERT INTO Category(name,createdAt,status) 
+				if ($row['parentId'] == 'NULL') {
+					$query = "INSERT INTO Category(name,createdAt,status) 
 					VALUES('".$row['name']."',
 						   '".$adapter->currentDate()."',
 						   '".$row['status']."')";
+				}
+				else{
+					$query = "INSERT INTO Category(name,createdAt,status,parentId) 
+						VALUES('".$row['name']."',
+							   '".$adapter->currentDate()."',
+							   '".$row['status']."',
+							   '".$row['parentId']."')";
+				}
 				$insert=$adapter->insert($query);
 				if(!$insert){
 					throw new Exception("System is unable to insert.", 1);			
