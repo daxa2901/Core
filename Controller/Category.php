@@ -34,7 +34,7 @@ class Controller_Category{
 					SET name='".$row['name']."',
 						updatedAt='".$adapter->currentDate()."',
 						status='".$row['status']."', 
-						parentId='".NULL."' 
+						parentId='".NULL."'
 					WHERE categoryId='".$row['id']."'";
 					
 				}
@@ -71,6 +71,23 @@ class Controller_Category{
 				if(!$insert){
 					throw new Exception("System is unable to insert.", 1);			
 				}
+				$path = '';
+
+				$row=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId=".$insert);
+				echo $row['parentId'];
+				if ($row['parentId'] == NULL) {
+					$path = $insert;
+				}
+				else{
+					$result=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
+					$path = $result['categoryPath'].'/'.$insert;
+
+				}
+				$query = "UPDATE Category SET categoryPath = '".$path."' WHERE categoryId = ".$insert;
+				$update = $adapter->update($query);
+				if(!$update){
+					throw new Exception("System is unable to update.", 1);
+				}				
 			}
 		$this->redirect("index.php?c=category&a=grid");
 		
@@ -114,6 +131,13 @@ class Controller_Category{
 	{
 		echo "error";
 	}
+	public function taskAction()
+	{	
+		global $adapter;
+		$result=$adapter->fetchPair('SELECT categoryId FROM Category');
+	}
+
+	
 }
 
 ?>
