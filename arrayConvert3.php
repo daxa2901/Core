@@ -116,7 +116,9 @@ foreach ($data as $category=>$level1) {
 		foreach ($level2 as $categoryName => $level3) {
 				if($categoryName != 'attribute'){
 				$row['categoryName'] = $level3;
+				continue;
 			}
+
 		
 			foreach ($level3 as $attribute => $level4) {
 					$row['attribute'] = $attribute;
@@ -124,6 +126,7 @@ foreach ($data as $category=>$level1) {
 				foreach ($level4 as $attributeName => $level5) {
 					if($attributeName != 'option'){
 						$row['attributeName'] = $level5;
+						continue;
 					}
 
 					foreach ($level5 as $option => $level6) {
@@ -140,4 +143,27 @@ foreach ($data as $category=>$level1) {
 		}
 	}
 }
+
+#OR
+/*
+
+$final = [];
+foreach ($data['category'] as $categoryId=>$level2) {
+
+	$row['categoryId'] = $categoryId;
+	$row['categoryName'] = $level2['name'];
+			
+	foreach ($level2['attribute'] as $attribute => $level3) {
+		$row['attribute'] = $attribute;
+		$row['attributeName'] = $level3['name'];
+		
+			foreach ($level3['option'] as $option => $level4) {
+				$row['option'] = $option;
+				$row['optionName'] = $level4['name'];
+				array_push($result,$row);	
+			}
+								
+	}
+}
+*/
 print_r($result);

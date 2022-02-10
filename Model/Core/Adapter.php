@@ -33,6 +33,9 @@ class Adapter{
             $this->connect();
         }
         $result = $this->getConnect()->query($query);
+        if(!$result){
+            echo mysqli_error($this->getConnect());
+        }
         return $result;
  
     }
@@ -48,7 +51,9 @@ class Adapter{
 
     public function update($query){
         $result = $this->query($query);
-    
+        if(!$result){
+            echo mysqli_error($this->getConnect());
+        }
         return $result;
     }
 
@@ -65,10 +70,10 @@ class Adapter{
         return false;
     }
 
-     public function fetchAll($query){
+     public function fetchAll($query,$mode=MYSQLI_ASSOC){
         $result = $this->query($query);
         if($result->num_rows){
-            return $result->fetch_all(MYSQLI_ASSOC);
+            return $result->fetch_all($mode);
         }
         return false;
     }
@@ -76,6 +81,43 @@ class Adapter{
     public function currentDate(){
     	date_default_timezone_set("Asia/Kolkata");
 		Return date('Y-m-d H:i:s');
+    }
+
+    public function fetchPair($query)
+    {
+        
+        $result = $this->fetchAll($query,MYSQLI_NUM);
+        if(!$result){
+            return false;
+        }
+        $keys = array_column($result, '0');
+        $values = array_column($result, '1');
+        if (!$values)   {
+            $values = array_fill(0,count($keys),NULL);
+        }
+        $result = array_combine($keys, $values);
+        return $result;
+    }
+    public function pathAction()
+    {
+        $categoryName=$this->fetchPair('SELECT categoryId,name FROM Category');
+        $categoryPath=$this->fetchPair('SELECT categoryId,categoryPath FROM Category');
+        $categories=[];
+        foreach ($categoryPath as $key => $value) {
+                $explodeArray=explode('/', $categoryPath[$key]);
+                $tempArray = [];
+
+                foreach ($explodeArray as $keys => $value) {
+                    if(array_key_exists($value,$categoryName)){
+                        array_push($tempArray,$categoryName[$value]);
+                    }
+                }
+
+                $implodeArray = implode('/', $tempArray);
+                $categories[$key]= $implodeArray;
+        }
+        return $categories;
+
     }
 
 } 
