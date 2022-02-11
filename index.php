@@ -1,22 +1,19 @@
+<?php require_once('Model\Core\Adapter.php'); 
+   date_default_timezone_set("Asia/Kolkata");
+   $date = date('Y-m-d H:i:s');
 
-<?php require_once('Model\Core\Adapter.php');  ?>
+
+ ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-	<style type="text/css">
-		.cancel{
-			background-color: green;
-		}
-		.container{
-			text-align: center;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="./style.css">
+
 </head>
 <body>
-	<div class='container'>
+	<div class='index'>
 		<a href="index.php?c=category&a=grid"><button type="button" class="cancel">Category</button></a>
 		<a href="index.php?c=product&a=grid"><button type="button" class="cancel">Product</button></a>
 		<a href="index.php?c=customer&a=grid"><button type="button" class="cancel">Customer</button></a>
@@ -31,7 +28,7 @@ class Ccc
 {
 	public static function loadFile($path)
 	{
-		require_once($path);
+		require_once(getcwd().'/'.$path);
 	}
 	public static function loadClass($className)
 	{

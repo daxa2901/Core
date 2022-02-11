@@ -6,81 +6,46 @@
 ?>
 <html>
 <head>
-<style>
-form {
-    
-    width: 350px;
-    background-color:#f1f1f1;
-    margin-left: 500px;
-    margin-top: 20px;
-  
-  }
-
-  input[type=text],select,input[type=number],input[type=float],input[type=date]{
-    width: 300px;
-    padding: 12px 20px;
-    margin: 2px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  button {  
-
-    color: white;
-    padding: 14px 20px;
-    margin: 18px 15px;
-    border: none;
-    width: 85px;
-  }
-
-  button:hover {
-    opacity: 0.8;
-  }
-
-  .Registerbtn
-  {
-    background-color: green;
-  }
-
-  .cancelbtn
-  {
-    background-color: red;
-  }
-  .container
-  {
-    padding-left: 30px;
-
-  }
-
-</style>
+  <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
   <body>
    <form action='index.php?c=product&a=save' method='post'>
-        <div class='container'>
-          <label for='name'><b>Name</b></label><br>
-          <input type='text' placeholder='Enter Product Name' value="<?php echo $row['name'] ?>" name='product[name]' required><br>
-
-          <label for='price'><b>Price</b></label><br>
-          <input type='float' placeholder='Enter Product Price' value="<?php echo $row['price'] ?>" name='product[price]' required><br>
-
-          <label for='quantity'><b>Quantity</b></label><br>
-          <input type='number' placeholder='Enter Product Quantity' value="<?php echo $row['quantity']?>" name='product[quantity]' required><br>
-
-          <label for='Status'><b>Status</b></label><br>
-          <select id='status' name='product[status]'>
-    				  <?php if ($row['status'] == 1): ?>
-    				  	<option value='1'>InActive</option>
-    			      <option value='2'>Active</option>
-    				  <?php else:?>
-    				  	<option value='2'>Active</option>
-    				 		<option value='1'>InActive</option>
-              <?php endif ?>
-    				</select><br>
-            <input type='hidden' value="<?php echo $row['productId']?>" name='product[id]'required>
-
-            <button type='submit' class='Registerbtn' value='Update' name='update'>Update</button><a href = 'index.php?c=product&a=grid'><button type='button' class='cancelbtn' value='Cancel' name='cancel'>Cancel</button></a>
-        </div>  
+    <table border="1" width="100%" cellspacing="4">
+        <tr>
+          <input type="hidden" name="product[id]" value="<?php echo $row['productId'] ?>">
+          <td width="10%"> Name</td>
+          <td><input type="text" name="product[name]" value="<?php echo $row['name'] ?>"></td>
+        </tr>
+        <tr>
+          <td width="10%"> Price</td>
+          <td><input type="float" name="product[price]" value="<?php echo $row['price'] ?>"></td>
+        </tr>
+        <tr>
+          <td width="10%"> Price</td>
+          <td><input type="number" name="product[quantity]" value="<?php echo $row['quantity'] ?>"></td>
+        </tr>
+        <tr>
+          <td width="10%">Status</td>
+          <td>
+            <select name="product[status]">
+              <?php if ($row['status' ] == 1):?>
+                  <option value='1'>Active</option>
+                  <option value='2'>InActive</option>
+              <?php else: ?>
+                  <option value='2'>InActive</option>
+                  <option value='1'>Active</option>
+              <?php endif;?>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td width="25%">&nbsp;</td>
+          <td>
+            <button type="submit" name="submit" class="Registerbtn">Save </button>
+            <a href="index.php?c=product&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
+          </td>
+        </tr>    
+      </div>  
     </form>
   </body>
 </html>

@@ -23,9 +23,9 @@ class Controller_Admin{
 		{
 			if (!isset($_POST['admin'])) {
 				throw new Exception("Invalid Request.", 1);				
-			}
-						
+			}			
 			global $adapter;
+			global $date;
 			$row = $_POST['admin'];
 
 			if (array_key_exists('adminId', $row)) {
@@ -37,9 +37,10 @@ class Controller_Admin{
 					SET firstName='".$row['firstName']."',
 						lastName='".$row['lastName']."',
 						email='".$row['email']."',
+						password='".$row['password']."',
 						mobile='".$row['mobile']."',
 						status='".$row['status']."',
-						updatedDate='".$adapter->currentDate()."' 
+						updatedDate='".$date."' 
 					WHERE adminId='".$adminId."'";
 
 				$update = $adapter->update($query);
@@ -49,15 +50,21 @@ class Controller_Admin{
 				
 			}
 			else{
+				if($row['password'] !=$row['confirmPassword'])
+				{
+					throw new Exception("password must be same.", 1);
+
+				}
 				$query = "INSERT INTO admin(firstName,lastName,email,mobile,status,createdDate) 	
 				VALUES('".$row['firstName']."',
 						   '".$row['lastName']."',
 						   '".$row['email']."',
 						   '".$row['mobile']."',
 						   '".$row['status']."',
-						   '".$adapter->currentDate()."')";
+						   '".$date."')";
 				$adminId=$adapter->insert($query);
-				if(!$adminId){	
+				if(!$adminId)
+				{	
 						throw new Exception("System is unable to insert.", 1);
 				}
 				
@@ -72,9 +79,10 @@ class Controller_Admin{
 
 	public function deleteAction()
 	{
-		try {
-			
-			if (!isset($_GET['id'])) {
+		try 
+		{	
+			if (!isset($_GET['id'])) 
+			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			
@@ -106,7 +114,7 @@ class Controller_Admin{
 
 	public function errorAction()
 	{
-		echo "error";
+		echo "errorAction";
 	}
 }
 ?>

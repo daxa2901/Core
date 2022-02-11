@@ -7,54 +7,7 @@
       ?>
 <html>
 <head>
-<style>
-form {
-    
-    width: 650px;
-    background-color:#f1f1f1;
-    margin-left: 400px;
-    margin-top: 20px;
-  
-  }
-
-  input[type=text],select,input[type=number],input[type=tel],input[type=date],input[type=email]{
-    width: 300px;
-    padding: 12px 20px;
-    margin: 2px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  button {  
-
-    color: white;
-    padding: 14px 20px;
-    margin: 18px 15px;
-    border: none;
-    width: 85px;
-  }
-
-  button:hover {
-    opacity: 0.8;
-  }
-
-  .Registerbtn
-  {
-    background-color: green;
-  }
-
-  .cancelbtn
-  {
-    background-color: red;
-  }
-  .container
-  {
-    padding-left: 30px;
-
-  }
-
-</style>
+  <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body>
   <form action="index.php?c=admin&a=save" method="POST">
@@ -63,7 +16,6 @@ form {
       <td width="10%">First Name</td>
       <td><input type="text" name="admin[firstName]" value="<?php echo $row['firstName'] ?>"></td>
     </tr>
-    
     <tr>
       <td width="10%">Last Name</td>
       <td><input type="text" name="admin[lastName]" value="<?php echo $row['lastName'] ?>"></td>
@@ -71,6 +23,10 @@ form {
     <tr>
       <td width="10%">Email</td>
       <td><input type="text" name="admin[email]" value="<?php echo $row['email'] ?>"></td>
+    </tr>
+    <tr>
+      <td width="10%">Password</td>
+      <td><input type="Password" name="admin[password]" value="<?php echo $row['password'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Mobile</td>
