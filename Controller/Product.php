@@ -20,24 +20,29 @@ class Controller_Product{
 	public function saveAction()
 	{
 		try {
-			if (!isset($_POST['product'])) {
-			throw new Exception("Invalid Request.", 1);				
+			if (!isset($_POST['product'])) 
+			{
+				throw new Exception("Invalid Request.", 1);				
 			}
 			global $adapter;
+			global $date;
 			$row = $_POST['product'];
-			if (array_key_exists('id', $row)) {
-				if(!(int)$row['id']){
+			if (array_key_exists('id', $row)) 
+			{
+				if(!(int)$row['id'])
+				{
 					throw new Exception("Invalid Request.", 1);
 				}
 				$query = "UPDATE Product 
 					SET name='".$row['name']."',
 						price=".$row['price'].",
 						quantity='".$row['quantity']."',
-						updatedAt='".$adapter->currentDate()."',
+						updatedAt='".$date."',
 						status='".$row['status']."' 
 					Where productId='".$row['id']."'";	
 				$update = $adapter->update($query);
-				if(!$update){
+				if(!$update)
+				{
 					throw new Exception("System is unable to update.", 1);					
 				}
 			}
@@ -46,10 +51,11 @@ class Controller_Product{
 				VALUES('".$row['name']."',
 					   ".$row['price'].",
 					   '".$row['quantity']."',
-					   '".$adapter->currentDate()."',
+					   '".$date."',
 					   '".$row['status']."')";
 				$insert=$adapter->insert($query);
-				if(!$insert){
+				if(!$insert)
+				{
 					throw new Exception("System is unable to insert.", 1);					
 				}
 			}
@@ -62,24 +68,28 @@ class Controller_Product{
 
 	public function deleteAction()
 	{
-		try {
-			if (!isset($_GET['id'])) {
+		try 
+		{
+			if (!isset($_GET['id'])) 
+			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			global $adapter;
 			$id=$_GET['id'];
 			$query = "DELETE FROM Product WHERE productId = ".$id;
 			$delete = $adapter->delete($query); 
-			if(!$delete){
+			if(!$delete)
+			{
 				throw new Exception("System is unable to delete.", 1);							
 			}
 			
 			$this->redirect("index.php?c=product&a=grid");
-		} catch (Exception $e) {
+		} catch (Exception $e) 
+		{
 			$this->redirect("index.php?c=product&a=grid");
 		}
-			
 	}
+
 	public function redirect($url)
 	{
 		header('location:'.$url);	

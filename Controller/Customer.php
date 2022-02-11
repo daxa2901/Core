@@ -18,15 +18,19 @@ class Controller_Customer{
 	}
 	protected function saveCustomer()
 	{
-		if (!isset($_POST['customer'])) {
+		if (!isset($_POST['customer'])) 
+		{
 			throw new Exception("Invalid Request.", 1);				
 		}
 					
 		global $adapter;
+		global $date;
 		$row = $_POST['customer'];
 
-		if (array_key_exists('customerId', $row)) {
-			if(!(int)$row['customerId']){
+		if (array_key_exists('customerId', $row)) 
+		{
+			if(!(int)$row['customerId'])
+			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			$customerId = $row["customerId"];
@@ -36,11 +40,12 @@ class Controller_Customer{
 					email='".$row['email']."',
 					mobile='".$row['mobile']."',
 					status='".$row['status']."',
-					updatedDate='".$adapter->currentDate()."' 
+					updatedDate='".$date."' 
 				WHERE customerId='".$customerId."'";
 
 			$update = $adapter->update($query);
-			if(!$update){ 
+			if(!$update)
+			{ 
 				throw new Exception("System is unable to update.", 1);
 			}
 			
@@ -51,9 +56,10 @@ class Controller_Customer{
 					   '".$row['email']."',
 					   '".$row['mobile']."',
 					   '".$row['status']."',
-					   '".$adapter->currentDate()."')";
+					   '".$date."')";
 			$customerId=$adapter->insert($query);
-			if(!$customerId){	
+			if(!$customerId)
+			{	
 					throw new Exception("System is unable to insert.", 1);
 			}
 			
@@ -65,7 +71,8 @@ class Controller_Customer{
 
 	protected function saveAddress($customerId)
 	{
-		if (!isset($_POST['address'])) {
+		if (!isset($_POST['address'])) 
+		{
 			throw new Exception("Invalid Request.", 1);				
 		}
 		global $adapter;
@@ -74,16 +81,18 @@ class Controller_Customer{
 		$billing=2;	
 		$shipping=2;
 
-		if (array_key_exists('billing', $row) && $row['billing'] == 1) {
+		if (array_key_exists('billing', $row) && $row['billing'] == 1) 
+		{
 				$billing = 1;			
 		}
-		if (array_key_exists('shipping', $row) && $row['shipping'] == 1) {
+		if (array_key_exists('shipping', $row) && $row['shipping'] == 1) 
+		{
 				$shipping = 1;
 		}
 		$addressData = $adapter->fetchRow("SELECT * FROM address WHERE customerId = $customerId");
 		
-		if($addressData){
-			echo "hii";
+		if($addressData)
+		{
 			$query = "UPDATE address 
 				SET address='".$row['address']."',
 					city='".$row['city']."',
@@ -94,12 +103,14 @@ class Controller_Customer{
 					shipping=".$shipping."
 				WHERE customerId='".$customerId."'";
 			$update = $adapter->update($query);
-			if(!$update){ 
+			if(!$update)
+			{ 
 
 				throw new Exception("System is unable to update.", 1);
 			}
 		}
-		else{
+		else
+		{
 			$query = "INSERT INTO Address(customerId,address,city,state,country,postalCode,billing,shipping) 		
 				VALUES($customerId,
 					   '".$row['address']."',
@@ -110,7 +121,8 @@ class Controller_Customer{
 					   '".$billing."',
 					   '".$shipping."')";
 			$result=$adapter->insert($query);
-			if (!$result) {
+			if (!$result) 
+			{
 				throw new Exception("System is unable to insert", 1);
 			}
 		}	
@@ -134,7 +146,8 @@ class Controller_Customer{
 	{
 		try {
 			
-			if (!isset($_GET['id'])) {
+			if (!isset($_GET['id'])) 
+			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			

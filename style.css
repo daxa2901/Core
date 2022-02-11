@@ -1,0 +1,63 @@
+form {
+    
+    width: 650px;
+    margin-left: 400px;
+    margin-top: 20px;
+  
+  }
+  input[type=text],select,input[type=number],input[type=tel],input[type=date],input[type=email],input[type=float],input[type=Password]{
+    width: 300px;
+    padding: 12px 20px;
+    margin: 2px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+#info tr:nth-child(even){
+      background-color:#eeee;
+    }               
+
+    #info tr:nth-child(odd){
+      background-color:#3498db; 
+    }
+    
+    #info th, #info td{
+      padding:10;
+      text-align:center;
+    }
+    
+    #info a{
+      color:black;
+    }
+  button {
+    
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 85px;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  .Registerbtn
+  {
+    background-color: green;
+  }
+
+  .cancelbtn
+  {
+    background-color: red;
+  }
+.cancel
+{
+  background-color: green;
+}
+.index
+{
+  text-align: center;
+}

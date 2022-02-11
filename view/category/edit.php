@@ -10,59 +10,12 @@
                   * 
       FROM Category ";
       
-
+      $categoryPathPair = $adapter->fetchPair('SELECT categoryId,categoryPath FROM Category'); 
+      $categoryPath = $this->getCategoryToPath();
 ?>
-
 <html>
-<head>
-<style>
- 	form {
-    
-    width: 650px;
-    background-color:#f1f1f1;
-    margin-left: 400px;
-    margin-top: 20px;
-  
-  }
-
-  input[type=text],select,input[type=number],input[type=float],input[type=date]{
-    width: 300px;
-    padding: 12px 20px;
-    margin: 2px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  button {  
-
-    color: white;
-    padding: 14px 20px;
-    margin: 18px 15px;
-    border: none;
-    width: 85px;
-  }
-
-  button:hover {
-    opacity: 0.8;
-  }
-
-  .Registerbtn
-  {
-    background-color: green;
-  }
-
-  .cancelbtn
-  {
-    background-color: red;
-  }
-  .container
-  {
-    padding-left: 30px;
-
-  }
-
-</style>
+<head>  
+  <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
   <body>
     <form action="index.php?c=category&a=save" method="POST">
@@ -90,13 +43,15 @@
           <td width="10%">Parent Category</td>
           <td>
             <select name="category[parentId]">
+              
+              <option value=<?php echo $row['parentId'] ?>><?php echo $categoryPath[$row['categoryId']]?></option>
               <option value="NULL">Root</option>
-              <?php $pathResult = $adapter->pathAction();?>
-              <?php foreach ($pathResult as $key=>$value):?>
-                  <?php if (!strpos($value,$row['name'])): ?>
-                    <option value=<?php echo $key?>><?php echo $value;?></option>
-                  <?php endif ?>
-             <?php endforeach;?>
+              <?php foreach ($categoryPathPair as $key=>$value): ?>
+                  <?php if(strpos($value,$row['categoryPath']) !='false'):?>
+                    <option value=<?php echo $key ?>><?php echo $categoryPath[$key] ?></option>
+                  <?php endif; ?>
+              <?php endforeach;?>
+
             </select>
           </td>
         </tr>
