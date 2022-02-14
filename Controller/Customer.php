@@ -1,20 +1,59 @@
 <?php
-	require_once('Model\Core\Adapter.php');
+Ccc::loadClass('Controller_Core_Action');
 
-class Controller_Customer{
+class Controller_Customer extends Controller_Core_Action{
 	public function gridAction()
 	{
-		require_once('view/customer/grid.php');
+		global $adapter; 
+		$query = "SELECT 
+					* 
+				FROM Customer";
+		$query2 = "SELECT a.address 
+				FROM Customer c 
+					JOIN  
+				address a ON c.customerId = a.customerId";
+		$customer = $adapter-> fetchAll($query);
+		$address = $adapter-> fetchAll($query2);
+		$view = $this->getView();
+		
+		$view->setTemplate('view/customer/grid.php');
+		$view->addData('customer',$customer);
+		$view->addData('address',$address);
+		$view->toHtml();
+		//require_once('view/customer/grid.php');
 	}
 
 	public function addAction()
 	{
-		require_once('view/customer/add.php');
+		$view = $this->getView();
+		
+		$view->setTemplate('view/customer/add.php')->toHtml();
+		
+		//require_once('view/customer/add.php');
 	}
 
 	public function editAction()
 	{
-		require_once('view/customer/edit.php');
+		global $adapter;
+		$pid=$_GET['id'];
+		$query = "SELECT * FROM Customer  
+			   WHERE customerId=".$pid;
+		$customer = $adapter-> fetchRow($query);
+		$query2 = "SELECT 
+                  a.* 
+                FROM 
+              Address a 
+                JOIN 
+              Customer c ON a.customerId = c.customerId WHERE a.customerId =".$pid;  
+		$address = $adapter-> fetchRow($query2);
+		$view = $this->getView();
+		
+		$view->setTemplate('view/customer/edit.php');
+		$view->addData('customer',$customer);
+		$view->addData('address',$address);
+		$view->toHtml();
+		
+		//require_once('view/customer/edit.php');
 	}
 	protected function saveCustomer()
 	{

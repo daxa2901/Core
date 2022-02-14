@@ -1,17 +1,7 @@
 <?php
-  $path = "";
-      global $adapter;      
-      $pid=$_GET['id'];
-      $query = "SELECT 
-                  * 
-      FROM Category WHERE categoryId=".$pid;
-      $row = $adapter-> fetchRow($query);
-      $query2 = "SELECT 
-                  * 
-      FROM Category ";
-      
-      $categoryPathPair = $adapter->fetchPair('SELECT categoryId,categoryPath FROM Category'); 
-      $categoryPath = $this->getCategoryToPath();
+  $row = $this->getData('category');
+  $categoryPathPair = $this->getData('categoryPathPair');
+  $categoryPath = $this->getData('categoryPath');
 ?>
 <html>
 <head>  

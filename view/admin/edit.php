@@ -1,10 +1,6 @@
 <?php
-      global $adapter;
-      $pid=$_GET['id'];
-      $query = "SELECT * FROM Admin  
-            WHERE adminId=".$pid;
-      $row = $adapter-> fetchRow($query)
-      ?>
+  $row = $this->getData('admin');
+?>
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="./style.css">

@@ -1,7 +1,6 @@
 <?php
-	global $adapter;
-	$query = "SELECT * FROM Product";
-	$result = $adapter-> fetchAll($query);
+	$result = $this->getData('product');
+
 ?>
 <html>
 <head>

@@ -1,10 +1,5 @@
 <?php
-	global $adapter; 
-	$query = "SELECT 
-				* 
-			FROM Admin";
-	$result = $adapter-> fetchAll($query);
-
+	$result = $this->getData('admin');
 ?>
 <html>
 <head>

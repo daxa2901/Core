@@ -1,3 +1,7 @@
+<?php 
+  $result = $this->getData('getCategoryToPath');
+
+?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="./style.css">
@@ -23,7 +27,6 @@
       <td>
         <select name="category[parentId]">
           <option value="NULL">Root</option>
-            <?php $result=$this->getCategoryToPath(); ?>  
             <?php foreach ($result as $key=>$value):?>
                 <option value=<?php echo $key?>><?php echo $value; ?></option>
             <?php endforeach;?>

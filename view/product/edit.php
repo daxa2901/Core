@@ -1,8 +1,6 @@
 <?php
-      global $adapter;
-      $pid=$_GET['id'];
-      $query = "SELECT * FROM Product WHERE productId=".$pid;
-      $row = $adapter-> fetchRow($query);
+    $row = $this->getData('product');
+      
 ?>
 <html>
 <head>

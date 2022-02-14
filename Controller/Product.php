@@ -1,20 +1,39 @@
 <?php
-	require_once('Model\Core\Adapter.php');
+Ccc::loadClass('Controller_Core_Action');
 
-class Controller_Product{
+class Controller_Product extends Controller_Core_Action{
 	public function gridAction()
 	{
-		require_once('view/product/grid.php');
+		global $adapter;
+		$query = "SELECT * FROM Product";
+		$product = $adapter-> fetchAll($query);
+		$view = $this->getView();
+		$view->setTemplate('view/product/grid.php');
+		$view->addData('product',$product);
+		$view->toHtml();
+		//require_once('view/product/grid.php');
+		
 	}
 
 	public function addAction()
 	{
-		require_once('view/product/add.php');
+		$view = $this->getView();
+		$view->setTemplate('view/product/add.php')->toHtml();
+		//require_once('view/product/add.php');
 	}
 
 	public function editAction()
 	{
-		require_once('view/product/edit.php');
+		global $adapter;
+      	$pid=$_GET['id'];
+     	$query = "SELECT * FROM Product WHERE productId=".$pid;
+     	$product = $adapter-> fetchRow($query);
+     	$view = $this->getView();
+		$view->setTemplate('view/product/edit.php');
+		$view->addData('product',$product);
+		$view->toHtml();
+		
+		//require_once('view/product/edit.php');
 	}
 
 	public function saveAction()
