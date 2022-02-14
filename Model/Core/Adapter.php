@@ -111,14 +111,13 @@ class Adapter{
     public function fetchOne($query)
     {
         $result = $this->fetchAll($query,MYSQLI_NUM);
+    
         if(!$result)
         {
             return false;
         }
-        $keys = array_column($result, '0');
-
-        $values = array_column($result, '1');
-        print_r($values);
+        $key = $result['0']['0'];
+        print_r($key);
         exit;
     }
 

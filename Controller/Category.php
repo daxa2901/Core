@@ -1,19 +1,53 @@
 <?php
+Ccc::loadClass('Controller_Core_Action');
 
-class Controller_Category{
+class Controller_Category extends Controller_Core_Action {
 	public function gridAction()
 	{
-		require_once('view/category/grid.php');
+		global $adapter; 
+		$query = "SELECT 
+					* 
+				FROM Category order by categoryPath";
+		$result = $adapter->fetchAll($query);	
+		$view = $this->getView();
+		$view->setTemplate('view/category/grid.php');
+		$view->addData('category',$result);
+		$categoryPath = $this->getCategoryToPath();
+	    $view->addData('getCategoryToPath',$categoryPath);
+ 		$view->toHtml();
+		//require_once('view/category/grid.php');
 	}
 
 	public function addAction()
 	{
-		require_once('view/category/add.php');
+		$view = $this->getView();
+		$view->setTemplate('view/category/add.php');
+		$categoryPath = $this->getCategoryToPath();
+	    $view->addData('getCategoryToPath',$categoryPath);
+ 		$view->toHtml();
+		//require_once('view/category/add.php');
 	}
 
 	public function editAction()
 	{
- 		require_once('view/category/edit.php');
+		global $adapter;      
+	    $pid=$_GET['id'];
+	    $query = "SELECT 
+	                  * 
+	    FROM Category WHERE categoryId=".$pid;
+	    $row = $adapter-> fetchRow($query);
+	 	$view = $this->getView();
+		
+		$view->setTemplate('view/category/edit.php');
+		$view->addData('category',$row);
+		
+	    $categoryPathPair = $adapter->fetchPair('SELECT categoryId,categoryPath FROM Category');
+	    $view->addData('categoryPathPair',$categoryPathPair);
+ 
+	    $categoryPath = $this->getCategoryToPath();
+	    $view->addData('categoryPath',$categoryPath);
+ 		$view->toHtml();
+ 		//require_once('view/category/edit.php');
 	}
 
 	public function saveAction()
@@ -72,14 +106,14 @@ class Controller_Category{
 					throw new Exception("System is unable to insert.", 1);			
 				}
 
-				$row=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId=".$insert);
-				if ($row['parentId'] == NULL) 
+				$parent=$adapter->fetchOne("SELECT parentId FROM Category WHERE categoryId=".$insert);
+				if ($parent == NULL) 
 				{
 					$path = $insert;
 				}
 				else
 				{
-					$result=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
+					$result=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$parent);
 					$path = $result['categoryPath'].'/'.$insert;
 
 				}
@@ -166,14 +200,6 @@ class Controller_Category{
 		}
 			
 	}
-
-	public function redirect($url)
-	{
-	
-		header('location:'.$url);	
-		exit();			
-	}
-
 
 	public function errorAction()
 	{

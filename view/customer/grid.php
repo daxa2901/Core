@@ -1,15 +1,6 @@
 <?php
-	global $adapter; 
-	$query = "SELECT 
-				* 
-			FROM Customer";
-	$query2 = "SELECT a.address 
-			FROM Customer c 
-				JOIN  
-			address a ON c.customerId = a.customerId";
-	$result = $adapter-> fetchAll($query);
-	$address = $adapter-> fetchAll($query2);
-
+	  $result = $this->getData('customer');
+	  $address = $this->getData('address');
 ?>
 <html>
 <head>

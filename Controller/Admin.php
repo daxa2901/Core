@@ -1,20 +1,41 @@
 <?php
-	require_once('Model\Core\Adapter.php');
+Ccc::loadClass('Controller_Core_Action');
 
-class Controller_Admin{
+class Controller_Admin extends Controller_Core_Action{
 	public function gridAction()
 	{
-		require_once('view/admin/grid.php');
+		global $adapter; 
+		$query = "SELECT 
+					* 
+				FROM Admin";
+		$admin = $adapter-> fetchAll($query);
+		$view = $this->getView();
+		$view->setTemplate('view/admin/grid.php');
+		$view->addData('admin',$admin);
+		$view->toHtml();
+		//require_once('view/admin/grid.php');
 	}
 
 	public function addAction()
 	{
-		require_once('view/admin/add.php');
+		$view = $this->getView();
+		$view->setTemplate('view/admin/add.php')->toHtml();
+		
+		//require_once('view/admin/add.php');
 	}
 
 	public function editAction()
 	{
-		require_once('view/admin/edit.php');
+		global $adapter;
+      	$pid=$_GET['id'];
+      	$query = "SELECT * FROM Admin  
+            WHERE adminId=".$pid;
+      	$admin = $adapter-> fetchRow($query);
+      	$view = $this->getView();
+		$view->setTemplate('view/admin/edit.php');
+		$view->addData('admin',$admin);
+		$view->toHtml();
+		//require_once('view/admin/edit.php');
 	}
 	
 	public function saveAction()
@@ -55,10 +76,11 @@ class Controller_Admin{
 					throw new Exception("password must be same.", 1);
 
 				}
-				$query = "INSERT INTO admin(firstName,lastName,email,mobile,status,createdDate) 	
+				$query = "INSERT INTO admin(firstName,lastName,email,password,mobile,status,createdDate) 	
 				VALUES('".$row['firstName']."',
 						   '".$row['lastName']."',
 						   '".$row['email']."',
+						   '".$row['password']."',
 						   '".$row['mobile']."',
 						   '".$row['status']."',
 						   '".$date."')";

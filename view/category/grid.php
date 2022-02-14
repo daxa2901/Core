@@ -1,11 +1,6 @@
 <?php
-	$path = "";
-	global $adapter; 
-	$query = "SELECT 
-				* 
-			FROM Category order by categoryPath";
-	$result = $adapter->fetchAll($query);	
-
+	$result = $this->getData('category');
+	$getCategoryToPath = $this->getData('getCategoryToPath');
 		
 ?>
 <html>
@@ -36,9 +31,7 @@
 					<?php foreach ($result as $row):?>
 						<tr>
 				    		<td><?php echo $row["categoryId"] ?></td>
-				    		<td><?php $result = $this->getCategoryToPath();
-				    				echo $result[$row['categoryId']];
-					    		?>
+				    		<td><?php echo $getCategoryToPath[$row['categoryId']];?>
 				    		</td>
 				    		<td><?php echo $row["createdAt"] ?></td>
 				    		<td><?php echo $row["updatedAt"] ?></td>

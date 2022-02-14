@@ -1,16 +1,7 @@
 <?php
-      global $adapter;
-      $pid=$_GET['id'];
-      $query = "SELECT * FROM Customer  
-            WHERE customerId=".$pid;
-      $row = $adapter-> fetchRow($query);
-      $query2 = "SELECT 
-                  a.* 
-                FROM 
-              Address a 
-                JOIN 
-              Customer c ON a.customerId = c.customerId WHERE a.customerId =".$pid;  
-      $row2 = $adapter-> fetchRow($query2);     
+    $row = $this->getData('customer');
+    $row2 = $this->getData('address');
+
 ?>
 <html>
 <head>
