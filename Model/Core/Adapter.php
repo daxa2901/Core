@@ -117,10 +117,8 @@ class Adapter{
             return false;
         }
         $key = $result['0']['0'];
-        print_r($key);
-        exit;
+        return $key;
     }
-
 
 } 
 #echo "<pre>";

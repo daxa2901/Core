@@ -53,7 +53,7 @@ class Controller_Category extends Controller_Core_Action {
 	public function saveAction()
 	{
 		try 
-		{
+		{	
 			if (!isset($_POST['category'])) 
 			{
 				throw new Exception("Invalid Request.", 1);				
@@ -139,11 +139,11 @@ class Controller_Category extends Controller_Core_Action {
 		$category=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$categoryId);
 		$categoryPath=$adapter->fetchAll("SELECT * FROM Category WHERE categoryPath LIKE '".$category['categoryPath'].'/%'."' ORDER BY categoryPath");
 		if($parentId == 'NULL')
-		{
+		{	
 			$query = "UPDATE Category 
-			SET parentId=".null.", 
-			categoryPath= '".$categoryId."' 
-			WHERE categoryId=".$categoryId;
+			SET parentId=null, 
+			categoryPath= $categoryId
+			WHERE categoryId=$categoryId";
 		}
 		else
 		{
@@ -156,6 +156,8 @@ class Controller_Category extends Controller_Core_Action {
 		$update = $adapter->update($query);
 		if(!$update)
 		{
+			echo "error";
+			exit;
 			throw new Exception("System is unable to update.", 1);
 		}	
 		foreach ($categoryPath as $row) 
