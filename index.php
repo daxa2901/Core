@@ -55,8 +55,8 @@ class Ccc
 		$this->init();
 	}
 }
-$c = new Ccc();
-$c->getFront()->init();
+$ccc = new Ccc();
+$ccc->getFront()->init();
 //Ccc::init();
 
 ?>

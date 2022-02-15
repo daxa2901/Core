@@ -40,6 +40,11 @@ class Adapter{
             $this->connect();
         }
         $result = $this->getConnect()->query($query);
+        if(!$result)
+        {
+            echo mysqli_error($this->getConnect());
+            exit;
+        }
         return $result; 
     }
 

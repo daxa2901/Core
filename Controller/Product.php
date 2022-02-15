@@ -25,7 +25,8 @@ class Controller_Product extends Controller_Core_Action{
 	public function editAction()
 	{
 		global $adapter;
-      	$pid=$_GET['id'];
+		$request = $this->getRequest();
+		$pid=$request->getRequest('id');
      	$query = "SELECT * FROM Product WHERE productId=".$pid;
      	$product = $adapter-> fetchRow($query);
      	$view = $this->getView();
@@ -39,13 +40,18 @@ class Controller_Product extends Controller_Core_Action{
 	public function saveAction()
 	{
 		try {
-			if (!isset($_POST['product'])) 
+			$request = $this->getRequest();
+			if(!$request->isPost())
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			if (!$request->getPost('product')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
 			global $adapter;
 			global $date;
-			$row = $_POST['product'];
+			$row = $request->getPost('product');
 			if (array_key_exists('id', $row)) 
 			{
 				if(!(int)$row['id'])
@@ -89,12 +95,13 @@ class Controller_Product extends Controller_Core_Action{
 	{
 		try 
 		{
-			if (!isset($_GET['id'])) 
+			$request = $this->getRequest();
+			if (!$request->getRequest('id')) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			global $adapter;
-			$id=$_GET['id'];
+			$id=$request->getRequest('id');
 			$query = "DELETE FROM Product WHERE productId = ".$id;
 			$delete = $adapter->delete($query); 
 			if(!$delete)
@@ -107,12 +114,6 @@ class Controller_Product extends Controller_Core_Action{
 		{
 			$this->redirect("index.php?c=product&a=grid");
 		}
-	}
-
-	public function redirect($url)
-	{
-		header('location:'.$url);	
-		exit();			
 	}
 
 	public function errorAction()

@@ -1,7 +1,5 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Controller_Core_Front');
-
 class Controller_Category extends Controller_Core_Action {
 
 	public function gridAction()
@@ -33,8 +31,8 @@ class Controller_Category extends Controller_Core_Action {
 
 	public function editAction()
 	{
-		global $adapter ,$c;
-		$request=$c->getFront()->getRequest();
+		global $adapter;
+		$request=$this->getRequest();
 	    $pid=$request->getRequest('id');
 	    $query = "SELECT 
 	                  * 
@@ -58,8 +56,7 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{	
-			global $c;
-			$request=$c->getFront()->getRequest();
+			$request=$this->getRequest();
 
 			if(!$request->isPost())
 			{
@@ -196,9 +193,8 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{
-			global $adapter ,$c;
-			$request=$c->getFront()->getRequest();
-		    // $pid=$request->getRequest('id');
+			global $adapter;
+			$request=$this->getRequest();
 			if (!($request->getRequest('id'))) 
 			{
 				throw new Exception("Invalid Request.", 1);
@@ -223,12 +219,7 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		echo "error";
 	}
-	public function taskAction()
-	{	
-		global $adapter;
-		$result=$adapter->fetchOne('SELECT categoryPath FROM Category where categoryId = 149');
-	}
-
+	
 	public function getCategoryToPath()
     {
     	global $adapter;
