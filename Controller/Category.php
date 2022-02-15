@@ -1,9 +1,10 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-
 class Controller_Category extends Controller_Core_Action {
+
 	public function gridAction()
 	{
+
 		global $adapter; 
 		$query = "SELECT 
 					* 
@@ -14,7 +15,7 @@ class Controller_Category extends Controller_Core_Action {
 		$view->addData('category',$result);
 		$categoryPath = $this->getCategoryToPath();
 	    $view->addData('getCategoryToPath',$categoryPath);
- 		$view->toHtml();
+	    $view->toHtml();
 		//require_once('view/category/grid.php');
 	}
 
@@ -30,8 +31,9 @@ class Controller_Category extends Controller_Core_Action {
 
 	public function editAction()
 	{
-		global $adapter;      
-	    $pid=$_GET['id'];
+		global $adapter;
+		$request=$this->getRequest();
+	    $pid=$request->getRequest('id');
 	    $query = "SELECT 
 	                  * 
 	    FROM Category WHERE categoryId=".$pid;
@@ -54,13 +56,21 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{	
-			if (!isset($_POST['category'])) 
+			$request=$this->getRequest();
+
+			if(!$request->isPost())
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			// print_r($request);
+
+			if (!$request->getPost('category')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
 			global $adapter;
 			global $date;
-			$row = $_POST['category'];
+			$row = $request->getPost('category');
 			$path = '';
 
 			if (array_key_exists('id', $row)) 
@@ -183,12 +193,14 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{
-			if (!isset($_GET['id'])) 
+			global $adapter;
+			$request=$this->getRequest();
+			if (!($request->getRequest('id'))) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			global $adapter;
-			$id=$_GET['id'];
+			$id=$request->getRequest('id');
 			$query = "DELETE FROM Category WHERE categoryId = ".$id;
 			$delete = $adapter->delete($query); 
 			if(!$delete)
@@ -207,12 +219,7 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		echo "error";
 	}
-	public function taskAction()
-	{	
-		global $adapter;
-		$result=$adapter->fetchOne('SELECT categoryPath FROM Category where categoryId = 149');
-	}
-
+	
 	public function getCategoryToPath()
     {
     	global $adapter;

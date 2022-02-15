@@ -11,20 +11,16 @@ class Model_Core_Request{
 
 	public function getPost($key=null,$value=null)
 	{
+		if(!$this->isPost())
+		{
+			return null;
+		}
 		if(!$key)
 		{
-			if(!$value)
-			{
-				return $_POST;
-			}
-			return $value;
+			return $_POST;
 		}
 		if(!array_key_exists($key, $_POST))
 		{
-			if(!$value)
-			{
-				return null;
-			}
 			return $value;
 		}
 		return $_POST[$key];
@@ -34,18 +30,10 @@ class Model_Core_Request{
 	{
 		if(!$key)
 		{
-			if(!$value)
-			{
-				return $_REQUEST;
-			}
-			return $value;
+			return $_REQUEST;
 		}
 		if(!array_key_exists($key, $_REQUEST))
 		{
-			if(!$value)
-			{
-				return null;
-			}
 			return $value;
 		}
 		return $_REQUEST[$key];
@@ -53,12 +41,12 @@ class Model_Core_Request{
 	
 	public function getActionName()
 	{
-		return (isset($_GET['a'])) ? $_GET['a'].'Action' : 'errorAction';
+		return $this->getRequest('a','error').'Action';
 	}
 
 	public function getControllerName()
 	{
-		return (isset($_GET['c'])) ? $_GET['c'] : 'Customer';
+		return $this->getRequest('c','Customer');
 	}
 
 }

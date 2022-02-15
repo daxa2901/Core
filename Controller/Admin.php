@@ -1,14 +1,16 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-
+Ccc::loadClass('Model_Admin');
 class Controller_Admin extends Controller_Core_Action{
+	
 	public function gridAction()
-	{
+	{	
+		$adminTable = new Model_Admin();
 		global $adapter; 
 		$query = "SELECT 
 					* 
 				FROM Admin";
-		$admin = $adapter-> fetchAll($query);
+		$admin = $adminTable-> fetchAll($query);
 		$view = $this->getView();
 		$view->setTemplate('view/admin/grid.php');
 		$view->addData('admin',$admin);
@@ -27,10 +29,12 @@ class Controller_Admin extends Controller_Core_Action{
 	public function editAction()
 	{
 		global $adapter;
-      	$pid=$_GET['id'];
+		$adminTable = new Model_Admin();
+		$request=$this->getRequest();
+      	$pid=$request->getRequest('id');
       	$query = "SELECT * FROM Admin  
             WHERE adminId=".$pid;
-      	$admin = $adapter-> fetchRow($query);
+      	$admin = $adminTable-> fetchRow($query);
       	$view = $this->getView();
 		$view->setTemplate('view/admin/edit.php');
 		$view->addData('admin',$admin);
@@ -42,12 +46,17 @@ class Controller_Admin extends Controller_Core_Action{
 	{
 		try
 		{
-			if (!isset($_POST['admin'])) {
+			$request = $this->getRequest();
+			if(!$request->isPost())
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			if (!$request->getPost('admin')) {
 				throw new Exception("Invalid Request.", 1);				
 			}			
 			global $adapter;
 			global $date;
-			$row = $_POST['admin'];
+			$row = $request->getPost('admin');
 
 			if (array_key_exists('adminId', $row)) {
 				if(!(int)$row['adminId']){
@@ -102,16 +111,17 @@ class Controller_Admin extends Controller_Core_Action{
 	public function deleteAction()
 	{
 		try 
-		{	
-			if (!isset($_GET['id'])) 
+		{	$adminTable = new Model_Admin();
+			global $adapter;
+			$request = $this->getRequest();
+			if (!$request->getRequest('id')) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			
-			global $adapter;
-			$id=$_GET['id'];
+			$id=$request->getRequest('id');
 			$query = "DELETE FROM Admin WHERE adminId = ".$id;
-			$delete = $adapter->delete($query); 
+			$delete = $adminTable->delete(['adminId'=>$id]); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete record.", 1);
@@ -120,18 +130,11 @@ class Controller_Admin extends Controller_Core_Action{
 			$this->redirect('index.php?c=admin&a=grid');	
 				
 		} catch (Exception $e) {
-			$this->redirect('admin.php?a=gridAction');	
+			$this->redirect('index.php?c=admin&a=grid');	
 			//echo $e->getMessage();
 		}
 
 		
-	}
-
-	public function redirect($url)
-	{
-	
-		header('location:'.$url);	
-		exit();			
 	}
 
 	public function errorAction()

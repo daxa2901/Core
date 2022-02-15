@@ -35,8 +35,9 @@ class Controller_Customer extends Controller_Core_Action{
 	public function editAction()
 	{
 		global $adapter;
-		$pid=$_GET['id'];
-		$query = "SELECT * FROM Customer  
+		$request=$this->getRequest();
+    $pid=$request->getRequest('id');
+ 		$query = "SELECT * FROM Customer  
 			   WHERE customerId=".$pid;
 		$customer = $adapter-> fetchRow($query);
 		$query2 = "SELECT 
@@ -57,14 +58,19 @@ class Controller_Customer extends Controller_Core_Action{
 	}
 	protected function saveCustomer()
 	{
-		if (!isset($_POST['customer'])) 
+		$request=$this->getRequest();
+    if(!$request->isPost())
+		{
+			throw new Exception("Invalid Request.", 1);				
+		} 	
+		if (!$request->getPost('customer')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
 		}
 					
 		global $adapter;
 		global $date;
-		$row = $_POST['customer'];
+		$row = $request->getPost('customer');
 
 		if (array_key_exists('customerId', $row)) 
 		{
@@ -110,12 +116,17 @@ class Controller_Customer extends Controller_Core_Action{
 
 	protected function saveAddress($customerId)
 	{
-		if (!isset($_POST['address'])) 
+		$request = $this->getRequest();
+		if(!$request->isPost())
+		{
+			throw new Exception("Invalid Request.", 1);				
+		}
+		if (!$request->getPost('address')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
 		}
 		global $adapter;
-		$row = $_POST['address'];
+		$row = $request->getPost('address');
 	
 		$billing=2;	
 		$shipping=2;
@@ -184,14 +195,14 @@ class Controller_Customer extends Controller_Core_Action{
 	public function deleteAction()
 	{
 		try {
-			
-			if (!isset($_GET['id'])) 
+			$request = $this->getRequest();
+			if (!$request->getRequest('id')) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			
 			global $adapter;
-			$id=$_GET['id'];
+			$id=$request->getRequest('id');
 			$query = "DELETE FROM Customer WHERE customerId = ".$id;
 			$delete = $adapter->delete($query); 
 			if(!$delete)
@@ -202,18 +213,9 @@ class Controller_Customer extends Controller_Core_Action{
 			$this->redirect('index.php?c=customer&a=grid');	
 				
 		} catch (Exception $e) {
-			$this->redirect('Customer.php?a=gridAction');	
+			$this->redirect('index.php?c=customer&a=grid');	
 			//echo $e->getMessage();
 		}
-
-		
-	}
-
-	public function redirect($url)
-	{
-	
-		header('location:'.$url);	
-		exit();			
 	}
 
 	public function errorAction()
