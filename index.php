@@ -1,4 +1,5 @@
 <?php require_once('Model\Core\Adapter.php'); 
+	Ccc::loadClass('Controller_Core_Front');
    date_default_timezone_set("Asia/Kolkata");
    $date = date('Y-m-d H:i:s');
  ?>
@@ -28,7 +29,6 @@ class Ccc
 
 	public function getFront()
 	{
-		Ccc::loadClass('Controller_Core_Front');
 		if(!$this->front)
 		{
 			$front = new Controller_Core_Front();
