@@ -7,8 +7,7 @@ class Controller_Core_Action{
 	
 	public function getRequest()
 	{
-		global $ccc;
-		return $ccc->getFront()->getRequest();
+		return Ccc::getFront()->getRequest();
 	}
 
 	public function getAdapter()

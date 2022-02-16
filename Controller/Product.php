@@ -4,42 +4,39 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Product extends Controller_Core_Action{
 	public function gridAction()
 	{
-		global $adapter;
+		$productTable = Ccc::getModel('Product');
 		$query = "SELECT * FROM Product";
-		$product = $adapter-> fetchAll($query);
+		$product = $productTable-> fetchAll($query);
 		$view = $this->getView();
 		$view->setTemplate('view/product/grid.php');
 		$view->addData('product',$product);
-		$view->toHtml();
-		//require_once('view/product/grid.php');
-		
+		$view->toHtml();		
 	}
 
 	public function addAction()
 	{
 		$view = $this->getView();
 		$view->setTemplate('view/product/add.php')->toHtml();
-		//require_once('view/product/add.php');
 	}
 
 	public function editAction()
 	{
 		global $adapter;
+		$productTable = Ccc::getModel('Product');
 		$request = $this->getRequest();
 		$pid=$request->getRequest('id');
      	$query = "SELECT * FROM Product WHERE productId=".$pid;
-     	$product = $adapter-> fetchRow($query);
+     	$product = $productTable->fetchRow($query);
      	$view = $this->getView();
 		$view->setTemplate('view/product/edit.php');
 		$view->addData('product',$product);
 		$view->toHtml();
-		
-		//require_once('view/product/edit.php');
 	}
 
 	public function saveAction()
 	{
-		try {
+		try 
+		{
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -49,36 +46,28 @@ class Controller_Product extends Controller_Core_Action{
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			global $adapter;
 			global $date;
+			$productTable = Ccc::getModel('Product');
 			$row = $request->getPost('product');
+
 			if (array_key_exists('id', $row)) 
 			{
 				if(!(int)$row['id'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$query = "UPDATE Product 
-					SET name='".$row['name']."',
-						price=".$row['price'].",
-						quantity='".$row['quantity']."',
-						updatedAt='".$date."',
-						status='".$row['status']."' 
-					Where productId='".$row['id']."'";	
-				$update = $adapter->update($query);
+				$row['updatedAt'] = $date;
+				$id = $row['id'];
+				unset($row['id']);
+				$update = $productTable->update($row,$id);
 				if(!$update)
 				{
 					throw new Exception("System is unable to update.", 1);					
 				}
 			}
 			else{
-				$query = "INSERT INTO Product(name,price,quantity,createdAt,status) 
-				VALUES('".$row['name']."',
-					   ".$row['price'].",
-					   '".$row['quantity']."',
-					   '".$date."',
-					   '".$row['status']."')";
-				$insert=$adapter->insert($query);
+				$row['createdAt'] = $date;
+				$insert = $productTable->insert($row);
 				if(!$insert)
 				{
 					throw new Exception("System is unable to insert.", 1);					
@@ -100,10 +89,9 @@ class Controller_Product extends Controller_Core_Action{
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			global $adapter;
+			$productTable = Ccc::getModel('Product');
 			$id=$request->getRequest('id');
-			$query = "DELETE FROM Product WHERE productId = ".$id;
-			$delete = $adapter->delete($query); 
+			$delete = $productTable->delete($id); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete.", 1);							

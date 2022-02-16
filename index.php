@@ -1,7 +1,7 @@
-<?php require_once('Model\Core\Adapter.php'); 
-	Ccc::loadClass('Controller_Core_Front');
-   date_default_timezone_set("Asia/Kolkata");
-   $date = date('Y-m-d H:i:s');
+<?php Ccc::loadClass('Model_Core_Adapter'); 
+$adapter = new Model_Core_Adapter();
+date_default_timezone_set("Asia/Kolkata");
+$date = date('Y-m-d H:i:s');
  ?>
 <!DOCTYPE html>
 <html>
@@ -25,38 +25,46 @@
 
 class Ccc
 {
-	public $front = null;
+	public static $front = null;
 
-	public function getFront()
+	public static function getFront()
 	{
-		if(!$this->front)
+		if(!self::$front)
 		{
+			Ccc::loadClass('Controller_Core_Front');
 			$front = new Controller_Core_Front();
-			$this->setFront($front);
+			self::setFront($front);
 		}
-		return $this->front;
+		return self::$front;
 	}
-	public function setFront($front)
+
+	public static function setFront($front)
 	{
-		$this->front=$front;
-		return $this;
+		self::$front=$front;
 	}
+
 	public static function loadFile($path)
 	{
 		require_once(getcwd().'/'.$path);
 	}
+
 	public static function loadClass($className)
 	{
 		$path = str_replace("_", "/", $className).'.php';
 		Ccc::loadFile($path);
 	}
+
+	public function getModel($className)
+	{
+		$className = 'Model_'.$className;
+		self::loadClass($className);
+		return new $className;
+	}
 	public static function init()
 	{
-		$this->init();
+		self::getFront()->init();
 	}
 }
-$ccc = new Ccc();
-$ccc->getFront()->init();
-//Ccc::init();
+Ccc::init();
 
 ?>

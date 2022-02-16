@@ -16,7 +16,6 @@ class Controller_Category extends Controller_Core_Action {
 		$categoryPath = $this->getCategoryToPath();
 	    $view->addData('getCategoryToPath',$categoryPath);
 	    $view->toHtml();
-		//require_once('view/category/grid.php');
 	}
 
 	public function addAction()
@@ -26,7 +25,6 @@ class Controller_Category extends Controller_Core_Action {
 		$categoryPath = $this->getCategoryToPath();
 	    $view->addData('getCategoryToPath',$categoryPath);
  		$view->toHtml();
-		//require_once('view/category/add.php');
 	}
 
 	public function editAction()

@@ -27,29 +27,63 @@ class Model_Core_Table{
 
 	public function insert(array $data)
 	{
-		
+		$temp = [];
+		foreach ($data as $col => $value) 
+		{
+			$temp[$col] = "'".$value."'";	
+		}
+		$query = "INSERT INTO ".$this->table." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
+		return $this->getAdapter()->insert($query);
 	}
 
-	public function update($id)
+	public function update($data,$id)
 	{
+		$whereClause = null;
+		$fields = null;		
+		if(!is_array($id))
+		{
+			$whereClause = $this->primaryKey ." = '".$id."'";
+		}
+		else
+		{
+			foreach ($id as $key => $value) 
+			{
+				$whereClause = $whereClause . $key . " = '".$value."' and ";
+			}
+			
+		}
+		foreach ($data as $col => $value) 
+		{
+			
+			$fields = $fields . $col . " = '".$value."',";
+		}
+		$whereClause = rtrim($whereClause,' and ');
+		$fields = rtrim($fields,',');
+		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
+		echo $this->primaryKey;
+		echo $query;
+		return $this->getAdapter()->update($query);
+
 		
 	}
 
 	public function delete($id)
 	{
+		$whereClause = null;
 		if(!is_array($id))
 		{
-			$query = 'DELETE FROM '.$this->table.' WHERE '.$this->primaryKey.' = '.$id;
+			$whereClause = $this->primaryKey. " = '".$id."'";
+
 		}
 		else
 		{
-			$query = 'DELETE FROM '.$this->table.' WHERE ';
 			foreach ($id as $key => $value) 
 			{
-				$query = $query.$key.'='.$value;
-			}	
+				$whereClause = $whereClause . $key . " = '".$value."' and ";
+			}
+			$whereClause = rtrim($whereClause,' and ');
 		}
-		
+		$query = 'DELETE FROM '.$this->table.' WHERE '.$whereClause;
 		return $this->getAdapter()->delete($query);	
 
 	}
