@@ -5,8 +5,7 @@ class Controller_Admin extends Controller_Core_Action{
 	
 	public function gridAction()
 	{	
-		$adminTable = new Model_Admin();
-		global $adapter; 
+		$adminTable = Ccc::getModel('Admin');
 		$query = "SELECT 
 					* 
 				FROM Admin";
@@ -15,21 +14,17 @@ class Controller_Admin extends Controller_Core_Action{
 		$view->setTemplate('view/admin/grid.php');
 		$view->addData('admin',$admin);
 		$view->toHtml();
-		//require_once('view/admin/grid.php');
 	}
 
 	public function addAction()
 	{
 		$view = $this->getView();
 		$view->setTemplate('view/admin/add.php')->toHtml();
-		
-		//require_once('view/admin/add.php');
 	}
 
 	public function editAction()
 	{
-		global $adapter;
-		$adminTable = new Model_Admin();
+		$adminTable = Ccc::getModel('Admin');
 		$request=$this->getRequest();
       	$pid=$request->getRequest('id');
       	$query = "SELECT * FROM Admin  
@@ -39,7 +34,6 @@ class Controller_Admin extends Controller_Core_Action{
 		$view->setTemplate('view/admin/edit.php');
 		$view->addData('admin',$admin);
 		$view->toHtml();
-		//require_once('view/admin/edit.php');
 	}
 	
 	public function saveAction()
@@ -54,49 +48,37 @@ class Controller_Admin extends Controller_Core_Action{
 			if (!$request->getPost('admin')) {
 				throw new Exception("Invalid Request.", 1);				
 			}			
-			global $adapter;
+
 			global $date;
 			$row = $request->getPost('admin');
-
+			$adminTable = Ccc::getModel('Admin');
 			if (array_key_exists('adminId', $row)) {
-				if(!(int)$row['adminId']){
+				if(!(int)$row['adminId'])
+				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$adminId = $row["adminId"];
-				$query = "UPDATE Admin 
-					SET firstName='".$row['firstName']."',
-						lastName='".$row['lastName']."',
-						email='".$row['email']."',
-						password='".$row['password']."',
-						mobile='".$row['mobile']."',
-						status='".$row['status']."',
-						updatedDate='".$date."' 
-					WHERE adminId='".$adminId."'";
-
-				$update = $adapter->update($query);
+				$row['updatedDate'] = $date;
+				$id = $row['adminId'];
+				unset($row['adminId']);
+				$update = $adminTable->update($row,['adminId'=>$id]);
 				if(!$update){ 
 					throw new Exception("System is unable to update.", 1);
 				}
 				
 			}
-			else{
+			else
+			{
 				if($row['password'] !=$row['confirmPassword'])
 				{
 					throw new Exception("password must be same.", 1);
-
 				}
-				$query = "INSERT INTO admin(firstName,lastName,email,password,mobile,status,createdDate) 	
-				VALUES('".$row['firstName']."',
-						   '".$row['lastName']."',
-						   '".$row['email']."',
-						   '".$row['password']."',
-						   '".$row['mobile']."',
-						   '".$row['status']."',
-						   '".$date."')";
-				$adminId=$adapter->insert($query);
-				if(!$adminId)
+				unset($row['confirmPassword']);
+				$row['createdDate'] = $date;
+				$adminTable = Ccc::getModel('Admin');
+				$insert = $adminTable->insert($row);
+				if(!$insert)
 				{	
-						throw new Exception("System is unable to insert.", 1);
+					throw new Exception("System is unable to insert.", 1);
 				}
 				
 			}
@@ -111,8 +93,7 @@ class Controller_Admin extends Controller_Core_Action{
 	public function deleteAction()
 	{
 		try 
-		{	$adminTable = new Model_Admin();
-			global $adapter;
+		{	$adminTable = Ccc::getModel('Admin');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -120,7 +101,6 @@ class Controller_Admin extends Controller_Core_Action{
 			}
 			
 			$id=$request->getRequest('id');
-			$query = "DELETE FROM Admin WHERE adminId = ".$id;
 			$delete = $adminTable->delete(['adminId'=>$id]); 
 			if(!$delete)
 			{
@@ -131,10 +111,7 @@ class Controller_Admin extends Controller_Core_Action{
 				
 		} catch (Exception $e) {
 			$this->redirect('index.php?c=admin&a=grid');	
-			//echo $e->getMessage();
 		}
-
-		
 	}
 
 	public function errorAction()

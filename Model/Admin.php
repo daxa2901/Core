@@ -6,5 +6,4 @@ class Model_Admin extends Model_Core_Table{
 		$this->setTable('admin')->setPrimaryKey('adminId');
 	}
 }
-$adminTable = new Model_Admin();
 ?>

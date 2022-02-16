@@ -19,7 +19,7 @@
           <td><input type="float" name="product[price]" value="<?php echo $row['price'] ?>"></td>
         </tr>
         <tr>
-          <td width="10%"> Price</td>
+          <td width="10%"> Quantity</td>
           <td><input type="number" name="product[quantity]" value="<?php echo $row['quantity'] ?>"></td>
         </tr>
         <tr>

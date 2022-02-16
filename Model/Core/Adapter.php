@@ -1,7 +1,12 @@
 <?php 
-class Adapter{
+class Model_Core_Adapter{
 
-    public $config = [];
+    public $config = [
+        'host' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'dbname' => 'cybercom'
+    ];
     private $connect = NULL;
     
     public function connect()
@@ -14,7 +19,7 @@ class Adapter{
     public function setConnect($connect)
     {
         $this->connect = $connect;
-        return $this->connect;
+        return $this;
     }
 
     public function getConnect()
@@ -25,7 +30,7 @@ class Adapter{
     public function setConfig($config)
     {
         $this->config = $config;
-        return $this->config;
+        return $this;
     }
 
     public function getConfig()
@@ -42,6 +47,7 @@ class Adapter{
         $result = $this->getConnect()->query($query);
         if(!$result)
         {
+            echo '<pre>';
             echo mysqli_error($this->getConnect());
             exit;
         }
@@ -127,13 +133,6 @@ class Adapter{
 
 } 
 #echo "<pre>";
-$adapter = new Adapter();
-$adapter->setConfig([
-		'host' => 'localhost',
-		'username' => 'root',
-		'password' => '',
-		'dbname' => 'cybercom'
-	]);
 
 #$adapter->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) values ('Redmi19',16000,50,'2020-02-01','2022-01-01',1)");
 
