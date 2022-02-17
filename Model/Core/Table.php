@@ -1,5 +1,6 @@
 <?php
-class Model_Core_Table{
+class Model_Core_Table
+{
 	protected $table = null;
 	protected $primaryKey = null;
 
@@ -60,8 +61,6 @@ class Model_Core_Table{
 		$whereClause = rtrim($whereClause,' and ');
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
-		echo $this->primaryKey;
-		echo $query;
 		return $this->getAdapter()->update($query);
 
 		
@@ -103,7 +102,4 @@ class Model_Core_Table{
 		global $adapter;
 		return $adapter;
 	}
-
-	
 }
-?>

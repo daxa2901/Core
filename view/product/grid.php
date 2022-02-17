@@ -1,5 +1,5 @@
 <?php
-	$result = $this->getData('product');
+	$products = $this->getProducts();
 
 ?>
 <html>
@@ -26,9 +26,9 @@
 			<th> Status </th>
 			<th> Action </th>
 		</tr>
-		<?php if($result): ?>
+		<?php if($products): ?>
 		
-			<?php foreach ($result as $row): ?>		
+			<?php foreach ($products as $row): ?>		
 				<tr>
 		    		<td><?php echo $row["productId"] ?></td>
 		    		<td><?php echo $row["name"] ?></td>

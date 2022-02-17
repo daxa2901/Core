@@ -41,7 +41,7 @@ class Model_Core_Request{
 	
 	public function getActionName()
 	{
-		return $this->getRequest('a','error').'Action';
+		return $this->getRequest('a','grid').'Action';
 	}
 
 	public function getControllerName()
@@ -50,5 +50,3 @@ class Model_Core_Request{
 	}
 
 }
-
-?>

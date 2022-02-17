@@ -1,10 +1,12 @@
+<?php Ccc::loadClass('Controller_Core_Action');?>
+<?php Ccc::loadClass('Model_Admin'); ?>
 <?php
-Ccc::loadClass('Controller_Core_Action');
-Ccc::loadClass('Model_Admin');
-class Controller_Admin extends Controller_Core_Action{
+class Controller_Admin extends Controller_Core_Action
+{
 	
 	public function gridAction()
 	{	
+		$this->getUrl();
 		$adminTable = Ccc::getModel('Admin');
 		$query = "SELECT 
 					* 
@@ -49,7 +51,6 @@ class Controller_Admin extends Controller_Core_Action{
 				throw new Exception("Invalid Request.", 1);				
 			}			
 
-			global $date;
 			$row = $request->getPost('admin');
 			$adminTable = Ccc::getModel('Admin');
 			if (array_key_exists('adminId', $row)) {
@@ -57,7 +58,7 @@ class Controller_Admin extends Controller_Core_Action{
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$row['updatedDate'] = $date;
+				$row['updatedDate'] = date('Y-m-d H:i:s');
 				$id = $row['adminId'];
 				unset($row['adminId']);
 				$update = $adminTable->update($row,['adminId'=>$id]);
@@ -73,7 +74,7 @@ class Controller_Admin extends Controller_Core_Action{
 					throw new Exception("password must be same.", 1);
 				}
 				unset($row['confirmPassword']);
-				$row['createdDate'] = $date;
+				$row['createdDate'] = date('Y-m-d H:i:s');
 				$adminTable = Ccc::getModel('Admin');
 				$insert = $adminTable->insert($row);
 				if(!$insert)
@@ -82,11 +83,11 @@ class Controller_Admin extends Controller_Core_Action{
 				}
 				
 			}
-			$this->redirect('index.php?c=admin&a=grid');
+			$this->redirect($this->getUrl('grid','admin',null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect('index.php?c=admin&a=grid');
+			$this->redirect($this->getUrl('grid','admin',null,true));
 		}
 	}
 
@@ -107,16 +108,10 @@ class Controller_Admin extends Controller_Core_Action{
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect('index.php?c=admin&a=grid');	
+			$this->redirect($this->getUrl('grid','admin',null,true));	
 				
 		} catch (Exception $e) {
-			$this->redirect('index.php?c=admin&a=grid');	
+			$this->redirect($this->getUrl('grid','admin',null,true));	
 		}
 	}
-
-	public function errorAction()
-	{
-		echo "errorAction";
-	}
 }
-?>

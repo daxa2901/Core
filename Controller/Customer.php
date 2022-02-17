@@ -63,7 +63,6 @@ class Controller_Customer extends Controller_Core_Action{
 		}
 					
 		$customerTable = Ccc::getModel('Customer');
-		global $date;
 		$row = $request->getPost('customer');
 
 		if (array_key_exists('customerId', $row)) 
@@ -73,7 +72,7 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("Invalid Request.", 1);
 			}
 			$customerId = $row["customerId"];
-			$row['updatedDate'] = $date;
+			$row['updatedDate'] = date('Y-m-d H:i:s');
 			unset($row['customerId']);
 			$update = $customerTable->update($row,['customerId'=>$customerId]);
 			if(!$update)
@@ -83,7 +82,7 @@ class Controller_Customer extends Controller_Core_Action{
 			
 		}
 		else{
-			$row['createdDate'] = $date;
+			$row['createdDate'] = date('Y-m-d H:i:s');
 			$customerId = $customerTable->insert($row);
 			if(!$customerId)
 			{	
@@ -187,10 +186,4 @@ class Controller_Customer extends Controller_Core_Action{
 			//echo $e->getMessage();
 		}
 	}
-
-	public function errorAction()
-	{
-		echo "error";
-	}
 }
-?>

@@ -1,7 +1,6 @@
 <?php Ccc::loadClass('Model_Core_Adapter'); 
 $adapter = new Model_Core_Adapter();
 date_default_timezone_set("Asia/Kolkata");
-$date = date('Y-m-d H:i:s');
  ?>
 <!DOCTYPE html>
 <html>
@@ -60,6 +59,14 @@ class Ccc
 		self::loadClass($className);
 		return new $className;
 	}
+	
+	public function getBlock($className)
+	{
+		$className = 'Block_'.$className;
+		self::loadClass($className);
+		return new $className;
+	}
+	
 	public static function init()
 	{
 		self::getFront()->init();

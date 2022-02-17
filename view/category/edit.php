@@ -1,7 +1,6 @@
-<?php
-  $row = $this->getData('category');
-  $categoryPathPair = $this->getData('categoryPathPair');
-  $categoryPath = $this->getData('categoryPath');
+<?php $row = $this->getData('category'); ?>
+<?php  $categoryPathPair = $this->getData('categoryPathPair'); ?>
+<?php  $categoryPath = $this->getData('categoryPath'); ?>
 ?>
 <html>
 <head>  

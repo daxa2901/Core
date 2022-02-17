@@ -4,33 +4,37 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Product extends Controller_Core_Action{
 	public function gridAction()
 	{
-		$productTable = Ccc::getModel('Product');
-		$query = "SELECT * FROM Product";
-		$product = $productTable-> fetchAll($query);
-		$view = $this->getView();
-		$view->setTemplate('view/product/grid.php');
-		$view->addData('product',$product);
-		$view->toHtml();		
+		Ccc::getBlock('Product_Grid')->toHtml();
 	}
 
 	public function addAction()
 	{
-		$view = $this->getView();
-		$view->setTemplate('view/product/add.php')->toHtml();
+		Ccc::getBlock('Product_Add')->toHtml();
 	}
 
 	public function editAction()
 	{
-		global $adapter;
-		$productTable = Ccc::getModel('Product');
-		$request = $this->getRequest();
-		$pid=$request->getRequest('id');
-     	$query = "SELECT * FROM Product WHERE productId=".$pid;
-     	$product = $productTable->fetchRow($query);
-     	$view = $this->getView();
-		$view->setTemplate('view/product/edit.php');
-		$view->addData('product',$product);
-		$view->toHtml();
+		try 
+		{
+			$id = (int) $this->getRequest()->getRequest('id');
+			if(!$id)
+			{
+				throw new Exception("Invalid Id.", 1);				
+			}
+			$productTable = Ccc::getModel('Product');
+			$query = "SELECT * FROM Product WHERE productId=".$id;
+     		$product = $productTable->fetchRow($query);
+     		if(!$product)
+     		{
+     			throw new Exception("Unable to load product.", 1);    			
+     		}
+     		Ccc::getBlock('Product_Edit')->addData('product',$product)->toHtml();
+		} 
+		catch (Exception $e) 
+		{
+			$this->redirect("index.php?c=product&a=grid");
+			echo $e->getMessage();
+		}
 	}
 
 	public function saveAction()
@@ -46,7 +50,6 @@ class Controller_Product extends Controller_Core_Action{
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			global $date;
 			$productTable = Ccc::getModel('Product');
 			$row = $request->getPost('product');
 
@@ -56,7 +59,7 @@ class Controller_Product extends Controller_Core_Action{
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$row['updatedAt'] = $date;
+				$row['updatedAt'] = date('Y-m-d H:i:s');
 				$id = $row['id'];
 				unset($row['id']);
 				$update = $productTable->update($row,$id);
@@ -66,7 +69,7 @@ class Controller_Product extends Controller_Core_Action{
 				}
 			}
 			else{
-				$row['createdAt'] = $date;
+				$row['createdAt'] = date('Y-m-d H:i:s');
 				$insert = $productTable->insert($row);
 				if(!$insert)
 				{
@@ -90,7 +93,11 @@ class Controller_Product extends Controller_Core_Action{
 				throw new Exception("Invalid Request.", 1);
 			}
 			$productTable = Ccc::getModel('Product');
-			$id=$request->getRequest('id');
+			$id=(int)$request->getRequest('id');
+			if(!$id)
+			{
+				throw new Exception("Invalid Id.", 1);							
+			}
 			$delete = $productTable->delete($id); 
 			if(!$delete)
 			{
@@ -98,16 +105,10 @@ class Controller_Product extends Controller_Core_Action{
 			}
 			
 			$this->redirect("index.php?c=product&a=grid");
-		} catch (Exception $e) 
+		} 
+		catch (Exception $e) 
 		{
 			$this->redirect("index.php?c=product&a=grid");
 		}
 	}
-
-	public function errorAction()
-	{
-		echo "error";
-	}
 }
-
-?>
