@@ -4,12 +4,11 @@ class Controller_Category extends Controller_Core_Action {
 
 	public function gridAction()
 	{
-
-		global $adapter; 
+		$categoryTable = Ccc::getModel('Category');
 		$query = "SELECT 
 					* 
 				FROM Category order by categoryPath";
-		$result = $adapter->fetchAll($query);	
+		$result = $categoryTable->fetchAll($query);	
 		$view = $this->getView();
 		$view->setTemplate('view/category/grid.php');
 		$view->addData('category',$result);
@@ -30,12 +29,13 @@ class Controller_Category extends Controller_Core_Action {
 	public function editAction()
 	{
 		global $adapter;
+		$categoryTable = Ccc::getModel('Category');
 		$request=$this->getRequest();
 	    $pid=$request->getRequest('id');
 	    $query = "SELECT 
 	                  * 
 	    FROM Category WHERE categoryId=".$pid;
-	    $row = $adapter-> fetchRow($query);
+	    $row = $categoryTable-> fetchRow($query);
 	 	$view = $this->getView();
 		
 		$view->setTemplate('view/category/edit.php');
@@ -60,14 +60,13 @@ class Controller_Category extends Controller_Core_Action {
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			// print_r($request);
 
 			if (!$request->getPost('category')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
 			global $adapter;
-			global $date;
+			// $categoryTable = Ccc::getModel('Category');
 			$row = $request->getPost('category');
 			$path = '';
 
@@ -77,7 +76,10 @@ class Controller_Category extends Controller_Core_Action {
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				
+				// $row['updatedAt'] = date('Y-m-d H:i:s')
+				// $id = $row['id'];
+				// unset($row['id']);
+				// $adminTable->update($row,$id)
 				$query = "UPDATE Category 
 				SET name='".$row['name']."',
 					updatedAt='".$date."',
@@ -97,14 +99,14 @@ class Controller_Category extends Controller_Core_Action {
 				{
 					$query = "INSERT INTO Category(name,createdAt,status) 
 					VALUES('".$row['name']."',
-						   '".$date."',
+						   '".date('Y-m-d H:i:s')."',
 						   '".$row['status']."')";
 				}
 				else
 				{
 					$query = "INSERT INTO Category(name,createdAt,status,parentId) 
 					VALUES('".$row['name']."',
-							'".$date."',
+							'".date('Y-m-d H:i:s')."',
 							'".$row['status']."',
 							'".$row['parentId']."')";
 				}
@@ -142,7 +144,7 @@ class Controller_Category extends Controller_Core_Action {
 	public function updatePathIntoCategory($categoryId,$parentId)
 	{
 		global $adapter;
-		global $date;
+		
 
 		$category=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$categoryId);
 		$categoryPath=$adapter->fetchAll("SELECT * FROM Category WHERE categoryPath LIKE '".$category['categoryPath'].'/%'."' ORDER BY categoryPath");
@@ -164,8 +166,6 @@ class Controller_Category extends Controller_Core_Action {
 		$update = $adapter->update($query);
 		if(!$update)
 		{
-			echo "error";
-			exit;
 			throw new Exception("System is unable to update.", 1);
 		}	
 		foreach ($categoryPath as $row) 
@@ -175,7 +175,7 @@ class Controller_Category extends Controller_Core_Action {
 
 			$query = "UPDATE Category
 				SET categoryPath = '".$newPath."',
-					updatedAt = '".$date."'
+					updatedAt = '".date('Y-m-d H:i:s')."'
 					WHERE categoryId = ".$row['categoryId'];
 			$update = $adapter->update($query);
 			if(!$update)
@@ -241,10 +241,7 @@ class Controller_Category extends Controller_Core_Action {
                 $categories[$key]= $implodeArray;
         }
         return $categories;
-
-    }
-
-	
+	}
 }
 
 ?>

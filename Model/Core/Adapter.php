@@ -132,15 +132,3 @@ class Model_Core_Adapter{
     }
 
 } 
-#echo "<pre>";
-
-#$adapter->insert("insert into Product(name,price,quantity,createdAt,updatedAt,status) values ('Redmi19',16000,50,'2020-02-01','2022-01-01',1)");
-
-#$adapter->update("update Product set status = 2 where id = 20");
-
-#$adapter->delete("DELETE FROM product where id=17");
-
-#$data = $adapter->fetchAll("SELECT * FROM product");
-#$data = $adapter->fetchRow("SELECT * FROM product where id = 15");
-#print_r($data);
-#echo $adapter->currentDate();

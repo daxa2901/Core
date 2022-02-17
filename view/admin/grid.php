@@ -1,6 +1,4 @@
-<?php
-	$result = $this->getData('admin');
-?>
+<?php $result = $this->getData('admin'); ?>
 <html>
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
@@ -27,8 +25,8 @@
 				<th> Update Date </th>
 				<th> Action </th>
 			</tr>
-			<?php if($result):
-				foreach ($result as $row): ?>
+			<?php if($result): ?>
+				<?php foreach ($result as $row): ?>
 					<tr>
 			      		<td><?php echo $row["adminId"] ?></td>
 			    		<td><?php echo $row["firstName"] ?></td>
@@ -37,11 +35,11 @@
 			    		<td><?php echo $row["password"] ?></td>
 			    		<td><?php echo $row["mobile"] ?></td>
 			    		<td>
-				    		<?php if ($row['status'] == 1):
-				    			echo 'Active';
-				    		else:
-				    			echo 'InActive';
-				    		endif; ?>
+				    		<?php if ($row['status'] == 1): ?>
+				    			<?php echo 'Active'; ?>
+				    		<?php else: ?>
+				    			<?php echo 'InActive'; ?>
+				    		<?php endif; ?>
 			    		</td>
 			    		<td><?php echo $row["createdDate"] ?></td>
 			    		<td><?php echo $row["updatedDate"] ?></td>
