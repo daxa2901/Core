@@ -1,6 +1,6 @@
 <?php
-	  $result = $this->getData('customer');
-	  $address = $this->getData('address');
+	  $result = $this->getCustomers();
+	  $address = $this->getAddress();
 ?>
 <html>
 <head>

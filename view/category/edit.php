@@ -1,7 +1,6 @@
-<?php $row = $this->getData('category'); ?>
-<?php  $categoryPathPair = $this->getData('categoryPathPair'); ?>
-<?php  $categoryPath = $this->getData('categoryPath'); ?>
-?>
+<?php $row = $this->getCategory(); ?>
+<?php  $categoryPathPair = $this->getCategoryPathPair(); ?>
+<?php  $categoryPath = $this->getCategoryToPath(); ?>
 <html>
 <head>  
   <link rel="stylesheet" type="text/css" href="./style.css">
@@ -34,7 +33,7 @@
             <select name="category[parentId]">
               
               <option value=<?php echo $row['parentId'] ?>><?php echo $categoryPath[$row['categoryId']]?></option>
-              <option value="NULL">Root</option>
+              <option value=>Root</option>
               <?php foreach ($categoryPathPair as $key=>$value): ?>
                   <?php if(strpos($value,$row['categoryPath']) !='false'):?>
                     <option value=<?php echo $key ?>><?php echo $categoryPath[$key] ?></option>

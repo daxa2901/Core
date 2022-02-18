@@ -4,51 +4,47 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Customer extends Controller_Core_Action{
 	public function gridAction()
 	{
-		$customerTable = Ccc::getModel('Customer'); 
-		$query = "SELECT 
-					* 
-				FROM Customer";
-		$query2 = "SELECT a.address 
-				FROM Customer c 
-					JOIN  
-				address a ON c.customerId = a.customerId";
-		$customer = $customerTable-> fetchAll($query);
-		$address = $customerTable-> fetchAll($query2);
-		$view = $this->getView();
-		$view->setTemplate('view/customer/grid.php');
-		$view->addData('customer',$customer);
-		$view->addData('address',$address);
-		$view->toHtml();
+		Ccc::getBlock('Customer_Grid')->toHtml();
 	}
 
 	public function addAction()
 	{
-		$view = $this->getView();	
-		$view->setTemplate('view/customer/add.php')->toHtml();
+		Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
 	public function editAction()
 	{
-		$customerTable = Ccc::getModel('Customer');
-		$request=$this->getRequest();
-    $pid=$request->getRequest('id');
- 		$query = "SELECT * FROM Customer  
-			   WHERE customerId=".$pid;
-		$customer = $customerTable-> fetchRow($query);
-		$query2 = "SELECT 
+		try {
+			$id = (int)$this->getRequest()->getRequest('id');
+			if (!$id) {
+				throw new Exception("Invalid Id.", 1);
+			}
+			$customerTable = Ccc::getModel('Customer');
+ 			$query = "SELECT * FROM Customer  
+			   WHERE customerId=".$id;
+			$customer = $customerTable->fetchRow($query);
+
+			if (!$customer) {
+				throw new Exception("Unable to load Customer.", 1);
+				
+			}
+			$query2 = "SELECT 
                   a.* 
                 FROM 
               Address a 
                 JOIN 
-              Customer c ON a.customerId = c.customerId WHERE a.customerId =".$pid;  
-		$address = $customerTable-> fetchRow($query2);
-		$view = $this->getView();
-		$view->setTemplate('view/customer/edit.php');
-		$view->addData('customer',$customer);
-		$view->addData('address',$address);
-		$view->toHtml();
-		
-		//require_once('view/customer/edit.php');
+              Customer c ON a.customerId = c.customerId WHERE a.customerId =".$id;  
+			$address = $customerTable-> fetchRow($query2);
+			if (!$address) {
+				throw new Exception("Unable to load Customer Address.", 1);
+			}
+			$customerBlock = Ccc::getBlock('Customer_Edit');
+			$customerBlock->addData('customer',$customer);
+			$customerBlock->addData('address',$address);			
+			$customerBlock->toHtml();
+		} catch (Exception $e) {
+				echo $e->getMessage();		
+		}
 	}
 	protected function saveCustomer()
 	{
@@ -154,11 +150,11 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 			$customerId = $this->saveCustomer();
 			$this->saveAddress($customerId);
-			$this->redirect('index.php?c=customer&a=grid');
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect('index.php?c=customer&a=grid');
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));
 		}
 	}
 
@@ -179,10 +175,10 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect('index.php?c=customer&a=grid');	
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));	
 				
 		} catch (Exception $e) {
-			$this->redirect('index.php?c=customer&a=grid');	
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));	
 			//echo $e->getMessage();
 		}
 	}

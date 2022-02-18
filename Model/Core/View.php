@@ -54,5 +54,47 @@ class Model_Core_View{
 		unset($this->data[$key]);
 		return $this;
 	}
+
+	public function getUrl($controller=null,$action=null,$parameters=[],$reset=false)
+	{
+		$temp = [];
+		$request = Ccc::getFront()->getRequest();
+		if(!$controller)
+		{
+			$temp['c'] = $request->getRequest('c');
+		}
+		else
+		{
+			$temp['c'] = $controller;
+		}
+
+		if(!$action)
+		{
+			$temp['a'] = $request->getRequest('a');
+		}
+		else
+		{
+			$temp['a'] = $action;
+		}
+		
+		if($reset)
+		{
+			if($parameters)
+			{
+				$temp = array_merge($temp,$parameters);
+			}
+		}
+		else
+		{
+			$temp = array_merge($_GET,$temp);
+			if($parameters)
+			{
+				$temp = array_merge($temp,$parameters);
+			}
+		}
+		$url = 'index.php?'.http_build_query($temp);
+		return $url;
+		
+	}
 }
 ?>

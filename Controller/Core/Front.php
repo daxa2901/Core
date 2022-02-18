@@ -30,9 +30,7 @@ class Controller_Core_Front{
 	}
 	public function parepareClassName($name)
 	{
-		// code...
 		$name = ucwords($name,'_');
 		return $name;
 	}
 }
-?>

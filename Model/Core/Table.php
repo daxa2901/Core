@@ -51,14 +51,23 @@ class Model_Core_Table
 			{
 				$whereClause = $whereClause . $key . " = '".$value."' and ";
 			}
+			$whereClause = rtrim($whereClause,' and ');
+
 			
 		}
 		foreach ($data as $col => $value) 
 		{
-			
-			$fields = $fields . $col . " = '".$value."',";
+			if($col != 'parentId')
+				{
+					$fields = $fields . $col . " = '".$value."',";
+
+				}
+				else
+				{
+					$fields = $fields . $col . ' = '.$value.',';
+
+				}
 		}
-		$whereClause = rtrim($whereClause,' and ');
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
 		return $this->getAdapter()->update($query);
