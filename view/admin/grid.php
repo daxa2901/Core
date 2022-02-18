@@ -1,14 +1,9 @@
-<?php $result = $this->getData('admin'); ?>
-<html>
-<head>
-	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
-	<link rel="stylesheet" type="text/css" href="./style.css">
-</head>
-<body>
-	<div class='container' style="text-align: center; ">
+<?php $result = $this->getAdmin(); ?>
+
+<div class='container' style="text-align: center; ">
 	<h1> Admin Details </h1> 
 	<form action="index.php?c=admin&a=add" method="POST">
-		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
+	<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
 
 	<div id='info'>
@@ -52,7 +47,6 @@
 			<?php else:?>
 				<tr><td colspan='10'>No Record Available</td></tr>			
 			<?php endif; ?>
-		</table>
+		</table>	
 	</div>
-</body>
-</html>
+</div>

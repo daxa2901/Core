@@ -1,6 +1,6 @@
 <?php
-    $row = $this->getData('customer');
-    $row2 = $this->getData('address');
+    $customer = $this->getCustomer();
+    $address = $this->getAddress();
 
 ?>
 <html>
@@ -15,27 +15,27 @@
     </tr>
     <tr>
       <td width="10%">First Name</td>
-      <td><input type="text" name="customer[firstName]" value="<?php echo $row['firstName'] ?>"></td>
+      <td><input type="text" name="customer[firstName]" value="<?php echo $customer['firstName'] ?>"></td>
     </tr>
     
     <tr>
       <td width="10%">Last Name</td>
-      <td><input type="text" name="customer[lastName]" value="<?php echo $row['lastName'] ?>"></td>
+      <td><input type="text" name="customer[lastName]" value="<?php echo $customer['lastName'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Email</td>
-      <td><input type="text" name="customer[email]" value="<?php echo $row['email'] ?>"></td>
+      <td><input type="text" name="customer[email]" value="<?php echo $customer['email'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Mobile</td>
-      <td><input type="text" name="customer[mobile]" value="<?php echo $row['mobile'] ?>"></td>
+      <td><input type="text" name="customer[mobile]" value="<?php echo $customer['mobile'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Status</td>
       <td>
         <select name="customer[status]">
 
-          <?php if ($row['status' ] == 1):?>
+          <?php if ($customer['status' ] == 1):?>
               <option value='1'>Active</option>
               <option value='2'>InActive</option>
           <?php else: ?>
@@ -50,35 +50,35 @@
     </tr>
     <tr>
       <td width="10%">Address</td>
-      <td><input type="text" name="address[address]" value="<?php echo $row2['address'] ?>"></td>
+      <td><input type="text" name="address[address]" value="<?php echo $address['address'] ?>"></td>
     </tr>
     
     <tr>
       <td width="10%">City</td>
-      <td><input type="text" name="address[city]" value="<?php echo $row2['city'] ?>"></td>
+      <td><input type="text" name="address[city]" value="<?php echo $address['city'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">State</td>
-      <td><input type="text" name="address[state]" value="<?php echo $row2['state'] ?>"></td>
+      <td><input type="text" name="address[state]" value="<?php echo $address['state'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Postal Code</td>
-      <td><input type="text" name="address[postalCode]" value="<?php echo $row2['postalCode'] ?>"></td>
+      <td><input type="text" name="address[postalCode]" value="<?php echo $address['postalCode'] ?>"></td>
     </tr>
     <tr>
       <td width="10%">Country</td>
-      <td><input type="text" name="address[country]" value="<?php echo $row2['country'] ?>"></td>
+      <td><input type="text" name="address[country]" value="<?php echo $address['country'] ?>"></td>
     </tr>
     <tr>    
       <td>
-        <?php if($row2['billing'] == '1'): ?>
+        <?php if($address['billing'] == '1'): ?>
           <input type="checkbox" name="address[billing]" value=1 checked>Billing Addres</td>
         <?php else: ?>
           <input type="checkbox" name="address[billing]" value=1>Billing Addres</td>
         <?php endif; ?>
 
       <td>
-        <?php if($row2['shipping'] == '1'): ?>
+        <?php if($address['shipping'] == '1'): ?>
           <input type="checkbox" name="address[shipping]" checked value=1> Shipping Address</td>
         <?php else: ?>
           <input type="checkbox" name="address[shipping]" value=1> Shipping Address</td>
@@ -87,7 +87,7 @@
     </tr>
     <tr>
       <td width="25%">&nbsp;</td>
-      <input type="hidden" name="customer[customerId]" value="<?php echo $row['customerId'] ?>">
+      <input type="hidden" name="customer[customerId]" value="<?php echo $customer['customerId'] ?>">
       <td>
         <button type="submit" name="submit" class="Registerbtn">Update </button>
         <a href="index.php?c=customer&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>

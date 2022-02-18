@@ -1,6 +1,6 @@
 <?php
-	$result = $this->getData('category');
-	$getCategoryToPath = $this->getData('getCategoryToPath');
+	$result = $this->getCategory();
+	$getCategoryToPath = $this->getCategoryToPath();
 		
 ?>
 <html>

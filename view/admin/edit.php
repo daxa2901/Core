@@ -1,11 +1,6 @@
 <?php
   $row = $this->getData('admin');
 ?>
-<html>
-<head>
-  <link rel="stylesheet" type="text/css" href="./style.css">
-</head>
-<body>
   <form action="index.php?c=admin&a=save" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
@@ -52,6 +47,4 @@
       </td>
     </tr>    
   </table>  
-</form>
-</body>
-  </html>
+  </form>

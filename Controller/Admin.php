@@ -6,36 +6,38 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		$this->getUrl();
-		$adminTable = Ccc::getModel('Admin');
-		$query = "SELECT 
-					* 
-				FROM Admin";
-		$admin = $adminTable-> fetchAll($query);
-		$view = $this->getView();
-		$view->setTemplate('view/admin/grid.php');
-		$view->addData('admin',$admin);
-		$view->toHtml();
+		Ccc::getBlock('Admin_Grid')->toHtml();
 	}
 
 	public function addAction()
 	{
-		$view = $this->getView();
-		$view->setTemplate('view/admin/add.php')->toHtml();
+		Ccc::getBlock('Admin_Add')->toHtml();
 	}
 
 	public function editAction()
 	{
-		$adminTable = Ccc::getModel('Admin');
-		$request=$this->getRequest();
-      	$pid=$request->getRequest('id');
-      	$query = "SELECT * FROM Admin  
-            WHERE adminId=".$pid;
-      	$admin = $adminTable-> fetchRow($query);
-      	$view = $this->getView();
-		$view->setTemplate('view/admin/edit.php');
-		$view->addData('admin',$admin);
-		$view->toHtml();
+		try 
+		{
+			$id=(int)$this->getRequest()->getRequest('id');
+      		if (!$id) {
+      			throw new Exception("Invalid Id.", 1);
+      		}
+			$adminTable = Ccc::getModel('Admin');
+			$query = "SELECT * FROM Admin  
+            	WHERE adminId=".$id;
+      		$admin = $adminTable-> fetchRow($query);
+      		if (!$admin) {
+      			throw new Exception("Unable to Load Admin.", 1);
+      		}
+     		Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();
+
+		} 
+		catch (Exception $e) 
+		{
+			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));
+			//echo $e->getMessage();
+		}
+		
 	}
 	
 	public function saveAction()
@@ -83,11 +85,11 @@ class Controller_Admin extends Controller_Core_Action
 				}
 				
 			}
-			$this->redirect($this->getUrl('grid','admin',null,true));
+			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect($this->getUrl('grid','admin',null,true));
+			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));
 		}
 	}
 
@@ -108,10 +110,10 @@ class Controller_Admin extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect($this->getUrl('grid','admin',null,true));	
+			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));	
 				
 		} catch (Exception $e) {
-			$this->redirect($this->getUrl('grid','admin',null,true));	
+			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));	
 		}
 	}
 }
