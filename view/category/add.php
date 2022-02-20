@@ -1,13 +1,6 @@
-<?php 
-  $result = $this->getCategoryToPath();
+<?php $result = $this->getCategoryToPath(); ?>
 
-?>
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="./style.css">
-</head>
-<body>
-  <form action="index.php?c=category&a=save" method="POST">
+<form action="index.php?c=category&a=save" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
       <td width="10%"> Name</td>
@@ -42,5 +35,3 @@
     </tr>    
   </table>  
 </form>
-</body>
-  </html

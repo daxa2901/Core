@@ -3,7 +3,6 @@
 <?php
 class Controller_Core_Action
 {
-	
 	public $view = null;
 	
 	public function getRequest()

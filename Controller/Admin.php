@@ -19,14 +19,16 @@ class Controller_Admin extends Controller_Core_Action
 		try 
 		{
 			$id=(int)$this->getRequest()->getRequest('id');
-      		if (!$id) {
+      		if (!$id) 
+      		{
       			throw new Exception("Invalid Id.", 1);
       		}
 			$adminTable = Ccc::getModel('Admin');
 			$query = "SELECT * FROM Admin  
             	WHERE adminId=".$id;
       		$admin = $adminTable-> fetchRow($query);
-      		if (!$admin) {
+      		if (!$admin) 
+      		{
       			throw new Exception("Unable to Load Admin.", 1);
       		}
      		Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();
@@ -49,13 +51,15 @@ class Controller_Admin extends Controller_Core_Action
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			if (!$request->getPost('admin')) {
+			if (!$request->getPost('admin')) 
+			{
 				throw new Exception("Invalid Request.", 1);				
 			}			
 
 			$row = $request->getPost('admin');
 			$adminTable = Ccc::getModel('Admin');
-			if (array_key_exists('adminId', $row)) {
+			if (array_key_exists('adminId', $row))
+			{
 				if(!(int)$row['adminId'])
 				{
 					throw new Exception("Invalid Request.", 1);
@@ -64,7 +68,8 @@ class Controller_Admin extends Controller_Core_Action
 				$id = $row['adminId'];
 				unset($row['adminId']);
 				$update = $adminTable->update($row,['adminId'=>$id]);
-				if(!$update){ 
+				if(!$update)
+				{ 
 					throw new Exception("System is unable to update.", 1);
 				}
 				
@@ -112,7 +117,9 @@ class Controller_Admin extends Controller_Core_Action
 			}
 			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));	
 				
-		} catch (Exception $e) {
+		} 
+		catch (Exception $e) 
+		{
 			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));	
 		}
 	}

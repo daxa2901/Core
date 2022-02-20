@@ -48,5 +48,4 @@ class Model_Core_Request{
 	{
 		return $this->getRequest('c','Customer');
 	}
-
 }
