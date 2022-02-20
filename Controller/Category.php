@@ -32,8 +32,6 @@ class Controller_Category extends Controller_Core_Action {
       		}
      		$categoryBlock = Ccc::getBlock('Category_Edit');
      		$categoryBlock->addData('category',$category);
-			$categoryPathPair = $adapter->fetchPair('SELECT categoryId,categoryPath FROM Category');
-	    	$categoryBlock->addData('categoryPathPair',$categoryPathPair);
 	    	$categoryBlock->toHtml();
 		} 
 		catch (Exception $e) 
@@ -149,7 +147,9 @@ class Controller_Category extends Controller_Core_Action {
 			}
 		$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));
 		
-		} catch (Exception $e) {
+		} 
+		catch (Exception $e) 
+		{
 			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));	
 		}
 	}
@@ -169,12 +169,12 @@ class Controller_Category extends Controller_Core_Action {
 			if(!$delete)
 			{
 				throw new Exception("System is unable to  delete.", 1);
-				
 			}
 			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));		
-		} catch (Exception $e) {
+		} 
+		catch (Exception $e) 
+		{
 			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));		
 		}
-			
 	}
 }

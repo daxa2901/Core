@@ -130,5 +130,4 @@ class Model_Core_Adapter{
         $key = $result['0']['0'];
         return $key;
     }
-
 } 

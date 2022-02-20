@@ -6,4 +6,3 @@ class Model_Category extends Model_Core_Table{
 		$this->setTable('Category')->setPrimaryKey('categoryId');
 	}
 }
-?>

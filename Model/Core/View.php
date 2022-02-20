@@ -94,7 +94,5 @@ class Model_Core_View{
 		}
 		$url = 'index.php?'.http_build_query($temp);
 		return $url;
-		
 	}
 }
-?>

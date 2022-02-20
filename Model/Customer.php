@@ -6,4 +6,3 @@ class Model_Customer extends Model_Core_Table{
 		$this->setTable('Customer')->setPrimaryKey('customerId');
 	}
 }
-?>
