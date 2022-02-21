@@ -18,12 +18,11 @@ class Block_Customer_Grid extends Block_Core_Template
 
 	public function getAddress()
 	{
-		$customerTable = Ccc::getModel('Customer');
-		$query2 = "SELECT a.address 
-			FROM Customer c 
-				JOIN  
-			address a ON c.customerId = a.customerId";
-		$address = $customerTable-> fetchAll($query2);
+		$addressTable = Ccc::getModel('Customer_Address');
+		$query2 = "SELECT 
+					* 
+			  FROM  address";
+		$address = $addressTable-> fetchAll($query2);
 		return $address;
 	}
 }

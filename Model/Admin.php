@@ -3,6 +3,6 @@ Ccc::loadClass('Model_Core_Table');
 class Model_Admin extends Model_Core_Table{
 	public function __construct()
 	{
-		$this->setTable('admin')->setPrimaryKey('adminId');
+		$this->setTableName('admin')->setPrimaryKey('adminId');
 	}
 }
