@@ -1,15 +1,17 @@
-<?php
+<?php Ccc::loadClass('Model_Core_Table_Row'); ?>
+<?php 
 class Model_Core_Table
 {
 	protected $table = null;
 	protected $primaryKey = null;
+	protected $rowClassName = null;
 
 	public function getTable()
 	{
 		return $this->table;
 	}
 
-	public function setTable($table)
+	public function setTableName($table)
 	{
 		$this->table = $table;
 		return $this;
@@ -26,6 +28,12 @@ class Model_Core_Table
 		return $this;
 	}
 
+	public function getRow()
+	{
+		return new Model_Core_Table_Row();
+	}
+
+
 	public function insert(array $data)
 	{
 		$temp = [];
@@ -33,7 +41,7 @@ class Model_Core_Table
 		{
 			$temp[$col] = "'".$value."'";	
 		}
-		$query = "INSERT INTO ".$this->table." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
+		$query = "INSERT INTO ".$this->getTable()." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
 		return $this->getAdapter()->insert($query);
 	}
 
@@ -43,7 +51,7 @@ class Model_Core_Table
 		$fields = null;		
 		if(!is_array($id))
 		{
-			$whereClause = $this->primaryKey ." = '".$id."'";
+			$whereClause = $this->getPrimaryKey() ." = '".$id."'";
 		}
 		else
 		{
@@ -71,8 +79,6 @@ class Model_Core_Table
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
 		return $this->getAdapter()->update($query);
-
-		
 	}
 
 	public function delete($id)
@@ -91,7 +97,7 @@ class Model_Core_Table
 			}
 			$whereClause = rtrim($whereClause,' and ');
 		}
-		$query = 'DELETE FROM '.$this->table.' WHERE '.$whereClause;
+		$query = 'DELETE FROM '.$this->getTable().' WHERE '.$whereClause;
 		return $this->getAdapter()->delete($query);	
 
 	}
@@ -106,6 +112,17 @@ class Model_Core_Table
 		return $this->getAdapter()->fetchAll($query);
 	}
 
+	public function load($id)
+	{
+		$rowData = "SELECT * FROM ".$this->getTable()."WHERE ". $this->getPrimaryKey()." = ".$id;
+		if (!$rowData) {
+			return false;
+		}
+		$row = $this->getRow();
+		$row->setData($rowData);
+		return $row;
+	}
+	
 	public function getAdapter()
 	{
 		global $adapter;
