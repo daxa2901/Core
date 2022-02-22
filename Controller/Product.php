@@ -53,15 +53,15 @@ class Controller_Product extends Controller_Core_Action{
 			$productTable = Ccc::getModel('Product');
 			$row = $request->getPost('product');
 
-			if (array_key_exists('id', $row)) 
+			if (array_key_exists('productId', $row)) 
 			{
-				if(!(int)$row['id'])
+				if(!(int)$row['productId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
 				$row['updatedAt'] = date('Y-m-d H:i:s');
-				$id = $row['id'];
-				unset($row['id']);
+				$id = $row['productId'];
+				unset($row['productId']);
 				$update = $productTable->update($row,$id);
 				if(!$update)
 				{

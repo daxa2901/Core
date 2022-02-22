@@ -4,6 +4,11 @@ class Model_Core_View{
 	public $temlate = null;
 	public $data = null;
 
+	public function getAdapter()
+	{
+		global $adapter;
+		return $adapter;
+	}
 	public function setTemplate($temlate)
 	{
 		$this->temlate = $temlate;

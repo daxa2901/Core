@@ -1,8 +1,8 @@
-<?php $product = $this->getData('product'); ?>
+<?php $product = $this->getProducts(); ?>
 <form action='index.php?c=product&a=save' method='post'>
 <table border="1" width="100%" cellspacing="4">
     <tr>
-      <input type="hidden" name="product[id]" value="<?php echo $product['productId'] ?>">
+      <input type="hidden" name="product[productId]" value="<?php echo $product['productId'] ?>">
       <td width="10%"> Name</td>
       <td><input type="text" name="product[name]" value="<?php echo $product['name'] ?>"></td>
     </tr>

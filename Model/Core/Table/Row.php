@@ -4,7 +4,7 @@ class Model_Core_Table_Row{
 	protected $data = [];
 	protected $tableClassName= null;
 
-	public function setTableClassName($getTableClassName)
+	public function setTableClassName($tableClassName)
 	{
 		$this->tableClassName = $tableClassName;
 		return  $this;
@@ -57,11 +57,42 @@ class Model_Core_Table_Row{
 
 	public function getTable()
 	{
-		return New Model_Core_table();
+		return Ccc::getModel($this->getTableClassName());
 	}
 	public function save()
 	{
-		 $this->getTable()->insert($data);
+		if(array_key_exists($this->getTable()->getPrimaryKey(),$this->data))
+		{
+			$id = $this->data[$this->getTable()->getPrimaryKey()]; 
+			$this->getTable()->update($this->data,$id);
+
+		}
+		else
+		{
+			$id = $this->getTable()->insert($this->data);
+		}
+		return $id;
 	}
+
+	public function delete()
+	{
+		$id =$this->data[$this->getTable()->getPrimaryKey()];
+		$this->getTable()->delete($id);
+	}
+
+	public function fetchAll($query)
+	{
+		$customer = $this->getTable()->fetchAll($query);
+		if(!$customer)
+		{
+			return $customer;
+		}
+		$adminobj = [];
+		foreach ($customer as &$value) {
+			$value = (new $this())->setData($value)	;
+		}
+		return $customer;
+	}
+
 
 }

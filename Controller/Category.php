@@ -61,16 +61,16 @@ class Controller_Category extends Controller_Core_Action {
 			$row = $request->getPost('category');
 			$path = '';
 
-			if (array_key_exists('id', $row)) 
+			if (array_key_exists('categoryId', $row)) 
 			{
-				if(!(int)$row['id'])
+				if(!(int)$row['categoryId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
 
 				$row['updatedAt'] = date('Y-m-d H:i:s');
-				$id = $row['id'];
-				unset($row['id']);
+				$id = $row['categoryId'];
+				unset($row['categoryId']);
 
 				$date = date('Y-m-d H:i:s');
 				$category=$categoryTable->fetchRow("SELECT * FROM Category WHERE categoryId= ".$id);
@@ -78,7 +78,7 @@ class Controller_Category extends Controller_Core_Action {
 		
 				if($row['parentId'] == null)
 				{	
-					$row['parentId'] = 'null';
+					$row['parentId'] = null;
 					$row['categoryPath'] = $id; 
 					$categoryTable->update($row,$id);
 				}
