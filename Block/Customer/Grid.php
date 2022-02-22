@@ -21,7 +21,7 @@ class Block_Customer_Grid extends Block_Core_Template
 		$addressTable = Ccc::getModel('Customer_Address');
 		$query2 = "SELECT 
 					* 
-			  FROM  address";
+			  FROM  customer_address";
 		$address = $addressTable-> fetchAll($query2);
 		return $address;
 	}

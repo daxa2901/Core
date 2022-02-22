@@ -4,7 +4,31 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Customer extends Controller_Core_Action{
 	public function gridAction()
 	{
-		Ccc::getBlock('Customer_Grid')->toHtml();
+		$customerTable = Ccc::getModel("Customer");
+	 echo "<pre>";
+	 $customerTable->customerId = '79';
+	 $customerTable->firstName = 'daxa';
+	 $customerTable->lastName = 'devshibhai';
+	 $customerTable->mobile = 12121;
+	 $customerTable->email = 'dd@gmail.com';
+	 $customerTable->status = '1';
+	 $customerTable->createdDate = '2022-02-08 10:58:27';
+	 // $c=$customerTable->getTableClassName();
+	 // // echo $c;
+	 // $a = $customerTable->getTable();
+	 // echo $a->getPrimaryKey();
+	 // print_r($a);
+	 // print_r($customerTable);
+	 print_r($customerTable->delete());
+	 exit;
+
+		// $customer = $customerTable->getRow();
+		// print_r($customer);
+		
+		// $customerTable = Ccc::getModel("Customer_Row")->fetchAll("SELECT * FROM Customer");
+		// echo "<pre>";
+		// print_r($customerTable);
+		// Ccc::getBlock('Customer_Grid')->toHtml();
 	}
 
 	public function addAction()
@@ -35,7 +59,7 @@ class Controller_Customer extends Controller_Core_Action{
 			$query2 = "SELECT 
                   * 
                 FROM 
-              Address WHERE customerId =".$id;  
+              customer_address WHERE customerId =".$id;  
 			$addressTable = Ccc::getModel('Customer_Address');
 			$address = $addressTable-> fetchRow($query2);
 			if (!$address) 
@@ -54,8 +78,12 @@ class Controller_Customer extends Controller_Core_Action{
 	}
 	protected function saveCustomer()
 	{
+		$customerTable = Ccc::getModel("Customer");
+		$customerRow = $customerTable->getRow();
+		
 		$request=$this->getRequest();
-    if(!$request->isPost())
+    	
+    	if(!$request->isPost())
 		{
 			throw new Exception("Invalid Request.", 1);				
 		} 	
@@ -64,7 +92,6 @@ class Controller_Customer extends Controller_Core_Action{
 			throw new Exception("Invalid Request.", 1);				
 		}
 					
-		$customerTable = Ccc::getModel('Customer');
 		$row = $request->getPost('customer');
 
 		if (array_key_exists('customerId', $row)) 
@@ -73,10 +100,10 @@ class Controller_Customer extends Controller_Core_Action{
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			$customerId = $row["customerId"];
-			$row['updatedDate'] = date('Y-m-d H:i:s');
-			unset($row['customerId']);
-			$update = $customerTable->update($row,['customerId'=>$customerId]);
+			$customerId = $row['customerId'];
+			$customerRow->setData($row);
+			$customerRow->updatedDate = date('Y-m-d H:i:s');
+			$update = $customerRow->save();
 			if(!$update)
 			{ 
 				throw new Exception("System is unable to update.", 1);
@@ -85,22 +112,26 @@ class Controller_Customer extends Controller_Core_Action{
 		}
 		else
 		{
-			$row['createdDate'] = date('Y-m-d H:i:s');
-			$customerId = $customerTable->insert($row);
+			$customerRow->setData($row);
+			$customerRow->createdDate = date('Y-m-d H:i:s');
+			$customerId = $customerRow->save();
 			if(!$customerId)
 			{	
 					throw new Exception("System is unable to insert.", 1);
 			}
 			
 		}
-
-		return $customerId;
 	
+		return $customerId;
 	}
 
 	protected function saveAddress($customerId)
 	{
+
+		$addressTable = Ccc::getModel("Customer_Address");
+		$addressRow = $addressTable->getRow();
 		$request = $this->getRequest();
+		
 		if(!$request->isPost())
 		{
 			throw new Exception("Invalid Request.", 1);				
@@ -109,7 +140,6 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 			throw new Exception("Invalid Request.", 1);				
 		}
-		$addressTable = Ccc::getModel('Customer_Address');
 		$row = $request->getPost('address');
 	
 		$billing=2;	
@@ -123,13 +153,16 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 				$shipping = 1;
 		}
-		$query = "SELECT * FROM address WHERE customerId = {$customerId}";
+		$query = "SELECT * FROM customer_address WHERE customerId = ".$customerId;
 		$addressData = $addressTable->fetchRow($query);
-		$row['billing'] = $billing;
-		$row['shipping'] = $shipping;
+		$addressRow->setData($row);
+		$addressRow->billing = $billing;
+		$addressRow->shipping = $shipping;
 		if($addressData)
 		{
-			$update = $addressTable->update($row,$addressData['addressId']);
+			$addressRow->addressId = $addressData['addressId'];
+			$update = $addressRow->save();
+		
 			if(!$update)
 			{ 
 				throw new Exception("System is unable to update.", 1);
@@ -137,8 +170,8 @@ class Controller_Customer extends Controller_Core_Action{
 		}
 		else
 		{
-			$row['customerId'] = $customerId;
-			$result = $addressTable->insert($row);
+			$addressRow->customerId = $customerId;
+			$result = $addressRow->save();
 			if (!$result) 
 			{
 				throw new Exception("System is unable to insert", 1);

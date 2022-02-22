@@ -19,9 +19,8 @@ class Block_Category_Grid extends Block_Core_Template
 	}
 	public function getCategoryToPath()
     {
-    	global $adapter;
-        $categoryName=$adapter->fetchPair('SELECT categoryId,name FROM Category');
-        $categoryPath=$adapter->fetchPair('SELECT categoryId,categoryPath FROM Category');
+        $categoryName=$this->getAdapter()->fetchPair('SELECT categoryId,name FROM Category');
+        $categoryPath=$this->getAdapter()->fetchPair('SELECT categoryId,categoryPath FROM Category');
         $categories=[];
         foreach ($categoryPath as $key => $value) 
         {

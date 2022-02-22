@@ -7,7 +7,7 @@
       <td width="10%"> Name</td>
       <td><input type="text" name="category[name]" value="<?php echo $row['name'] ?>"></td>
     </tr>
-    <input type="hidden" name="category[id]" value="<?php echo $row['categoryId'] ?>">
+    <input type="hidden" name="category[categoryId]" value="<?php echo $row['categoryId'] ?>">
     <tr>
       <td width="10%">Status</td>
       <td>

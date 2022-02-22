@@ -6,7 +6,18 @@ class Model_Core_Table
 	protected $primaryKey = null;
 	protected $rowClassName = null;
 
-	public function getTable()
+	public function setRowClassName($rowClassName)
+	{
+		$this->rowClassName = $rowClassName;
+		return  $this;
+	}
+
+	public function getRowClassName()
+	{
+		return $this->rowClassName;
+	}
+	
+	public function getTableName()
 	{
 		return $this->table;
 	}
@@ -30,7 +41,7 @@ class Model_Core_Table
 
 	public function getRow()
 	{
-		return new Model_Core_Table_Row();
+		return Ccc::getModel($this->getRowClassName());
 	}
 
 
@@ -41,7 +52,7 @@ class Model_Core_Table
 		{
 			$temp[$col] = "'".$value."'";	
 		}
-		$query = "INSERT INTO ".$this->getTable()." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
+		$query = "INSERT INTO ".$this->getTableName()." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
 		return $this->getAdapter()->insert($query);
 	}
 
@@ -65,19 +76,20 @@ class Model_Core_Table
 		}
 		foreach ($data as $col => $value) 
 		{
-			if($col != 'parentId')
-				{
-					$fields = $fields . $col . " = '".$value."',";
+			if($value != null)
+			{
+				$fields = $fields . $col . " = '".$value."',";
 
-				}
-				else
-				{
-					$fields = $fields . $col . ' = '.$value.',';
+			}
+			else
+			{
+				$fields = $fields . $col . ' = null ,';
 
-				}
+			}
 		}
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
+		echo $query;
 		return $this->getAdapter()->update($query);
 	}
 
@@ -97,7 +109,7 @@ class Model_Core_Table
 			}
 			$whereClause = rtrim($whereClause,' and ');
 		}
-		$query = 'DELETE FROM '.$this->getTable().' WHERE '.$whereClause;
+		$query = 'DELETE FROM '.$this->getTableName().' WHERE '.$whereClause;
 		return $this->getAdapter()->delete($query);	
 
 	}
@@ -114,7 +126,8 @@ class Model_Core_Table
 
 	public function load($id)
 	{
-		$rowData = "SELECT * FROM ".$this->getTable()."WHERE ". $this->getPrimaryKey()." = ".$id;
+		$rowData = $this->fetchRow("SELECT * FROM ".$this->getTableName(). " WHERE ". $this->getPrimaryKey()." = ".$id);
+
 		if (!$rowData) {
 			return false;
 		}

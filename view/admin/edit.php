@@ -1,4 +1,4 @@
-<?php  $row = $this->getData('admin'); ?>
+<?php  $row = $this->getAdmin(); ?>
 <form action="index.php?c=admin&a=save" method="POST">
 <table border="1" width="100%" cellspacing="4">
   <tr>
