@@ -3,7 +3,7 @@
 
 <div class='container' style="text-align: center; ">
 <h1> Customer Details </h1> 
-<form action="index.php?c=customer&a=add" method="POST">
+<form action="<?php echo  $this->getUrl('add');?>" method="POST">
 <button type="submit" name="Add" class="Registerbtn"> Add New </button>
 </form>
 
@@ -25,24 +25,24 @@
 		foreach ($result as $index => $value): ?>
 			 
 			<tr>
-	      		<td><?php echo $result[$index]["customerId"] ?></td>
-	    		<td><?php echo $result[$index]["firstName"] ?></td>
-	    		<td><?php echo $result[$index]["lastName"] ?></td>
-	    		<td><?php echo $result[$index]["email"] ?></td>
-	    		<td><?php echo $result[$index]["mobile"] ?></td>
+	      		<td><?php echo $value->customerId; ?></td>
+	    		<td><?php echo $value->firstName; ?></td>
+	    		<td><?php echo $value->lastName; ?></td>
+	    		<td><?php echo $value->email; ?></td>
+	    		<td><?php echo $value->mobile; ?></td>
 	    		<td>
-		    		<?php if ($result[$index]['status'] == 1): ?>
+		    		<?php if ($value->status == 1): ?>
 		    			<?php echo 'Active'; ?>
 		    		<?php else: ?> 
  		    			<?php echo 'InActive'; ?>
 		    		<?php endif; ?>
 	    		</td>
-	    		<td> <?php echo $address[$index]['address'] ?> </td>
-	    		<td><?php echo $result[$index]["createdDate"] ?></td>
-	    		<td><?php echo $result[$index]["updatedDate"] ?></td>
+	    		<td> <?php echo $address[$index]->address;?> </td>
+	    		<td><?php echo $value->createdDate; ?></td>
+	    		<td><?php echo $value->updatedDate; ?></td>
 	    		<td>
-	    			<a href="index.php?a=delete&id=<?php echo $result[$index]['customerId'] ?>">Delete</a> 
-	    			<a href="index.php?a=edit&id=<?php echo $result[$index]['customerId']?>">Update</a>
+	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$value->customerId],true);?>">Delete</a> 
+	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$value->customerId],true);?>">Update</a>
 	    		</td>
 	   		</tr>
 	 	<?php endforeach;?>

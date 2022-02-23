@@ -6,12 +6,12 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		Ccc::getBlock('Admin_Grid')->toHtml();
+		Ccc::getBlock('Config_Grid')->toHtml();
 	}
 
 	public function addAction()
 	{
-		Ccc::getBlock('Admin_Add')->toHtml();
+		Ccc::getBlock('Config_Add')->toHtml();
 	}
 
 	public function editAction()
@@ -23,20 +23,17 @@ class Controller_Admin extends Controller_Core_Action
       		{
       			throw new Exception("Invalid Id.", 1);
       		}
-			$adminTable = Ccc::getModel('Admin');
-			$query = "SELECT * FROM Admin  
-            	WHERE adminId=".$id;
-      		$admin = $adminTable-> fetchRow($query);
-      		if (!$admin) 
+			$config = Ccc::getModel('Config')->load($id);
+			if (!$config) 
       		{
       			throw new Exception("Unable to Load Admin.", 1);
       		}
-     		Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();
+     		Ccc::getBlock('Config_Edit')->addData('config',$config)->toHtml();
 
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
+			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
 			//echo $e->getMessage();
 		}
 		
@@ -90,11 +87,11 @@ class Controller_Admin extends Controller_Core_Action
 				}
 				
 			}
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
+			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
+			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
 		}
 	}
 
@@ -115,12 +112,12 @@ class Controller_Admin extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));	
+			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));	
+			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));	
 		}
 	}
 }

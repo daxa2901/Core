@@ -60,19 +60,11 @@ class Model_Core_View{
 		return $this;
 	}
 
-	public function getUrl($controller=null,$action=null,$parameters=[],$reset=false)
+	public function getUrl($action=null,$controller=null,$parameters=[],$reset=false)
 	{
 		$temp = [];
 		$request = Ccc::getFront()->getRequest();
-		if(!$controller)
-		{
-			$temp['c'] = $request->getRequest('c');
-		}
-		else
-		{
-			$temp['c'] = $controller;
-		}
-
+		
 		if(!$action)
 		{
 			$temp['a'] = $request->getRequest('a');
@@ -82,6 +74,15 @@ class Model_Core_View{
 			$temp['a'] = $action;
 		}
 		
+		if(!$controller)
+		{
+			$temp['c'] = $request->getRequest('c');
+		}
+		else
+		{
+			$temp['c'] = $controller;
+		}
+
 		if($reset)
 		{
 			if($parameters)

@@ -4,31 +4,7 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Customer extends Controller_Core_Action{
 	public function gridAction()
 	{
-		$customerTable = Ccc::getModel("Customer");
-	 echo "<pre>";
-	 $customerTable->customerId = '79';
-	 $customerTable->firstName = 'daxa';
-	 $customerTable->lastName = 'devshibhai';
-	 $customerTable->mobile = 12121;
-	 $customerTable->email = 'dd@gmail.com';
-	 $customerTable->status = '1';
-	 $customerTable->createdDate = '2022-02-08 10:58:27';
-	 // $c=$customerTable->getTableClassName();
-	 // // echo $c;
-	 // $a = $customerTable->getTable();
-	 // echo $a->getPrimaryKey();
-	 // print_r($a);
-	 // print_r($customerTable);
-	 print_r($customerTable->delete());
-	 exit;
-
-		// $customer = $customerTable->getRow();
-		// print_r($customer);
-		
-		// $customerTable = Ccc::getModel("Customer_Row")->fetchAll("SELECT * FROM Customer");
-		// echo "<pre>";
-		// print_r($customerTable);
-		// Ccc::getBlock('Customer_Grid')->toHtml();
+		Ccc::getBlock('Customer_Grid')->toHtml();
 	}
 
 	public function addAction()
@@ -46,10 +22,8 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("Invalid Id.", 1);
 			}
 			
-			$customerTable = Ccc::getModel('Customer');
- 			$query = "SELECT * FROM Customer  
-			   WHERE customerId=".$id;
-			$customer = $customerTable->fetchRow($query);
+			$customerRow = Ccc::getModel('Customer');
+			$customer = $customerRow->load($id);
 
 			if (!$customer) 
 			{
@@ -60,8 +34,8 @@ class Controller_Customer extends Controller_Core_Action{
                   * 
                 FROM 
               customer_address WHERE customerId =".$id;  
-			$addressTable = Ccc::getModel('Customer_Address');
-			$address = $addressTable-> fetchRow($query2);
+			$addressRow = Ccc::getModel('Customer_Address');
+			$address = $addressRow-> fetchRow($query2);
 			if (!$address) 
 			{
 				throw new Exception("Unable to load Customer Address.", 1);
@@ -78,8 +52,7 @@ class Controller_Customer extends Controller_Core_Action{
 	}
 	protected function saveCustomer()
 	{
-		$customerTable = Ccc::getModel("Customer");
-		$customerRow = $customerTable->getRow();
+		$customerRow = Ccc::getModel("Customer");
 		
 		$request=$this->getRequest();
     	
@@ -128,8 +101,7 @@ class Controller_Customer extends Controller_Core_Action{
 	protected function saveAddress($customerId)
 	{
 
-		$addressTable = Ccc::getModel("Customer_Address");
-		$addressRow = $addressTable->getRow();
+		$addressRow = Ccc::getModel("Customer_Address");
 		$request = $this->getRequest();
 		
 		if(!$request->isPost())
@@ -153,16 +125,13 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 				$shipping = 1;
 		}
-		$query = "SELECT * FROM customer_address WHERE customerId = ".$customerId;
-		$addressData = $addressTable->fetchRow($query);
+		$addressData = $addressRow->load($customerId);
 		$addressRow->setData($row);
 		$addressRow->billing = $billing;
 		$addressRow->shipping = $shipping;
 		if($addressData)
 		{
-			$addressRow->addressId = $addressData['addressId'];
 			$update = $addressRow->save();
-		
 			if(!$update)
 			{ 
 				throw new Exception("System is unable to update.", 1);
@@ -185,11 +154,11 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 			$customerId = $this->saveCustomer();
 			$this->saveAddress($customerId);
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));
 		}
 	}
 
@@ -203,20 +172,25 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("Invalid Request.", 1);
 			}
 			
-			$customerTable = Ccc::getModel('Customer');
+			$customerRow = Ccc::getModel('Customer');
 			$id=$request->getRequest('id');
-			$delete = $customerTable->delete($id); 
+			$customerRow= $customerRow->load($id);
+			if(!$customerRow)
+			{
+				throw new Exception("record not found.", 1);
+			}
+			$delete = $customerRow->delete(); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));	
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('customer','grid',null,true));	
+			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));	
 			//echo $e->getMessage();
 		}
 	}

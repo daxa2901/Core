@@ -1,7 +1,7 @@
 <?php $products = $this->getProducts(); ?>
 <div class='container' style="text-align: center; ">
 <h1> Product Details </h1> 
-<form action="index.php?c=product&a=add" method="POST">
+<form action=<?php echo $this->getUrl('add');?> method="POST">
 	<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 </form>
 
@@ -35,8 +35,8 @@
 		    		endif; ?>
 	    		</td>
 	    		<td>
-	    			<a href="index.php?c=product&a=delete&id=<?php echo $row['productId'] ?>">Delete</a> 
-	    			<a href="index.php?c=product&a=edit&id=<?php echo $row['productId']?>">Update</a>
+	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row['productId']],true);?>">Delete</a> 
+	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row['productId']],true);?>">Update</a>
 	    		</td>
 	    	</tr
 	  	<?php endforeach; ?>
