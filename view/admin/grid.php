@@ -2,7 +2,7 @@
 
 <div class='container' style="text-align: center; ">
 	<h1> Admin Details </h1> 
-	<form action="index.php?c=admin&a=add" method="POST">
+	<form action="<?php echo  $this->getUrl('add');?>" method="POST">
 	<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
 
@@ -39,8 +39,8 @@
 			    		<td><?php echo $row["createdDate"] ?></td>
 			    		<td><?php echo $row["updatedDate"] ?></td>
 			    		<td>
-			    			<a href="index.php?c=Admin&a=delete&id=<?php echo $row['adminId'] ?>">Delete</a> 
-			    			<a href="index.php?c=Admin&a=edit&id=<?php echo $row['adminId']?>">Update</a>
+			    			<a href="<?php echo  $this->getUrl('delete',null,['id'=>$row['adminId']],true);?>">Delete</a> 
+			    			<a href="<?php echo  $this->getUrl('edit',null,['id'=>$row['adminId']],true);?>">Update</a>
 			    		</td>
 			   		</tr>
 			 	<?php endforeach;?>

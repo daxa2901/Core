@@ -1,5 +1,5 @@
 <?php  $row = $this->getAdmin(); ?>
-<form action="index.php?c=admin&a=save" method="POST">
+<form action="<?php echo  $this->getUrl('save');?>" method="POST">
 <table border="1" width="100%" cellspacing="4">
   <tr>
     <td width="10%">First Name</td>
@@ -41,7 +41,7 @@
     <input type="hidden" name="admin[adminId]" value="<?php echo $row['adminId'] ?>">
     <td>
       <button type="submit" name="submit" class="Registerbtn">Update </button>
-      <a href="index.php?c=admin&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
+      <a href="<?php echo  $this->getUrl('grid',null,null,true);?>"><button type="button" class="cancelbtn">Cancel</button></a>
     </td>
   </tr>    
 </table>  

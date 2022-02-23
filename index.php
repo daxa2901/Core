@@ -1,7 +1,5 @@
-<?php Ccc::loadClass('Model_Core_Adapter'); 
-$adapter = new Model_Core_Adapter();
-date_default_timezone_set("Asia/Kolkata");
- ?>
+<?php $adapter = Ccc::getModel('Core_Adapter'); ?>
+<?php date_default_timezone_set("Asia/Kolkata"); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,11 +9,12 @@ date_default_timezone_set("Asia/Kolkata");
 
 </head>
 <body>
+
 	<div class='index'>
-		<a href="index.php?c=category&a=grid"><button type="button" class="cancel">Category</button></a>
-		<a href="index.php?c=product&a=grid"><button type="button" class="cancel">Product</button></a>
-		<a href="index.php?c=customer&a=grid"><button type="button" class="cancel">Customer</button></a>
-		<a href="index.php?c=admin&a=grid"><button type="button" class="cancel">Admin</button></a>
+		<a href="<?php echo Ccc::getBlock('Category_Grid')->getUrl('grid','category',null,true);?>"><button type="button" class="cancel">Category</button></a>
+		<a href="<?php echo Ccc::getBlock('Product_Grid')->getUrl('grid','product',null,true);?>"><button type="button" class="cancel">Product</button></a>
+		<a href="<?php echo Ccc::getBlock('Customer_Grid')->getUrl('grid','customer',null,true);?>"><button type="button" class="cancel">Customer</button></a>
+		<a href="<?php echo Ccc::getBlock('Admin_Grid')->getUrl('grid','admin',null,true);?>"><button type="button" class="cancel">Admin</button></a>
 	</div>
 </body>
 </html>

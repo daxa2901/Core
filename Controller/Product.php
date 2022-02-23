@@ -32,7 +32,7 @@ class Controller_Product extends Controller_Core_Action{
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('product','grid',null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 			//echo $e->getMessage();
 		}
 	}
@@ -76,10 +76,10 @@ class Controller_Product extends Controller_Core_Action{
 					throw new Exception("System is unable to insert.", 1);					
 				}
 			}
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('product','grid',null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 			
 		} catch (Exception $e) {
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('product','grid',null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 		}
 	}
 
@@ -104,11 +104,11 @@ class Controller_Product extends Controller_Core_Action{
 				throw new Exception("System is unable to delete.", 1);							
 			}
 			
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('product','grid',null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('product','grid',null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 		}
 	}
 }

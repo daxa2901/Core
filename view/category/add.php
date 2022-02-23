@@ -1,6 +1,6 @@
 <?php $result = $this->getCategoryToPath(); ?>
 
-<form action="index.php?c=category&a=save" method="POST">
+<form action="<?php echo  $this->getUrl('save',null,null,true);?>" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
       <td width="10%"> Name</td>

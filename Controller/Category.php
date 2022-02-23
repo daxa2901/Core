@@ -16,7 +16,6 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{
-			global $adapter;
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) {
       			throw new Exception("Invalid Id.", 1);
@@ -36,7 +35,7 @@ class Controller_Category extends Controller_Core_Action {
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('admin','grid',null,true));
+			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));
 			//echo $e->getMessage();
 		}
 	}
@@ -56,7 +55,6 @@ class Controller_Category extends Controller_Core_Action {
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			global $adapter;
 			$categoryTable = Ccc::getModel('Category');
 			$row = $request->getPost('category');
 			$path = '';
@@ -95,20 +93,20 @@ class Controller_Category extends Controller_Core_Action {
 		
 				foreach ($categoryPath as $row) 
 				{
-					$parent=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
+					$parent=$this->getAdapter()->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
 					$newPath = $parent['categoryPath'].'/'.$row['categoryId'];
 
 					$query = "UPDATE Category
 						SET categoryPath = '".$newPath."',
 							updatedAt = '".date('Y-m-d H:i:s')."'
 							WHERE categoryId = ".$row['categoryId'];
-					$update = $adapter->update($query);
+					$update = $this->getAdapter()->update($query);
 					if(!$update)
 					{
 						throw new Exception("System is unable to update.", 1);
 					}	
 				}
-				$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));
+				$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));
 				
 			}
 			else
@@ -127,14 +125,15 @@ class Controller_Category extends Controller_Core_Action {
 				{
 					throw new Exception("System is unable to insert.", 1);			
 				}
-				$parent=$adapter->fetchOne("SELECT parentId FROM Category WHERE categoryId=".$insert);
+
+				$parent=$this->getAdapter()->fetchOne("SELECT parentId FROM Category WHERE categoryId=".$insert);
 				if ($parent == NULL) 
 				{
 					$path = $insert;
 				}
 				else
 				{
-					$result=$adapter->fetchRow("SELECT * FROM Category WHERE categoryId= ".$parent);
+					$result=$this->getAdapter()->fetchRow("SELECT * FROM Category WHERE categoryId= ".$parent);
 					$path = $result['categoryPath'].'/'.$insert;
 
 				}
@@ -145,12 +144,12 @@ class Controller_Category extends Controller_Core_Action {
 					throw new Exception("System is unable to update.", 1);
 				}				
 			}
-		$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));
+		$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));
 		
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));	
+			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));	
 		}
 	}
 	
@@ -170,11 +169,11 @@ class Controller_Category extends Controller_Core_Action {
 			{
 				throw new Exception("System is unable to  delete.", 1);
 			}
-			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));		
+			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));		
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('category','grid',null,true));		
+			$this->redirect(Ccc::getBlock('Category_Grid')->getUrl('grid',null,null,true));		
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <?php $row = $this->getCategory(); ?>
 <?php  $categoryPathPair = $this->getCategoryPathPair(); ?>
 <?php  $categoryPath = $this->getCategoryToPath(); ?>
-<form action="index.php?c=category&a=save" method="POST">
+<form action="<?php echo  $this->getUrl('save');?>" method="POST">
   <table border="1" width="100%" cellspacing="4">
     <tr>
       <td width="10%"> Name</td>
@@ -43,7 +43,7 @@
       <td width="25%">&nbsp;</td>
       <td>
         <button type="submit" name="submit" class="Registerbtn">Save </button>
-        <a href="index.php?c=category&a=grid"><button type="button" class="cancelbtn">Cancel</button></a>
+        <a href="<?php echo  $this->getUrl('grid',null,null,true);?>"><button type="button" class="cancelbtn">Cancel</button></a>
       </td>
     </tr>    
   </table>  

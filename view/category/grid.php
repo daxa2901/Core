@@ -2,7 +2,7 @@
 <?php $getCategoryToPath = $this->getCategoryToPath(); ?>
 <div class = 'container'style="text-align: center; ">
 	<h1> Category Details </h1> 
-	<form action="index.php?c=category&a=add" method="POST">
+	<form action="<?php echo  $this->getUrl('add');?>" method="POST">
 		<button type="submit" name="Add" class="Registerbtn"> Add New </button>
 	</form>
 
@@ -32,8 +32,8 @@
 				    		<?php endif;?>
 			    		</td>
 			    		<td>
-			    			<a href="index.php?c=category&a=delete&id=<?php echo $row['categoryId'] ?>">Delete</a> 
-			    			<a href="index.php?c=category&a=edit&id=<?php echo $row['categoryId'] ?>">Update</a>
+			    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row['categoryId']],true);?>">Delete</a> 
+			    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row['categoryId']],true);?>">Update</a>
 			    		</td>
 			   		</tr>
 			  	<?php endforeach; ?>
