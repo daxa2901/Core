@@ -1,5 +1,5 @@
 <?php Ccc::loadClass('Controller_Core_Action');?>
-<?php Ccc::loadClass('Model_Admin'); ?>
+
 <?php
 class Controller_Admin extends Controller_Core_Action
 {
@@ -11,7 +11,8 @@ class Controller_Admin extends Controller_Core_Action
 
 	public function addAction()
 	{
-		Ccc::getBlock('Admin_Add')->toHtml();
+		$admin = Ccc::getModel('Admin');
+     	Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin])->toHtml();
 	}
 
 	public function editAction()
@@ -23,15 +24,12 @@ class Controller_Admin extends Controller_Core_Action
       		{
       			throw new Exception("Invalid Id.", 1);
       		}
-			$adminTable = Ccc::getModel('Admin');
-			$query = "SELECT * FROM Admin  
-            	WHERE adminId=".$id;
-      		$admin = $adminTable-> fetchRow($query);
+			$admin = Ccc::getModel('Admin')->load($id);
       		if (!$admin) 
       		{
       			throw new Exception("Unable to Load Admin.", 1);
       		}
-     		Ccc::getBlock('Admin_Edit')->addData('admin',$admin)->toHtml();
+     		Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin])->toHtml();
 
 		} 
 		catch (Exception $e) 
@@ -57,17 +55,16 @@ class Controller_Admin extends Controller_Core_Action
 			}			
 
 			$row = $request->getPost('admin');
-			$adminTable = Ccc::getModel('Admin');
+			$adminRow = Ccc::getModel('Admin');
 			if (array_key_exists('adminId', $row))
 			{
 				if(!(int)$row['adminId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$row['updatedDate'] = date('Y-m-d H:i:s');
-				$id = $row['adminId'];
-				unset($row['adminId']);
-				$update = $adminTable->update($row,['adminId'=>$id]);
+				$adminRow->setData($row);
+				$adminRow->updatedDate = date('Y-m-d H:i:s');
+				$update = $adminRow->save();
 				if(!$update)
 				{ 
 					throw new Exception("System is unable to update.", 1);
@@ -81,9 +78,10 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("password must be same.", 1);
 				}
 				unset($row['confirmPassword']);
-				$row['createdDate'] = date('Y-m-d H:i:s');
-				$adminTable = Ccc::getModel('Admin');
-				$insert = $adminTable->insert($row);
+				$adminRow = Ccc::getModel('Admin');
+				$adminRow->setData($row);
+				$adminRow->createdDate = date('Y-m-d H:i:s');
+				$insert = $adminRow->save($row);
 				if(!$insert)
 				{	
 					throw new Exception("System is unable to insert.", 1);
@@ -101,7 +99,7 @@ class Controller_Admin extends Controller_Core_Action
 	public function deleteAction()
 	{
 		try 
-		{	$adminTable = Ccc::getModel('Admin');
+		{	$adminRow = Ccc::getModel('Admin');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -109,7 +107,12 @@ class Controller_Admin extends Controller_Core_Action
 			}
 			
 			$id=$request->getRequest('id');
-			$delete = $adminTable->delete(['adminId'=>$id]); 
+			$adminRow = $adminRow->load($id);
+			if(!$adminRow)
+			{
+				throw new Exception("Record not found.", 1);
+			}
+			$delete = $adminRow->delete(); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete record.", 1);

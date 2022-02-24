@@ -62,39 +62,40 @@ class Model_Core_Row
 		return $this;
 	}
 
-	public function getTable()
+	public function getResource()
 	{
 		return Ccc::getModel($this->getResourceClassName());
 	}
 
 	public function save()
 	{
-		if(array_key_exists($this->getTable()->getPrimaryKey(),$this->data))
+		if(array_key_exists($this->getResource()->getPrimaryKey(),$this->data))
 		{
-			$id = $this->data[$this->getTable()->getPrimaryKey()]; 
-			$this->getTable()->update($this->data,$id);
+			$id = $this->data[$this->getResource()->getPrimaryKey()]; 
+			unset($this->data[$this->getResource()->getPrimaryKey()]); 
+			$this->getResource()->update($this->data,$id);
 		}
 		else
 		{
-			$id = $this->getTable()->insert($this->data);
+			$id = $this->getResource()->insert($this->data);
 		}
 		return $id;
 	}
 
 	public function delete()
 	{
-		if(!array_key_exists($this->getTable()->getPrimaryKey(),$this->data))
+		if(!array_key_exists($this->getResource()->getPrimaryKey(),$this->data))
 		{
 			return false;
 		}
-		$id =$this->data[$this->getTable()->getPrimaryKey()];
-		return $this->getTable()->delete($id);
+		$id =$this->data[$this->getResource()->getPrimaryKey()];
+		return $this->getResource()->delete($id);
 
 	}
 
 	public function fetchAll($query)
 	{
-		$rows = $this->getTable()->fetchAll($query);
+		$rows = $this->getResource()->fetchAll($query);
 		if(!$rows)
 		{
 			return $rows;	
@@ -108,7 +109,7 @@ class Model_Core_Row
 
 	public function fetchRow($query)
 	{
-		$row = $this->getTable()->fetchRow($query);
+		$row = $this->getResource()->fetchRow($query);
 		if(!$row)
 		{
 			return $row;
@@ -121,8 +122,8 @@ class Model_Core_Row
 	{
 		if(!$column)
 		{
-			$column= $this->getTable()->getPrimaryKey();
+			$column= $this->getResource()->getPrimaryKey();
 		}
-		return $this->fetchRow("SELECT * FROM ".$this->getTable()->getTableName(). " WHERE ".$column." = ".$id);
+		return $this->fetchRow("SELECT * FROM ".$this->getResource()->getTableName(). " WHERE ".$column." = ".$id);
 	}
 }

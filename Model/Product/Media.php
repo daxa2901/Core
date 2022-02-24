@@ -1,6 +1,6 @@
-<?php 
-Ccc::loadClass('Model_Core_Row');
-class Model_Category extends Model_Core_Row
+<?php Ccc::loadClass('Model_Core_Row'); ?>
+<?php
+class Model_Product_Media extends Model_Core_Row
 {
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -10,7 +10,7 @@ class Model_Category extends Model_Core_Row
 	
 	public function __construct()
 	{
-		$this->setResourceClassName('Category_Resource');
+		$this->setResourceClassName('Product_Media_Resource');
 		parent::__construct();
 	}
 

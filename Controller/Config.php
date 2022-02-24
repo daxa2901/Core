@@ -1,5 +1,5 @@
 <?php Ccc::loadClass('Controller_Core_Action');?>
-<?php Ccc::loadClass('Model_Admin'); ?>
+
 <?php
 class Controller_Admin extends Controller_Core_Action
 {

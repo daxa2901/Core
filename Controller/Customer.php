@@ -9,7 +9,13 @@ class Controller_Customer extends Controller_Core_Action{
 
 	public function addAction()
 	{
-		Ccc::getBlock('Customer_Add')->toHtml();
+		$customer = Ccc::getModel('Customer');
+		$address = Ccc::getModel('Customer_Address');
+		$customerBlock = Ccc::getBlock('Customer_Edit');
+		$customerBlock->setData(['customer'=>$customer]);
+		$customerBlock->addData('address',$address);	
+		$customerBlock->toHtml();
+		// Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
 	public function editAction()
@@ -22,27 +28,21 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("Invalid Id.", 1);
 			}
 			
-			$customerRow = Ccc::getModel('Customer');
-			$customer = $customerRow->load($id);
+			$customer = Ccc::getModel('Customer')->load($id);
 
 			if (!$customer) 
 			{
 				throw new Exception("Unable to load Customer.", 1);
 			}
 
-			$query2 = "SELECT 
-                  * 
-                FROM 
-              customer_address WHERE customerId =".$id;  
-			$addressRow = Ccc::getModel('Customer_Address');
-			$address = $addressRow-> fetchRow($query2);
+			$address = Ccc::getModel('Customer_Address')->load($id,'customerId');
 			if (!$address) 
 			{
 				throw new Exception("Unable to load Customer Address.", 1);
 			}
 			$customerBlock = Ccc::getBlock('Customer_Edit');
-			$customerBlock->addData('customer',$customer);
-			$customerBlock->addData('address',$address);			
+			$customerBlock->setData(['customer'=>$customer]);
+			$customerBlock->addData('address',$address);	
 			$customerBlock->toHtml();
 		} 
 		catch (Exception $e) 
@@ -66,7 +66,7 @@ class Controller_Customer extends Controller_Core_Action{
 		}
 					
 		$row = $request->getPost('customer');
-
+		
 		if (array_key_exists('customerId', $row)) 
 		{
 			if(!(int)$row['customerId'])

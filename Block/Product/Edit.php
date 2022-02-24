@@ -8,7 +8,7 @@ class Block_Product_Edit extends Block_Core_Template
 		$this->setTemplate('view/product/edit.php');
 	}
 
-	public function getProducts()
+	public function getProduct()
 	{
 		return $this->getData('product');
 	}
