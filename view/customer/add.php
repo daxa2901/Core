@@ -1,3 +1,6 @@
+<?php $customer = $this->getCustomer();?>
+<?php $address = $this->getAddress(); ?>
+
 <form action=<?php echo  $this->getUrl('save');?> method="POST">
 <table border="1" width="100%" cellspacing="4">
   <tr>
@@ -23,8 +26,9 @@
     <td width="10%">Status</td>
     <td>
       <select name="customer[status]">
-        <option value="1">Active</option>
-        <option value="2">Inactive</option>
+        <?php foreach ($customer->getStatus() as $key => $val): ?>
+          <option value="<?php echo $key ?>"><?php echo $val ?></option>
+        <?php endforeach; ?>
       </select>
     </td>
   </tr>

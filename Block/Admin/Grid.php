@@ -8,7 +8,7 @@ class Block_Admin_Grid extends Block_Core_Template
 		$this->setTemplate('view/admin/grid.php');
 	}
 
-	public function getAdmin()
+	public function getAdmins()
 	{
 		$adminTable = Ccc::getModel('Admin');
 		$query = "SELECT * FROM Admin";

@@ -26,14 +26,9 @@
     <td width="10%">Status</td>
     <td>
       <select name="customer[status]">
-
-        <?php if ($customer->status == 1):?>
-            <option value='1'>Active</option>
-            <option value='2'>InActive</option>
-        <?php else: ?>
-            <option value='2'>InActive</option>
-                  <option value='1'>Active</option>
-        <?php endif;?>
+        <?php foreach ($customer->getStatus() as $key => $val): ?>
+          <option <?php if($customer->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
+        <?php endforeach; ?>
       </select>
     </td>
   </tr>
@@ -79,8 +74,10 @@
   </tr>
   <tr>
     <td width="25%">&nbsp;</td>
-    <input type="hidden" name="customer[customerId]" value="<?php echo $customer->customerId; ?>">
-    <input type="hidden" name="address[addressId]" value="<?php echo $address->addressId; ?>">
+    <?php if($customer->customerId): ?>
+      <input type="hidden" name="customer[customerId]" value="<?php echo $customer->customerId; ?>">
+      <input type="hidden" name="address[addressId]" value="<?php echo $address->addressId; ?>">
+    <?php endif ?>
     <td>
       <button type="submit" name="submit" class="Registerbtn">Update </button>
       <a href="<?php echo  $this->getUrl('grid',null,null,true);?>"><button type="button" class="cancelbtn">Cancel</button></a>

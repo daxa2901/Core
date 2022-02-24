@@ -21,8 +21,8 @@
 		<th> Update Date </th>
 		<th> Action </th>
 	</tr>
-	<?php if($result):
-		foreach ($result as $index => $value): ?>
+	<?php if($result):?>
+		<?php foreach ($result as $index => $value): ?>
 			 
 			<tr>
 	      		<td><?php echo $value->customerId; ?></td>
@@ -30,13 +30,7 @@
 	    		<td><?php echo $value->lastName; ?></td>
 	    		<td><?php echo $value->email; ?></td>
 	    		<td><?php echo $value->mobile; ?></td>
-	    		<td>
-		    		<?php if ($value->status == 1): ?>
-		    			<?php echo 'Active'; ?>
-		    		<?php else: ?> 
- 		    			<?php echo 'InActive'; ?>
-		    		<?php endif; ?>
-	    		</td>
+	    		<td><?php echo  $value->getStatus($value->status) ?> </td>
 	    		<td> <?php echo $address[$index]->address;?> </td>
 	    		<td><?php echo $value->createdDate; ?></td>
 	    		<td><?php echo $value->updatedDate; ?></td>

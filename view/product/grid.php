@@ -15,28 +15,24 @@
 		<th> Created_At </th>
 		<th> Updated_At </th>
 		<th> Status </th>
+		<th> Media </th>
 		<th> Action </th>
 	</tr>
 	<?php if($products): ?>
 	
 		<?php foreach ($products as $row): ?>		
 			<tr>
-	    		<td><?php echo $row["productId"] ?></td>
-	    		<td><?php echo $row["name"] ?></td>
-	    		<td><?php echo $row['price'] ?></td>
-	    		<td><?php echo $row["quantity"] ?></td>
-	    		<td><?php echo $row["createdAt"] ?></td>
-	    		<td><?php echo $row["updatedAt"] ?></td>
+	    		<td><?php echo $row->productId ?></td>
+	    		<td><?php echo $row->name ?></td>
+	    		<td><?php echo $row->price ?></td>
+	    		<td><?php echo $row->quantity ?></td>
+	    		<td><?php echo $row->createdAt ?></td>
+	    		<td><?php echo $row->updatedAt ?></td>
+	    		<td><?php echo  $row->getStatus($row->status) ?> </td>
+	    		<td><a href="<?php echo $this->getUrl('grid','product_media',['id'=>$row->productId],true);?>">Media</a> </td>
 	    		<td>
-		    		<?php if ($row['status'] == 1):
-		    			echo ' Active ';
-		    		else:
-		    			echo ' InActive ';
-		    		endif; ?>
-	    		</td>
-	    		<td>
-	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row['productId']],true);?>">Delete</a> 
-	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row['productId']],true);?>">Update</a>
+	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->productId],true);?>">Delete</a> 
+	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->productId],true);?>">Update</a>
 	    		</td>
 	    	</tr
 	  	<?php endforeach; ?>

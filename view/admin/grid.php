@@ -1,4 +1,4 @@
-<?php $result = $this->getAdmin(); ?>
+<?php $admins = $this->getAdmins(); ?>
 
 <div class='container' style="text-align: center; ">
 	<h1> Admin Details </h1> 
@@ -20,27 +20,21 @@
 				<th> Update Date </th>
 				<th> Action </th>
 			</tr>
-			<?php if($result): ?>
-				<?php foreach ($result as $row): ?>
+			<?php if($admins): ?>
+				<?php foreach ($admins as $row): ?>
 					<tr>
-			      		<td><?php echo $row["adminId"] ?></td>
-			    		<td><?php echo $row["firstName"] ?></td>
-			    		<td><?php echo $row["lastName"] ?></td>
-			    		<td><?php echo $row["email"] ?></td>
-			    		<td><?php echo $row["password"] ?></td>
-			    		<td><?php echo $row["mobile"] ?></td>
+			      		<td><?php echo $row->adminId ?></td>
+			    		<td><?php echo $row->firstName ?></td>
+			    		<td><?php echo $row->lastName ?></td>
+			    		<td><?php echo $row->email ?></td>
+			    		<td><?php echo $row->password ?></td>
+			    		<td><?php echo $row->mobile ?></td>
+			    		<td><?php echo $row->getStatus($row->status) ?> </td>
+			    		<td><?php echo $row->createdDate ?></td>
+			    		<td><?php echo $row->updatedDate ?></td>
 			    		<td>
-				    		<?php if ($row['status'] == 1): ?>
-				    			<?php echo 'Active'; ?>
-				    		<?php else: ?>
-				    			<?php echo 'InActive'; ?>
-				    		<?php endif; ?>
-			    		</td>
-			    		<td><?php echo $row["createdDate"] ?></td>
-			    		<td><?php echo $row["updatedDate"] ?></td>
-			    		<td>
-			    			<a href="<?php echo  $this->getUrl('delete',null,['id'=>$row['adminId']],true);?>">Delete</a> 
-			    			<a href="<?php echo  $this->getUrl('edit',null,['id'=>$row['adminId']],true);?>">Update</a>
+			    			<a href="<?php echo  $this->getUrl('delete',null,['id'=>$row->adminId],true);?>">Delete</a> 
+			    			<a href="<?php echo  $this->getUrl('edit',null,['id'=>$row->adminId],true);?>">Update</a>
 			    		</td>
 			   		</tr>
 			 	<?php endforeach;?>
