@@ -19,21 +19,17 @@
 			<?php if($result): ?>
 				<?php foreach ($result as $row):?>
 					<tr>
-			    		<td><?php echo $row["categoryId"] ?></td>
-			    		<td><?php echo $getCategoryToPath[$row['categoryId']];?>
+			    		<td><?php echo $row->categoryId ?></td>
+			    		<td><?php echo $getCategoryToPath[$row->categoryId];?>
 			    		</td>
-			    		<td><?php echo $row["createdAt"] ?></td>
-			    		<td><?php echo $row["updatedAt"] ?></td>
+			    		<td><?php echo $row->createdAt ?></td>
+			    		<td><?php echo $row->updatedAt ?></td>
 			    		<td>
-				    		<?php if ($row['status'] == 1): ?>
-				    			<?php echo ' Active '; ?>
-				    		<?php else: ?>
-				    			<?php echo ' InActive '; ?>
-				    		<?php endif;?>
+				    		<?php echo $row->getStatus($row->status) ?>
 			    		</td>
 			    		<td>
-			    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row['categoryId']],true);?>">Delete</a> 
-			    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row['categoryId']],true);?>">Update</a>
+			    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->categoryId],true);?>">Delete</a> 
+			    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->categoryId],true);?>">Update</a>
 			    		</td>
 			   		</tr>
 			  	<?php endforeach; ?>

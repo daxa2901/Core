@@ -8,11 +8,9 @@ class Block_Product_Media_Grid extends Block_Core_Template
 		$this->setTemplate('view/product/media/grid.php');
 	}
 
-	public function getProducts()
+	public function getMedias()
 	{
-		$mediaRow = Ccc::getModel('Product_Media');
-		$query = "SELECT * FROM media";
-		$medias = $mediaRow-> fetchAll($query);
-		return $medias;
+		return $this->getData('media');
+
 	}
 }
