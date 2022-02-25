@@ -79,7 +79,7 @@
       <input type="hidden" name="address[addressId]" value="<?php echo $address->addressId; ?>">
     <?php endif ?>
     <td>
-      <button type="submit" name="submit" class="Registerbtn">Update </button>
+      <button type="submit" name="submit" class="Registerbtn">Save </button>
       <a href="<?php echo  $this->getUrl('grid',null,null,true);?>"><button type="button" class="cancelbtn">Cancel</button></a>
     </td>
   </tr>    

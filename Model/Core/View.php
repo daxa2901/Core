@@ -98,7 +98,17 @@ class Model_Core_View{
 				$temp = array_merge($temp,$parameters);
 			}
 		}
-		$url = 'index.php?'.http_build_query($temp);
+
+		return 'index.php?'.http_build_query($temp);
+	}
+
+	public function baseUrl($suburl = null)
+	{
+		$url = 'C:/xampp/htdocs/Cybercom/Core';
+		if($suburl)
+		{
+			$url = $url.'/'.$suburl;
+		}
 		return $url;
 	}
 }

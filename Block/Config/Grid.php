@@ -8,7 +8,7 @@ class Block_Config_Grid extends Block_Core_Template
 		$this->setTemplate('view/config/grid.php');
 	}
 
-	public function getAdmin()
+	public function getConfigs()
 	{
 		$configRow = Ccc::getModel('Config');
 		$query = "SELECT * FROM config";

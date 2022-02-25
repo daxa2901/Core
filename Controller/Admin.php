@@ -45,6 +45,7 @@ class Controller_Admin extends Controller_Core_Action
 		try
 		{
 			$request = $this->getRequest();
+			$adminRow = Ccc::getModel('Admin');
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
@@ -55,7 +56,6 @@ class Controller_Admin extends Controller_Core_Action
 			}			
 
 			$row = $request->getPost('admin');
-			$adminRow = Ccc::getModel('Admin');
 			if (array_key_exists('adminId', $row))
 			{
 				if(!(int)$row['adminId'])
@@ -78,7 +78,6 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("password must be same.", 1);
 				}
 				unset($row['confirmPassword']);
-				$adminRow = Ccc::getModel('Admin');
 				$adminRow->setData($row);
 				$adminRow->createdDate = date('Y-m-d H:i:s');
 				$insert = $adminRow->save($row);

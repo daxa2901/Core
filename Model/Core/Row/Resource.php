@@ -5,6 +5,7 @@ class Model_Core_Row_Resource
 {
 	protected $table = null;
 	protected $primaryKey = null;
+	protected $mediaPath = null;
 	
 	public function __construct()
 	{
@@ -19,6 +20,17 @@ class Model_Core_Row_Resource
 	public function setTableName($table)
 	{
 		$this->table = $table;
+		return $this;
+	}
+	
+	public function getMediaPath()
+	{
+		return $this->mediaPath;
+	}
+
+	public function setMediaPath($mediaPath)
+	{
+		$this->mediaPath = $mediaPath;
 		return $this;
 	}
 

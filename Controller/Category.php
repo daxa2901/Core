@@ -1,6 +1,7 @@
 <?php
 Ccc::loadClass('Controller_Core_Action');
-class Controller_Category extends Controller_Core_Action {
+class Controller_Category extends Controller_Core_Action 
+{
 
 	public function gridAction()
 	{
@@ -20,18 +21,12 @@ class Controller_Category extends Controller_Core_Action {
       		if (!$id) {
       			throw new Exception("Invalid Id.", 1);
       		}
-			$categoryTable = Ccc::getModel('Category');
-		    $query = "SELECT 
-		                  * 
-		    FROM Category WHERE categoryId=".$id;
-		    $category = $categoryTable-> fetchRow($query);
+			$category = Ccc::getModel('Category')->load($id);
 	 		if (!$category) 
 	 		{
       			throw new Exception("Unable to Load Admin.", 1);
       		}
-     		$categoryBlock = Ccc::getBlock('Category_Edit');
-     		$categoryBlock->addData('category',$category);
-	    	$categoryBlock->toHtml();
+     		Ccc::getBlock('Category_Edit')->setData(['category'=>$category])->toHtml();
 		} 
 		catch (Exception $e) 
 		{
@@ -55,7 +50,7 @@ class Controller_Category extends Controller_Core_Action {
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			$categoryTable = Ccc::getModel('Category');
+			$categoryRow = Ccc::getModel('Category');
 			$row = $request->getPost('category');
 			$path = '';
 
@@ -66,25 +61,24 @@ class Controller_Category extends Controller_Core_Action {
 					throw new Exception("Invalid Request.", 1);
 				}
 
-				$row['updatedAt'] = date('Y-m-d H:i:s');
+				$categoryRow->setData($row);
+				$categoryRow->updatedAt = date('Y-m-d H:i:s');
 				$id = $row['categoryId'];
-				unset($row['categoryId']);
 
-				$date = date('Y-m-d H:i:s');
-				$category=$categoryTable->fetchRow("SELECT * FROM Category WHERE categoryId= ".$id);
-				$categoryPath=$categoryTable->fetchAll("SELECT * FROM Category WHERE categoryPath LIKE '".$category['categoryPath'].'/%'."' ORDER BY categoryPath");
+				$category=$categoryRow->load($id);
+				$categoryPath=$categoryRow->fetchAll("SELECT * FROM Category WHERE categoryPath LIKE '".$category->categoryPath.'/%'."' ORDER BY categoryPath");
 		
 				if($row['parentId'] == null)
 				{	
 					$row['parentId'] = null;
 					$row['categoryPath'] = $id; 
-					$categoryTable->update($row,$id);
+					$categoryRow->update($row,$id);
 				}
 				else 	
 				{
-					$parent=$categoryTable->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
+					$parent=$categoryRow->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
 					$row['categoryPath'] = $parent['categoryPath'].'/'.$id;
-					$categoryTable->update($row,$id);
+					$categoryRow->update($row,$id);
 				}
 				if(!$update)
 				{
@@ -115,11 +109,11 @@ class Controller_Category extends Controller_Core_Action {
 				if ($row['parentId'] == null) 
 				{
 					unset($row['parentId']);
-					$insert =$categoryTable->insert($row);
+					$insert =$categoryRow->insert($row);
 				}
 				else
 				{
-					$insert = $categoryTable->insert($row);
+					$insert = $categoryRow->insert($row);
 				}
 				if(!$insert)
 				{
@@ -138,7 +132,7 @@ class Controller_Category extends Controller_Core_Action {
 
 				}
 				$data['categoryPath'] = $path;
-				$update = $categoryTable->update($data,$insert);
+				$update = $categoryRow->update($data,$insert);
 				if(!$update)
 				{
 					throw new Exception("System is unable to update.", 1);
@@ -157,14 +151,14 @@ class Controller_Category extends Controller_Core_Action {
 	{
 		try 
 		{
-			$categoryTable = Ccc::getModel('Category');
+			$categoryRow = Ccc::getModel('Category');
 			$request=$this->getRequest();
 			if (!($request->getRequest('id'))) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
 			$id=$request->getRequest('id');
-			$delete = $categoryTable->delete(['categoryId'=>$id]); 
+			$delete = $categoryRow->delete(['categoryId'=>$id]); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to  delete.", 1);

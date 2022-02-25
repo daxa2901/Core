@@ -1,7 +1,7 @@
 <?php Ccc::loadClass('Controller_Core_Action');?>
 
 <?php
-class Controller_Admin extends Controller_Core_Action
+class Controller_Config extends Controller_Core_Action
 {
 	
 	public function gridAction()
@@ -11,7 +11,8 @@ class Controller_Admin extends Controller_Core_Action
 
 	public function addAction()
 	{
-		Ccc::getBlock('Config_Add')->toHtml();
+		$config = Ccc::getModel('Config');
+		Ccc::getBlock('Config_Edit')->setData(['config'=>$config])->toHtml();
 	}
 
 	public function editAction()
@@ -26,7 +27,7 @@ class Controller_Admin extends Controller_Core_Action
 			$config = Ccc::getModel('Config')->load($id);
 			if (!$config) 
       		{
-      			throw new Exception("Unable to Load Admin.", 1);
+      			throw new Exception("Unable to Load Config.", 1);
       		}
      		Ccc::getBlock('Config_Edit')->addData('config',$config)->toHtml();
 
@@ -43,28 +44,28 @@ class Controller_Admin extends Controller_Core_Action
 	{
 		try
 		{
+
+			$configRow = Ccc::getModel('Config');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			if (!$request->getPost('admin')) 
+			if (!$request->getPost('config')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}			
 
-			$row = $request->getPost('admin');
-			$adminTable = Ccc::getModel('Admin');
-			if (array_key_exists('adminId', $row))
+			$row = $request->getPost('config');
+			print_r($row);
+			if (array_key_exists('configId', $row))
 			{
-				if(!(int)$row['adminId'])
+				if(!(int)$row['configId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$row['updatedDate'] = date('Y-m-d H:i:s');
-				$id = $row['adminId'];
-				unset($row['adminId']);
-				$update = $adminTable->update($row,['adminId'=>$id]);
+				$configRow->setData($row);
+				$update = $configRow->save();
 				if(!$update)
 				{ 
 					throw new Exception("System is unable to update.", 1);
@@ -73,19 +74,13 @@ class Controller_Admin extends Controller_Core_Action
 			}
 			else
 			{
-				if($row['password'] !=$row['confirmPassword'])
-				{
-					throw new Exception("password must be same.", 1);
-				}
-				unset($row['confirmPassword']);
-				$row['createdDate'] = date('Y-m-d H:i:s');
-				$adminTable = Ccc::getModel('Admin');
-				$insert = $adminTable->insert($row);
+				$configRow->setData($row);
+				$configRow->createdAt = date('Y-m-d H:i:s');
+				$insert = $configRow->save();
 				if(!$insert)
 				{	
 					throw new Exception("System is unable to insert.", 1);
 				}
-				
 			}
 			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
 		} 
@@ -98,15 +93,22 @@ class Controller_Admin extends Controller_Core_Action
 	public function deleteAction()
 	{
 		try 
-		{	$adminTable = Ccc::getModel('Admin');
+		{	
+
+			$configRow = Ccc::getModel('Config');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			
 			$id=$request->getRequest('id');
-			$delete = $adminTable->delete(['adminId'=>$id]); 
+			$configRow = $configRow->load($id);
+			if(!$configRow)
+			{
+
+				throw new Exception("Record not found.", 1);
+			}
+			$delete = $configRow->delete(); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete record.", 1);
