@@ -1,9 +1,9 @@
-<?php Ccc::loadClass('Model_Core_View'); ?>
+<?php Ccc::loadClass('Block_Core_Layout'); ?>
 
 <?php
 class Controller_Core_Action
 {
-	public $view = null;
+	protected $layout = null;
 	
 	public function getRequest()
 	{
@@ -22,17 +22,22 @@ class Controller_Core_Action
 		exit();			
 	}
 
-	public function setView($view)
+	public function setLayout($layout)
 	{
-		$this->view = $view;
+		$this->layout = $layout;
 		return $this;
 	}
 
-	public function getView()
+	public function getLayout()
 	{
-		if(!$this->view){
-			$this->setView(new Model_Core_View);
+		if(!$this->layout){
+			$this->setlayout(new Block_Core_layout);
 		}
-		return $this->view;
+		return $this->layout;
+	}
+
+	public function renderLayout()
+	{
+		$this->getLayout()->toHtml();
 	}
 }

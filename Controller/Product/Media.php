@@ -11,7 +11,7 @@ class Controller_Product_Media extends Controller_Core_Action
 			throw new Exception("Invalid Id.", 1);				
 		}
 		$medias = Ccc::getModel('Product_Media');
-		$query = "SELECT * FROM media WHERE productId = ".$id;
+		$query = "SELECT * FROM product_media WHERE productId = ".$id;
 		$medias = $medias->fetchAll($query);
 		Ccc::getBlock('Product_Media_Grid')->setData(['media'=>$medias])->toHtml();
 	}
@@ -31,38 +31,155 @@ class Controller_Product_Media extends Controller_Core_Action
 						
 	public function saveAction()
 	{
-		try 
+		try
 		{
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			$id = (int) $this->getRequest()->getRequest('id');
-			if(!$id)
+			$productId = (int) $request->getRequest('id');
+			if(!$productId)
 			{
 				throw new Exception("Invalid Id.", 1);				
 			}
-			
-			// if (!$request->getPost('media')) 
-			// {
-			// 	throw new Exception("Invalid Request.", 1);				
-			// }
 
-			$row = $request->getPost('media');
 			$mediaRow = Ccc::getModel('Product_Media');
-			// if (!array_key_exists('imageId', $row)) 
-			// {
-			// 	if(!(int)$row['imageId'])
-			// 	{
-			// 		throw new Exception("Invalid Request.", 1);
-			// 	}
+			$productRow = Ccc::getModel('Product');
+			$rows =  $request->getPost('media');
+			if(array_key_exists('mediaId',$rows))
+			{
+				$ids = implode(',',array_values($rows['mediaId']));
+				 
+				$update = $this->getAdapter()->update("UPDATE product_media SET base =2 ,thumb = 2 , small = 2, gallery = 2, status = 2 where mediaId IN ({$ids})");
+				if(!$update)
+				{
+					throw new Exception("Unable to update product media.", 1);	
+				}
+
+				$update = $this->getAdapter()->update("UPDATE product SET base =null ,thumb = null, small = null where productId = ".$productId);
+				if(!$update)
+				{
+					throw new Exception("Unable to update product media.", 1);	
+				}
+
+				if(array_key_exists('remove',$rows))
+				{
+					foreach ($rows['remove'] as $row) 
+					{
+						$mediaRow = $mediaRow->load($row);
+						$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->media;
+						unlink($path);
+					}
+					$ids = implode(',',array_values($rows['remove']));
+					$delete = $this->getAdapter()->delete("DELETE FROM  product_media WHERE mediaId IN ({$ids})");
+					if(!$delete)
+					{
+						throw new Exception("Unable to delete product media.", 1);	
+					}
+
+
+				}
+				
+				if(array_key_exists('base',$rows))
+				{
+					$mediaRow->mediaId = $rows['base'];
+					$mediaRow->base = 1;
+					$update = $mediaRow->save();
+					if(!$update)
+					{
+						throw new Exception("Unable to update product media.", 1);	
+					}
+
+					if(stripos($ids, $productId) == 'false')
+					{
+						$productRow->productId = $productId;
+						$productRow->base = $rows['base'];
+						$update = $productRow->save();
+						if(!$update)
+						{
+							throw new Exception("Unable to update product.", 1);	
+						}
+					}					
+				}
+
+				if(array_key_exists('thumb',$rows))
+				{
+					$mediaRow->mediaId = $rows['thumb'];
+					unset($mediaRow->base);
+					$mediaRow->thumb = 1;
+					$update = $mediaRow->save();
+					if(!$update)
+					{
+						throw new Exception("Unable to update product media.", 1);	
+					}
+					if(strpos($ids,$productId) == 'false')
+					{
+						$productRow->productId = $productId;
+						$productRow->thumb = $rows['thumb'];
+						$update = $productRow->save();
+						if(!$update)
+						{
+							throw new Exception("Unable to update product.", 1);	
+						}
+					}					
+				}
+
+				if(array_key_exists('small',$rows))
+				{
+					$mediaRow->mediaId = $rows['small'];
+					unset($mediaRow->thumb);
+					$mediaRow->small = 1;
+					$update = $mediaRow->save();
+					if(!$update)
+					{
+						throw new Exception("Unable to update product media.", 1);	
+					}
+					if(strpos($ids,$productId) == 'false')
+					{
+						$productRow->productId = $productId;
+						$productRow->small = $rows['small'];
+						$update = $productRow->save();
+						if(!$update)
+						{
+							throw new Exception("Unable to update product.", 1);	
+						}
+					}					
+				}
+
+				if(array_key_exists('gallery',$rows))
+				{
+					$ids = implode(',',array_values($rows['gallery']));
+					$update = $this->getAdapter()->update("UPDATE product_media SET gallery = 1 WHERE mediaId IN ({$ids})");
+					if(!$update)
+					{
+						throw new Exception("Unable to delete product media.", 1);	
+					}
+
+				}
+
+				if(array_key_exists('status',$rows))
+				{
+					$ids = implode(',',array_values($rows['status']));
+					$update = $this->getAdapter()->update("UPDATE product_media SET status = 1 WHERE mediaId IN ({$ids})");
+					if(!$update)
+					{
+						throw new Exception("Unable to delete product media.", 1);	
+					}
+
+				}
+			}
+			else
+			{
+				
+
+				$rows = $request->getPost('media');
 				if (empty($_FILES['media']['name']['fileName'])) 
 				{
 
 					throw new Exception("Select Image.", 1);				
 				}
-
+				// $media = Ccc::getModel('Product_Media')->uploadImage($_FILES['media']['name']['fileName']);
 				$file_name=$_FILES["media"]["name"]['fileName'];
 				$file_name = explode('.',$file_name);
 				$temp_name=$_FILES["media"]["tmp_name"];
@@ -71,8 +188,8 @@ class Controller_Product_Media extends Controller_Core_Action
 				$imagename=$file_name['0'].'_'.date("dmYhms").$ext;
 				$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$imagename;
 				
-				$mediaRow->setData(['productId'=>$id]);
-				$mediaRow->image = $imagename;
+				$mediaRow->setData(['productId'=>$productId]);
+				$mediaRow->media = $imagename;
 				$insert = $mediaRow->save();
 				if(!$insert )
 				{
@@ -82,157 +199,93 @@ class Controller_Product_Media extends Controller_Core_Action
 				{
 					throw new Exception("Unable to Upload image.", 1);
 				}
-			 
-				$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
-			}
-			catch (Exception $e) 
-			{
-				// echo $e->getMessage();
-				$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid',));
 			}
 
-	}
-
-	public function editAction()
-	{
-		try
-		{
-			$request = $this->getRequest();
-			if(!$request->isPost())
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}
-			 
-			if(!$request->getRequest('media'))
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}
-			$mediaRow = Ccc::getModel('Product_Media');
-			$productId = $request->getRequest('id');
-			$rows =  $request->getPost('media');
-			$count = count($rows['imageId']);
-			for ($i=0; $i < $count; $i++) 
-			{
-				$base = 2;
-				$thumb = 2;
-				$small = 2;
-				$gallery = 2;
-				$status = 2;
-				$imageId = $rows['imageId'][$i];
-				echo $imageId;
-				$gallery = 2 ;
-				$status = 2;
-
-				if(array_key_exists('remove',$rows)  && array_key_exists($imageId,$rows['remove']))
-				{
-					$mediaRow = $mediaRow->load($imageId);
-					print_r($mediaRow);
-					$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->image;
-					unlink($path);
-					$delete = $mediaRow->delete();
-					if(!$delete)
-					{
-
-						throw new Exception("System is unable to delete.", 1);
-						
-					}
-					continue;
-				}
-
-				if(array_key_exists('base',$rows) && $rows['base'] == $imageId)
-				{
-					$base = 1;
-					
-				}
-
-				if(array_key_exists('thumb',$rows) && $rows['thumb'] == $imageId)
-				{
-
-					$thumb = 1;
-				}
-
-				if(array_key_exists('small',$rows) && $rows['small'] == $imageId)
-				{
-					$small = 1;
-				}
-
-				if(array_key_exists('gallery',$rows) && array_key_exists($imageId,$rows['gallery']))
-				{
-					
-					$gallery = 1;
-					
-				}
-
-				if(array_key_exists('status',$rows) && array_key_exists($imageId,$rows['status']))
-				{
-					$status	 = 1;
-					
-				}
-
-				$mediaRow->imageId = $imageId;
-				$mediaRow->base = $base;
-				$mediaRow->thumb = $thumb;
-				$mediaRow->small = $small;
-				$mediaRow->gallery = $gallery;
-				$mediaRow->status = $status;
-				print_r($mediaRow->getData());
-				$update = $mediaRow->save();
-				if(!$update)
-				{
-					throw new Exception("Unable to update product media.", 1);	
-				}
-			}
-				$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
+			$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
+			
 		}
-		catch (Exception $e) 
+				catch (Exception $e) 
 		{
 			$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
-			//echo $e->getMessage();
+			// echo $e->getMessage();
 		}
 
 	}
 
 }
 		
+// 	$count = count($rows['mediaId']);
+		// 	for ($i=0; $i < $count; $i++) 
+		// 	{
+		// 		$base = 2;
+		// 		$thumb = 2;
+		// 		$small = 2;
+		// 		$gallery = 2;
+		// 		$status = 2;
+		// 		$mediaId = $rows['mediaId'][$i];
+		// 		echo $mediaId;
+		// 		$gallery = 2 ;
+		// 		$status = 2;
 
-		// $mediaRow = Ccc::getModel('Product_Media');
-		// $request = $this->getRequest();
-		// if(!$request->isPost())
-		// {
-		// 	throw new Exception("Invalid Request.", 1);				
-		// }
-		// if (!$request->getPost('media')) 
-		// {
-		// 	throw new Exception("Invalid Request.", 1);				
+		// 		if(array_key_exists('remove',$rows)  && array_key_exists($mediaId,$rows['remove']))
+		// 		{
+		// 			$mediaRow = $mediaRow->load($mediaId);
+		// 			print_r($mediaRow);
+		// 			$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->image;
+		// 			unlink($path);
+		// 			$delete = $mediaRow->delete();
+		// 			if(!$delete)
+		// 			{
+
+		// 				throw new Exception("System is unable to delete.", 1);
+						
+		// 			}
+		// 			continue;
+		// 		}
+
+		// 		if(array_key_exists('base',$rows) && $rows['base'] == $mediaId)
+		// 		{
+		// 			$base = 1;
+					
+		// 		}
+
+		// 		if(array_key_exists('thumb',$rows) && $rows['thumb'] == $mediaId)
+		// 		{
+
+		// 			$thumb = 1;
+		// 		}
+
+		// 		if(array_key_exists('small',$rows) && $rows['small'] == $mediaId)
+		// 		{
+		// 			$small = 1;
+		// 		}
+
+		// 		if(array_key_exists('gallery',$rows) && array_key_exists($mediaId,$rows['gallery']))
+		// 		{
+					
+		// 			$gallery = 1;
+					
+		// 		}
+
+		// 		if(array_key_exists('status',$rows) && array_key_exists($mediaId,$rows['status']))
+		// 		{
+		// 			$status	 = 1;
+					
+		// 		}
+
+		// 		$mediaRow->mediaId = $mediaId;
+		// 		$mediaRow->base = $base;
+		// 		$mediaRow->thumb = $thumb;
+		// 		$mediaRow->small = $small;
+		// 		$mediaRow->gallery = $gallery;
+		// 		$mediaRow->status = $status;
+		// 		print_r($mediaRow->getData());
+		// 		$update = $mediaRow->save();
+		// 		if(!$update)
+		// 		{
+		// 			throw new Exception("Unable to update product media.", 1);	
+		// 		}
+		// 	}
 		// }
 
-		// $row = $request->getPost('media');
-		// $count = count($row['imageId']);
-		// echo "<pre>";
-		// for ($i=0; $i < $count; $i++) 
-		// { 
-		// 	 // print_r($row['imageId'][$i]);
-		// 	 // print_r($row['base'][0]);
-		// 	 if ($row['base'][0] == $row['imageId'][$i]) {
-		// 	 	echo $row['imageId'][$i];
-		// 	 	echo "<br>";
-		// 		echo  $row['base'][0];
-		// 	 }
-		// 	if ($row['thumb'][0] == $row['imageId'][$i]) {
-		// 	 	echo $row['imageId'][$i];
-		// 	 	echo "<br>";
-		// 		echo  $row['thumb'][0];
-		// 	 }
-		// 	if ($row['small'][0] == $row['imageId'][$i]) {
-		// 	 	echo $row['imageId'][$i];
-		// 	 	echo "<br>";
-		// 		echo  $row['small'][0];
-		// 	 }
-		// 	 // print_r($row['thumb']);
-		// }
 
-		// print_r($row);
-		// print_r($this->getRequest()->getRequest());
-		// print_r(Ccc::getModel('Product_Media'));
-		// print_r($this);
-		// Ccc::getBlock('Product_Media_Grid')->toHtml();

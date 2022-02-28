@@ -33,4 +33,12 @@ class Model_Product_Media extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
+	public function uploadImage($file)
+	{
+		if(!move_uploaded_file($temp_name['fileName'], $path))
+		{
+			throw new Exception("Unable to Upload image.", 1);
+		}
+	}
+
 }

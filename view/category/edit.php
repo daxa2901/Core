@@ -6,8 +6,11 @@
     <tr>
       <td width="10%"> Name</td>
       <td><input type="text" name="category[name]" value="<?php echo $row->name ?>"></td>
+      <?php if($row->categoryId) : ?>
+      <input type="hidden" name="category[categoryId]" value="<?php echo $row->categoryId ?>">
+    <?php endif; ?>
     </tr>
-    <input type="hidden" name="category[categoryId]" value="<?php echo $row->categoryId ?>">
+
     <tr>
       <td width="10%">Status</td>
       <td>
@@ -23,7 +26,9 @@
       <td>
         <select name="category[parentId]">
           
+            <?php if($row->categoryId) : ?>
           <option value=<?php echo $row->parentId ?>><?php echo $categoryPath[$row->categoryId]?></option>
+            <?php endif; ?>
           <option value=>Root</option>
           <?php foreach ($categoryPathPair as $key=>$value): ?>
               <?php if(strpos($value,$row->categoryPath) !='false'):?>

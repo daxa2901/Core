@@ -5,7 +5,7 @@ form {
     margin-top: 20px;
   
   }
-  input[type=text],select,input[type=number],input[type=tel],input[type=date],input[type=email],input[type=float],input[type=Password]{
+  input[type=text],select,input[type=number],input[type=tel],input[type=date],input[type=email],input[type=float],input[type=file],input[type=Password]{
     width: 300px;
     padding: 12px 20px;
     margin: 2px 0;

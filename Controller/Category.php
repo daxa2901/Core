@@ -10,7 +10,8 @@ class Controller_Category extends Controller_Core_Action
 
 	public function addAction()
 	{
-		Ccc::getBlock('Category_Add')->toHtml();
+		$category = Ccc::getModel('Category');
+		Ccc::getBlock('Category_Edit')->setData(['category'=>$category])->toHtml();
 	}
 
 	public function editAction()
@@ -66,19 +67,24 @@ class Controller_Category extends Controller_Core_Action
 				$id = $row['categoryId'];
 
 				$category=$categoryRow->load($id);
-				$categoryPath=$categoryRow->fetchAll("SELECT * FROM Category WHERE categoryPath LIKE '".$category->categoryPath.'/%'."' ORDER BY categoryPath");
+				echo "111";
+				echo "<PRE>";
+				print_r($category);
+				$categoryPath=$categoryRow->fetchAll("SELECT categoryId,categoryPath,updatedAt,parentId FROM Category WHERE categoryPath LIKE '".$category->categoryPath.'/%'."' ORDER BY categoryPath");
 		
-				if($row['parentId'] == null)
+				print_r($categoryPath);
+				
+				if($categoryRow->parentId == null)
 				{	
-					$row['parentId'] = null;
-					$row['categoryPath'] = $id; 
-					$categoryRow->update($row,$id);
+					$categoryRow->parentId = null;
+					$categoryRow->categoryPath = $id; 
+					$update = $categoryRow->save();
 				}
 				else 	
 				{
-					$parent=$categoryRow->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
-					$row['categoryPath'] = $parent['categoryPath'].'/'.$id;
-					$categoryRow->update($row,$id);
+					$parent=$categoryRow->load($categoryRow->parentId);
+					$categoryRow->categoryPath = $parent->categoryPath.'/'.$id;
+					$update = $categoryRow->save();
 				}
 				if(!$update)
 				{
@@ -87,14 +93,12 @@ class Controller_Category extends Controller_Core_Action
 		
 				foreach ($categoryPath as $row) 
 				{
-					$parent=$this->getAdapter()->fetchRow("SELECT * FROM Category WHERE categoryId= ".$row['parentId']);
-					$newPath = $parent['categoryPath'].'/'.$row['categoryId'];
-
-					$query = "UPDATE Category
-						SET categoryPath = '".$newPath."',
-							updatedAt = '".date('Y-m-d H:i:s')."'
-							WHERE categoryId = ".$row['categoryId'];
-					$update = $this->getAdapter()->update($query);
+					
+					$parent=$categoryRow->load($row->parentId);
+					$newPath = $parent->categoryPath.'/'.$row->categoryId;
+					$row->categoryPath = $newPath;
+					$row->updatedAt = date('Y-m-d H:i:s');
+					$update = $row->save();
 					if(!$update)
 					{
 						throw new Exception("System is unable to update.", 1);
@@ -105,34 +109,38 @@ class Controller_Category extends Controller_Core_Action
 			}
 			else
 			{
-				$row['createdAt'] = date('Y-m-d H:i:s');
-				if ($row['parentId'] == null) 
+				$categoryRow->setData($row);
+				$categoryRow->createdAt = date('Y-m-d H:i:s');
+				// print_r($categoryRow);
+
+				if ($categoryRow->parentId == null) 
 				{
-					unset($row['parentId']);
-					$insert =$categoryRow->insert($row);
+					unset($categoryRow->parentId);
+
+					$insert =$categoryRow->save();
 				}
 				else
 				{
-					$insert = $categoryRow->insert($row);
+					$insert = $categoryRow->save();
 				}
 				if(!$insert)
 				{
 					throw new Exception("System is unable to insert.", 1);			
 				}
 
-				$parent=$this->getAdapter()->fetchOne("SELECT parentId FROM Category WHERE categoryId=".$insert);
-				if ($parent == NULL) 
+				$parent=$categoryRow->fetchRow("SELECT parentId,categoryPath,categoryId FROM Category WHERE categoryId=".$insert);
+				if ($parent->parentId == NULL) 
 				{
 					$path = $insert;
 				}
 				else
 				{
-					$result=$this->getAdapter()->fetchRow("SELECT * FROM Category WHERE categoryId= ".$parent);
-					$path = $result['categoryPath'].'/'.$insert;
+					$result=$categoryRow->load($parent->parentId);
+					$path = $result->categoryPath.'/'.$insert;
 
 				}
-				$data['categoryPath'] = $path;
-				$update = $categoryRow->update($data,$insert);
+				$parent->categoryPath = $path;
+				$update = $parent->save();
 				if(!$update)
 				{
 					throw new Exception("System is unable to update.", 1);
@@ -157,8 +165,18 @@ class Controller_Category extends Controller_Core_Action
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			$id=$request->getRequest('id');
-			$delete = $categoryRow->delete(['categoryId'=>$id]); 
+			$id=(int) $request->getRequest('id');
+			if(!$id)
+			{
+				throw new Exception("Invalid Id.", 1);							
+			}
+
+			$categoryRow= $categoryRow->load($id);
+			if(!$categoryRow)
+			{
+				throw new Exception("Record not found.", 1);
+			}
+			$delete = $categoryRow->delete(); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to  delete.", 1);
