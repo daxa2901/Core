@@ -89,7 +89,7 @@ class Model_Core_Row_Resource
 		}
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
-		echo $query;
+		// echo $query;
 		return $this->getAdapter()->update($query);
 	}
 

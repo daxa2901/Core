@@ -6,6 +6,9 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
+
+		// $this->getLayout()->getHeader()->setData(['name'=>'daxa']);
+		// $this->renderLayout();
 		Ccc::getBlock('Admin_Grid')->toHtml();
 	}
 
