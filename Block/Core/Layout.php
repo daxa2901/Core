@@ -13,19 +13,16 @@ class Block_Core_Layout extends Block_Core_Template
 		$this->setTemplate('view/core/layout.php');
 	}
 
-	// public function setChildren($children)
-	// {
-	// 	$this->children = $children;
-	// 	return $this;
-	// }
+	public function setChildren($children)
+	{
+		$this->children = $children;
+		return $this;
+	}
 
-	// public function getChildren()
-	// {
-	// 	if(!$this->children){
-	// 		$this->setchildren(new Block_Core_children);
-	// 	}
-	// 	return $this->children;
-	// }
+	public function getChildren()
+	{
+		return $this->children;
+	}
 
 	public function addChild($object,$key)
 	{

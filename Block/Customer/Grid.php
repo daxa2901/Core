@@ -11,18 +11,9 @@ class Block_Customer_Grid extends Block_Core_Template
 	public function getCustomers()
 	{
 		$customerRow = Ccc::getModel('Customer');
-		$query = "SELECT * FROM Customer";
-		$customer = $customerRow-> fetchAll($query);
-		return $customer;
+		$query = "SELECT c.* , a.address FROM Customer c JOIN customer_address a ON c.customerId = a.customerId";
+		$customers = $customerRow-> fetchAll($query);
+		return $customers;
 	}
 
-	public function getAddress()
-	{
-		$addressRow = Ccc::getModel('Customer_Address');
-		$query2 = "SELECT 
-					* 
-			  FROM  customer_address";
-		$address = $addressRow-> fetchAll($query2);
-		return $address;
-	}
 }

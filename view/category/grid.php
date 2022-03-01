@@ -14,6 +14,7 @@
 				<th> Created_At </th>
 				<th> Updated_At </th>
 				<th> Status </th>
+				<th> Media </th>
 				<th> Action </th>
 			</tr>
 			<?php if($result): ?>
@@ -27,6 +28,8 @@
 			    		<td>
 				    		<?php echo $row->getStatus($row->status) ?>
 			    		</td>
+			    		<td><a href="<?php echo $this->getUrl('grid','category_media',['id'=>$row->categoryId],true);?>">Media</a> </td>
+
 			    		<td>
 			    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->categoryId],true);?>">Delete</a> 
 			    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->categoryId],true);?>">Update</a>

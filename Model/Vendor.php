@@ -1,6 +1,6 @@
 <?php Ccc::loadClass('Model_Core_Row'); ?>
 <?php
-class Model_Category_Media extends Model_Core_Row
+class Model_Vendor extends Model_Core_Row
 {
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -10,7 +10,7 @@ class Model_Category_Media extends Model_Core_Row
 	
 	public function __construct()
 	{
-		$this->setResourceClassName('Category_Media_Resource');
+		$this->setResourceClassName('Vendor_Resource');
 		parent::__construct();
 	}
 
@@ -31,14 +31,6 @@ class Model_Category_Media extends Model_Core_Row
 			return $statuses[$key];
 		}
 		return self::STATUS_DEFAULT;
-	}
-
-	public function uploadImage($file)
-	{
-		if(!move_uploaded_file($temp_name['fileName'], $path))
-		{
-			throw new Exception("Unable to Upload image.", 1);
-		}
 	}
 
 }

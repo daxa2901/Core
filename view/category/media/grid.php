@@ -1,11 +1,10 @@
 <?php $products = $this->getMedias(); ?>
-
 <div class='container' style="text-align: center; ">
-<h1> Product Media Details </h1> 
+<h1> Category Media Details </h1> 
 <form action=<?php echo $this->getUrl('save');?> method="POST">
 	<button type="submit" class="Registerbtn"> Update </button>
 
-	<a href="<?php echo $this->getUrl('grid','product',null,true);?>"><button type="button" class="cancel">Cancel</button></a>
+	<a href="<?php echo $this->getUrl('grid','category',null,true);?>"><button type="button" class="cancel">Cancel</button></a>
 		
 
 	<div id='info'>
@@ -25,7 +24,7 @@
 			<?php foreach ($products as $row): ?>		
 				<tr>
 					<td><?php echo $row->mediaId ?></td>
-		    		<td><img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" /></td>
+		    		<td><img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" /></td>
 		    		<input type="hidden" name="media[mediaId][]"  value ="<?php echo $row->mediaId ?>">
 		    		<td><input type="radio" name="media[base]"   value = "<?php echo $row->mediaId ?>" <?php if($row->base == $row->mediaId): ?> checked <?php endif; ?>></td>
 		    		<td><input type="radio" name="media[thumb]"  value = "<?php echo $row->mediaId ?>" <?php if($row->thumb == $row->mediaId): ?> checked <?php endif; ?>></td>
@@ -42,7 +41,7 @@
 	</table>
 	<br><br>
 	<div align="center" >
-	<form action="<?php echo $this->getUrl('save') ?>" method="POST" enctype="multipart/form-data" style="margin-left: 0;">
+	<form action="<?php echo $this->getUrl('save','category_media') ?>" method="POST" enctype="multipart/form-data" style="margin-left: 0;">
 	        <input type="file" name="media[fileName]" value="">
 	        <button type="submit" value="upload" class="Registerbtn">Upload </button>
 	</form>

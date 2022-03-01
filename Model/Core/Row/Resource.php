@@ -45,8 +45,23 @@ class Model_Core_Row_Resource
 		return $this;
 	}
 
+	public function getQuote()
+	{
+
+	}
 	public function insert(array $data)
 	{
+		if(!$data)
+		{
+			return false;
+		}
+		// $keys = '`'.implode("`,`", array_keys($data)).'`';
+		// $escapedValue = array_map($this->getAdapter()->connect(),array_values($data));
+		// print_r($escapedValue);
+		// $values = '\''.implode("','", array_values($data)).'\'';
+		// $query = "INSERT INTO ".$this->getTableName()." (".$keys.") VALUES (".$values.")";
+		// print_r($query);
+		// exit;
 		$temp = [];
 		foreach ($data as $col => $value) 
 		{
@@ -89,7 +104,7 @@ class Model_Core_Row_Resource
 		}
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
-		// echo $query;
+		echo $query;
 		return $this->getAdapter()->update($query);
 	}
 

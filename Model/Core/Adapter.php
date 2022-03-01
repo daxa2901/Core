@@ -45,12 +45,6 @@ class Model_Core_Adapter{
             $this->connect();
         }
         $result = $this->getConnect()->query($query);
-        if(!$result)
-        {
-            echo '<pre>';
-            echo mysqli_error($this->getConnect());
-            exit;
-        }
         return $result; 
     }
 

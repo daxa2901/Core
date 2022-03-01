@@ -1,7 +1,7 @@
-<?php $customers = $this->getCustomers(); ?>
+<?php $vendors = $this->getVendors(); ?>
 
 <div class='container' style="text-align: center; ">
-<h1> Customer Details </h1> 
+<h1> Vendor Details </h1> 
 <form action="<?php echo  $this->getUrl('add');?>" method="POST">
 <button type="submit" name="Add" class="Registerbtn"> Add New </button>
 </form>
@@ -20,22 +20,22 @@
 		<th> Update Date </th>
 		<th> Action </th>
 	</tr>
-	<?php if($customers):?>
-		<?php foreach ($customers as $row): ?>
+	<?php if($vendors):?>
+		<?php foreach ($vendors as $row): ?>
 			 
 			<tr>
-	      		<td><?php echo $row->customerId; ?></td>
+	      		<td><?php echo $row->vendorId; ?></td>
 	    		<td><?php echo $row->firstName; ?></td>
 	    		<td><?php echo $row->lastName; ?></td>
 	    		<td><?php echo $row->email; ?></td>
 	    		<td><?php echo $row->mobile; ?></td>
 	    		<td><?php echo  $row->getStatus($row->status) ?> </td>
-	    		<td> <?php echo $row->address;?> </td>
-	    		<td><?php echo $row->createdDate; ?></td>
-	    		<td><?php echo $row->updatedDate; ?></td>
+	    		<td> <?php echo $row->address; ?> </td>
+	    		<td><?php echo $row->createdAt; ?></td>
+	    		<td><?php echo $row->updatedAt; ?></td>
 	    		<td>
-	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->customerId],true);?>">Delete</a> 
-	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->customerId],true);?>">Update</a>
+	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->vendorId],true);?>">Delete</a> 
+	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->vendorId],true);?>">Update</a>
 	    		</td>
 	   		</tr>
 	 	<?php endforeach;?>
