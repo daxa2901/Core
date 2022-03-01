@@ -45,8 +45,14 @@ class Model_Core_Row_Resource
 		return $this;
 	}
 
-	public function getQuote()
+	public function escapString($value)
 	{
+		if(!$this->getAdapter()->getConnect())
+		{
+			$this->getAdapter()->connect();
+		}
+		return mysqli_real_escape_string($this->getAdapter()->getConnect(),$value);
+
 
 	}
 	public function insert(array $data)
@@ -55,19 +61,10 @@ class Model_Core_Row_Resource
 		{
 			return false;
 		}
-		// $keys = '`'.implode("`,`", array_keys($data)).'`';
-		// $escapedValue = array_map($this->getAdapter()->connect(),array_values($data));
-		// print_r($escapedValue);
-		// $values = '\''.implode("','", array_values($data)).'\'';
-		// $query = "INSERT INTO ".$this->getTableName()." (".$keys.") VALUES (".$values.")";
-		// print_r($query);
-		// exit;
-		$temp = [];
-		foreach ($data as $col => $value) 
-		{
-			$temp[$col] = "'".$value."'";	
-		}
-		$query = "INSERT INTO ".$this->getTableName()." (".implode(',',array_keys($temp)).") VALUES (".implode(',',array_values($temp)).")";
+		$keys = '`'.implode("`,`", array_keys($data)).'`';
+		$escapedValue = array_map(array($this,'escapString'),array_values($data));
+		$values = '\''.implode("','", array_values($escapedValue)).'\'';
+		$query = "INSERT INTO ".$this->getTableName()." (".$keys.") VALUES (".$values.")";
 		return $this->getAdapter()->insert($query);
 	}
 
@@ -77,10 +74,11 @@ class Model_Core_Row_Resource
 		$fields = null;		
 		if(!is_array($id))
 		{
-			$whereClause = $this->getPrimaryKey() ." = '".$id."'";
+			$whereClause = $this->getPrimaryKey() ." = '".$this->escapString($id)."'";
 		}
 		else
 		{
+
 			foreach ($id as $key => $value) 
 			{
 				$whereClause = $whereClause . $key . " = '".$value."' and ";
@@ -93,7 +91,7 @@ class Model_Core_Row_Resource
 		{
 			if($value != null)
 			{
-				$fields = $fields . $col . " = '".$value."',";
+				$fields = $fields . $col . " = '".$this->escapString($value)."',";
 
 			}
 			else
@@ -104,7 +102,6 @@ class Model_Core_Row_Resource
 		}
 		$fields = rtrim($fields,',');
 		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
-		echo $query;
 		return $this->getAdapter()->update($query);
 	}
 

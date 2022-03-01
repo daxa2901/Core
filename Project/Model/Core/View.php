@@ -2,7 +2,7 @@
 class Model_Core_View{
 
 	public $temlate = null;
-	public $data = null;
+	public $data = [];
 
 	public function getAdapter()
 	{
