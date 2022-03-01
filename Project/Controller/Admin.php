@@ -6,13 +6,19 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		Ccc::getBlock('Admin_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Grid');
+		$content->addChild($adminRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$admin = Ccc::getModel('Admin');
-     	Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin])->toHtml();
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
+		$content->addChild($adminRow);
+		$this->renderLayout();
 	}
 
 	public function editAction()
@@ -29,7 +35,10 @@ class Controller_Admin extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load Admin.", 1);
       		}
-     		Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin])->toHtml();
+      		$content = $this->getLayout()->getContent();
+			$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
+			$content->addChild($adminRow);
+			$this->renderLayout();
 
 		} 
 		catch (Exception $e) 
