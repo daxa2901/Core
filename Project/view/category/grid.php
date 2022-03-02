@@ -10,6 +10,9 @@
 		<table border=1 width=100%>
 			<tr>
 				<th> Id </th>
+				<th> Base </th>
+				<th> Thumb </th>
+				<th> Small </th>
 				<th> Name </th>
 				<th> Created_At </th>
 				<th> Updated_At </th>
@@ -21,6 +24,25 @@
 				<?php foreach ($result as $row):?>
 					<tr>
 			    		<td><?php echo $row->categoryId ?></td>
+			    		<td><?php if($row->base): ?>
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    	<?php else : ?>
+				    		No Image 
+				    	<?php endif; ?>
+				    	</td>
+			    		<td><?php if($row->thumb): ?>
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    	<?php else : ?>
+				    		No Image 
+				    	<?php endif; ?>
+				    	</td>
+			    		<td><?php if($row->small): ?>
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    	<?php else : ?>
+				    		No Image 
+				    	<?php endif; ?>
+				    	</td>
+			    		
 			    		<td><?php echo $getCategoryToPath[$row->categoryId];?>
 			    		</td>
 			    		<td><?php echo $row->createdAt ?></td>

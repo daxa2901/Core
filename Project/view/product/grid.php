@@ -9,6 +9,9 @@
 <table border=1 width=100%>
 	<tr>
 		<th> Id </th>
+		<th> Base </th>
+		<th> Thumb </th>
+		<th> Small </th>
 		<th> Name </th>
 		<th> Price </th>
 		<th> Quantity </th>
@@ -23,6 +26,24 @@
 		<?php foreach ($products as $row): ?>		
 			<tr>
 	    		<td><?php echo $row->productId ?></td>
+		    	<td><?php if($row->base): ?>
+		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+		    	<?php else : ?>
+		    		No Image 
+		    	<?php endif; ?>
+		    	</td>
+	    		<td><?php if($row->thumb): ?>
+		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+		    	<?php else : ?>
+		    		No Image 
+		    	<?php endif; ?>
+		    	</td>
+	    		<td><?php if($row->small): ?>
+		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+		    	<?php else : ?>
+		    		No Image 
+		    	<?php endif; ?>
+		    	</td>
 	    		<td><?php echo $row->name ?></td>
 	    		<td><?php echo $row->price ?></td>
 	    		<td><?php echo $row->quantity ?></td>
@@ -34,7 +55,7 @@
 	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$row->productId],true);?>">Delete</a> 
 	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$row->productId],true);?>">Update</a>
 	    		</td>
-	    	</tr
+	    	</tr>
 	  	<?php endforeach; ?>
 	<?php else: ?>
 		<tr><td colspan='8'>No Record Available</td></tr>

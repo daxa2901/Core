@@ -22,14 +22,13 @@
           <?php endforeach; ?>          
         </select>
       </td>
-    
-	    <?php if($config->configId): ?>
-	    <td>  <input type="hidden" name="config[configId]" value="<?php echo $config->configId ?>"></td>
-	    <?php endif; ?>
     </tr>
 	
     <tr>
       <td width="25%">&nbsp;</td>
+  	    <?php if($config->configId): ?>
+  	      <input type="hidden" name="config[configId]" value="<?php echo $config->configId ?>">
+  	    <?php endif; ?>
       <td>
         <button type="submit" name="submit" class="Registerbtn">Save </button>
         <a href=<?php echo  $this->getUrl('grid',null,null,true);?>><button type="button" class="cancelbtn">Cancel</button></a>

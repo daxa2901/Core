@@ -6,13 +6,19 @@ class Controller_Salseman extends Controller_Core_Action
 {
 	public function gridAction()
 	{
-		Ccc::getBlock('Salseman_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$salsemanRow = Ccc::getBlock('Salseman_Grid');
+		$content->addChild($salsemanRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$salseman = Ccc::getModel('Salseman');
-		Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman])->toHtml();
+		$salsemanRow = Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman]);
+		$content = $this->getLayout()->getContent();
+		$content->addChild($salsemanRow);
+		$this->renderLayout();
 	}
 
 	public function editAction()
@@ -29,7 +35,11 @@ class Controller_Salseman extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load salseman.", 1);
       		}
-     		Ccc::getBlock('Salseman_Edit')->setData(['salseman'=>$salseman])->toHtml();
+
+      		$salsemanRow = Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman]);
+			$content = $this->getLayout()->getContent();
+			$content->addChild($salsemanRow);
+			$this->renderLayout();
 
 		} 
 		catch (Exception $e) 

@@ -4,17 +4,22 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Customer extends Controller_Core_Action{
 	public function gridAction()
 	{
-		Ccc::getBlock('Customer_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$customerRow = Ccc::getBlock('Customer_Grid');
+		$content->addChild($customerRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$customer = Ccc::getModel('Customer');
 		$address = Ccc::getModel('Customer_Address');
-		$customerBlock = Ccc::getBlock('Customer_Edit');
-		$customerBlock->setData(['customer'=>$customer]);
-		$customerBlock->addData('address',$address);	
-		$customerBlock->toHtml();
+		$customerRow = Ccc::getBlock('Customer_Edit');
+		$customerRow->setData(['customer'=>$customer]);
+		$customerRow->addData('address',$address);
+		$content = $this->getLayout()->getContent();
+		$content->addChild($customerRow);
+		$this->renderLayout();	
 		// Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
@@ -40,10 +45,14 @@ class Controller_Customer extends Controller_Core_Action{
 			{
 				throw new Exception("Unable to load Customer Address.", 1);
 			}
-			$customerBlock = Ccc::getBlock('Customer_Edit');
-			$customerBlock->setData(['customer'=>$customer]);
-			$customerBlock->addData('address',$address);	
-			$customerBlock->toHtml();
+
+			$customerRow = Ccc::getBlock('Customer_Edit');
+			$customerRow->setData(['customer'=>$customer]);
+			$customerRow->addData('address',$address);	
+			$content = $this->getLayout()->getContent();
+			$content->addChild($customerRow);
+			$this->renderLayout();	
+		
 		} 
 		catch (Exception $e) 
 		{

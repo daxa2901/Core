@@ -15,7 +15,11 @@ class Controller_Category extends Controller_Core_Action
 	public function addAction()
 	{
 		$category = Ccc::getModel('Category');
-		Ccc::getBlock('Category_Edit')->setData(['category'=>$category])->toHtml();
+		$content = $this->getLayout()->getContent();
+		$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
+		$content->addChild($categoryRow);
+		$this->renderLayout();
+		
 	}
 
 	public function editAction()
@@ -29,9 +33,13 @@ class Controller_Category extends Controller_Core_Action
 			$category = Ccc::getModel('Category')->load($id);
 	 		if (!$category) 
 	 		{
-      			throw new Exception("Unable to Load Admin.", 1);
+      			throw new Exception("Unable to Load Category.", 1);
       		}
-     		Ccc::getBlock('Category_Edit')->setData(['category'=>$category])->toHtml();
+      		$content = $this->getLayout()->getContent();
+			$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
+			$content->addChild($categoryRow);
+			$this->renderLayout();
+		
 		} 
 		catch (Exception $e) 
 		{

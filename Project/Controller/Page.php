@@ -6,13 +6,19 @@ class Controller_Page extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		Ccc::getBlock('Page_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$pageRow = Ccc::getBlock('Page_Grid');
+		$content->addChild($pageRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$page = Ccc::getModel('Page');
-		Ccc::getBlock('Page_Edit')->setData(['page'=>$page])->toHtml();
+		$pageRow = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
+		$content = $this->getLayout()->getContent();
+		$content->addChild($pageRow);
+		$this->renderLayout();
 	}
 
 	public function editAction()
@@ -29,7 +35,10 @@ class Controller_Page extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load page.", 1);
       		}
-     		Ccc::getBlock('Page_Edit')->addData('page',$page)->toHtml();
+     		$pageRow = Ccc::getBlock('Page_Edit')->addData('page',$page);
+			$content = $this->getLayout()->getContent();
+			$content->addChild($pageRow);
+			$this->renderLayout();
 
 		} 
 		catch (Exception $e) 
