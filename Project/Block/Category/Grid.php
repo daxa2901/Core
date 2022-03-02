@@ -12,8 +12,8 @@ class Block_Category_Grid extends Block_Core_Template
 	{
 		$categoryTable = Ccc::getModel('Category');
 		$query = "SELECT 
-				* 
-			FROM Category order by categoryPath";
+				c.*,cm.media 
+			FROM Category c LEFT JOIN category_media cm ON c.categoryId = cm.categoryId order by c.categoryPath";
 		$category = $categoryTable->fetchAll($query);	
 		return $category;
 	}

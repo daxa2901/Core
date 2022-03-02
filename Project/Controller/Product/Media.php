@@ -21,7 +21,10 @@ class Controller_Product_Media extends Controller_Core_Action
 			$medias = Ccc::getModel('Product_Media');
 			$query = "SELECT pm.*,p.base,p.thumb,p.small FROM product_media pm JOIN product p ON pm.productId = p.productId WHERE p.productId = ".$id;
 			$medias = $medias->fetchAll($query);
-			Ccc::getBlock('Product_Media_Grid')->setData(['media'=>$medias])->toHtml();
+			$productMediaRow =Ccc::getBlock('Product_Media_Grid')->setData(['media'=>$medias]);
+			$content = $this->getLayout()->getContent();
+			$content->addChild($productMediaRow);
+			$this->renderLayout();
 
 		}
 		catch(Excaption $e)
@@ -185,6 +188,9 @@ class Controller_Product_Media extends Controller_Core_Action
 				$temp_name=$_FILES["media"]["tmp_name"];
 				$imagetype=$_FILES["media"]["type"];
 				$ext= $this->GetImageExtension($imagetype);
+				if (!$ext) {
+					throw new Exception("Image must of type JPG, JPEG or PNG", 1);
+				}
 				$imagename=$file_name['0'].'_'.date("dmYhms").$ext;
 				$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$imagename;
 				

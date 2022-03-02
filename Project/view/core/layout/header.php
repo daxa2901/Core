@@ -1,1 +1,4 @@
-<h2> This is header </h2>
+<?php $children = $this->getMenu(); ?>
+<?php foreach ($children as $key => $child): ?>
+	<?php $child->toHtml();?>
+<?php endforeach ; ?>

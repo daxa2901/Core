@@ -30,7 +30,7 @@
 	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$page->pageId],true);?>">Delete</a> 
 	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$page->pageId],true);?>">Update</a>
 	    		</td>
-	    	</tr
+	    	</tr>
 	  	<?php endforeach; ?>
 	<?php else: ?>
 		<tr><td colspan='8'>No Record Available</td></tr>

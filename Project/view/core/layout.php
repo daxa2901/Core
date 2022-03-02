@@ -3,18 +3,20 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="./style.css">
+
 	<title></title>
 </head>
 <body>
 	<table border="1" width="100%">
 		<tr>
-			<td> <?php $this->getHeader()->toHtml(); echo $this->getHeader()->getData('name');  ?></td>
+			<td> <?php $this->getHeader()->toHtml(); ?></td>
 		</tr>	
 		<tr>
-			<td> <?php $this->getContent()->toHtml();  ?></td>
+			<td> <?php $this->getContent()->toHtml(); ?></td>
 		</tr>	
 		<tr>
-			<td> <?php $this->getFooter()->toHtml();  ?></td>
+			<td> <?php $this->getFooter()->toHtml(); ?></td>
 		</tr>	
 	</table>
 </body>

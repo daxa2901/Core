@@ -104,7 +104,7 @@ class Model_Core_View{
 
 	public function baseUrl($suburl = null)
 	{
-		$url = 'C:/xampp/htdocs/Cybercom/Core';
+		$url = 'C:/xampp/htdocs/Cybercom/Core/Project';
 		if($suburl)
 		{
 			$url = $url.'/'.$suburl;

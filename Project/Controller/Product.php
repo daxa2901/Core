@@ -4,13 +4,20 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Product extends Controller_Core_Action{
 	public function gridAction()
 	{
-		Ccc::getBlock('Product_Grid')->toHtml();
+		
+		$content = $this->getLayout()->getContent();
+		$productRow = Ccc::getBlock('Product_Grid');
+		$content->addChild($productRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$product= Ccc::getModel('Product');
-     	Ccc::getBlock('Product_Edit')->setData(['product'=>$product])->toHtml();
+     	$productRow = Ccc::getBlock('Product_Edit')->setData(['product'=>$product]);
+     	$content = $this->getLayout()->getContent();
+		$content->addChild($productRow);
+		$this->renderLayout();
 	}
 
 	public function editAction()
@@ -27,7 +34,10 @@ class Controller_Product extends Controller_Core_Action{
      		{
      			throw new Exception("Unable to load product.", 1);    			
      		}
-     		Ccc::getBlock('Product_Edit')->setData(['product'=>$product])->toHtml();
+     		$productRow = Ccc::getBlock('Product_Edit')->setData(['product'=>$product]);
+     		$content = $this->getLayout()->getContent();
+			$content->addChild($productRow);
+			$this->renderLayout();
 		} 
 		catch (Exception $e) 
 		{

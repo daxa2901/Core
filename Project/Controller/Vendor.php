@@ -4,17 +4,22 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Vendor extends Controller_Core_Action{
 	public function gridAction()
 	{
-		Ccc::getBlock('Vendor_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$vendorRow = Ccc::getBlock('Vendor_Grid');
+		$content->addChild($vendorRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$vendor = Ccc::getModel('Vendor');
 		$address = Ccc::getModel('Vendor_Address');
-		$vendorBlock = Ccc::getBlock('Vendor_Edit');
-		$vendorBlock->setData(['vendor'=>$vendor]);
-		$vendorBlock->addData('address',$address);	
-		$vendorBlock->toHtml();
+		$vendorRow = Ccc::getBlock('Vendor_Edit');
+		$vendorRow->setData(['vendor'=>$vendor]);
+		$vendorRow->addData('address',$address);
+		$content = $this->getLayout()->getContent();
+		$content->addChild($vendorRow);
+		$this->renderLayout();	
 	}
 
 	public function editAction()
@@ -39,10 +44,12 @@ class Controller_Vendor extends Controller_Core_Action{
 			{
 				throw new Exception("Unable to load vendor Address.", 1);
 			}
-			$vendorBlock = Ccc::getBlock('Vendor_Edit');
-			$vendorBlock->setData(['vendor'=>$vendor]);
-			$vendorBlock->addData('address',$address);	
-			$vendorBlock->toHtml();
+			$vendorRow = Ccc::getBlock('Vendor_Edit');
+			$vendorRow->setData(['vendor'=>$vendor]);
+			$vendorRow->addData('address',$address);	
+			$content = $this->getLayout()->getContent();
+			$content->addChild($vendorRow);
+			$this->renderLayout();
 		} 
 		catch (Exception $e) 
 		{

@@ -6,13 +6,20 @@ class Controller_Config extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		Ccc::getBlock('Config_Grid')->toHtml();
+		$content = $this->getLayout()->getContent();
+		$configRow = Ccc::getBlock('Config_Grid');
+		$content->addChild($configRow);
+		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$config = Ccc::getModel('Config');
-		Ccc::getBlock('Config_Edit')->setData(['config'=>$config])->toHtml();
+		$content = $this->getLayout()->getContent();
+		$configRow = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+		$content->addChild($configRow);
+		$this->renderLayout();
+		
 	}
 
 	public function editAction()
@@ -29,7 +36,12 @@ class Controller_Config extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load Config.", 1);
       		}
-     		Ccc::getBlock('Config_Edit')->addData('config',$config)->toHtml();
+      		$config = Ccc::getModel('Config')->load($id);
+			$content = $this->getLayout()->getContent();
+			$configRow = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+			$content->addChild($configRow);
+			$this->renderLayout();
+			
 
 		} 
 		catch (Exception $e) 

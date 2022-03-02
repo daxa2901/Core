@@ -21,7 +21,10 @@ class Controller_Category_Media extends Controller_Core_Action
 			$medias = Ccc::getModel('Category_Media');
 			$query = "SELECT cm.*,c.base,c.thumb,c.small FROM category_media cm JOIN category c ON cm.categoryId = c.categoryId WHERE c.categoryId = ".$id;
 			$medias = $medias->fetchAll($query);
-			Ccc::getBlock('Category_Media_Grid')->setData(['media'=>$medias])->toHtml();
+			$categoryMediaRow =Ccc::getBlock('Category_Media_Grid')->setData(['media'=>$medias]);
+		 	$content = $this->getLayout()->getContent();
+			$content->addChild($categoryMediaRow);
+			$this->renderLayout();
 
 		}
 		catch(Excaption $e)
@@ -36,9 +39,8 @@ class Controller_Category_Media extends Controller_Core_Action
 	   if(empty($imagetype['fileName'])) return false;
 	   switch($imagetype['fileName'])
 	   {
-		   case 'image/bmp': return '.bmp';
-		   case 'image/gif': return '.gif';
-		   case 'image/jpeg': return '.jpg';
+		   case 'image/jpg': return '.jpg';
+		   case 'image/jpeg': return '.jpeg';
 		   case 'image/png': return '.png';
 		   default: return false;
 	   }
@@ -185,18 +187,25 @@ class Controller_Category_Media extends Controller_Core_Action
 				$temp_name=$_FILES["media"]["tmp_name"];
 				$imagetype=$_FILES["media"]["type"];
 				$ext= $this->GetImageExtension($imagetype);
+				if (!$ext) {
+					throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
+				}
 				$imagename=$file_name['0'].'_'.date("dmYhms").$ext;
 				$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$imagename;
 				
 				$mediaRow->setData(['categoryId'=>$categoryId]);
 				$mediaRow->media = $imagename;
 				$insert = $mediaRow->save();
+				print_r($insert);
+				echo $path;
 				if(!$insert )
 				{
 					throw new Exception("Unable to insert image.", 1);
 				}
 				if(!move_uploaded_file($temp_name['fileName'], $path))
-				{
+				{	
+					echo "22";
+					exit;
 					throw new Exception("Unable to Upload image.", 1);
 				}
 			}
