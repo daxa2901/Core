@@ -6,10 +6,20 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		$content = $this->getLayout()->getContent();
-		$adminRow = Ccc::getBlock('Admin_Grid');
-		$content->addChild($adminRow);
-		$this->renderLayout();
+		$session = Ccc::getModel('Core_Session');
+		// $session->name = 'session1<br>';
+		// echo $session->name;
+		// $session->value = 'value<br>';
+		// echo $session->value;
+		$session->destroy();
+		// $session->start();
+		// var_dump($session->getId());
+		// echo $session->regenerateId();
+		// print_r($session;
+		// $content = $this->getLayout()->getContent();
+		// $adminRow = Ccc::getBlock('Admin_Grid');
+		// $content->addChild($adminRow);
+		// $this->renderLayout();
 	}
 
 	public function addAction()
