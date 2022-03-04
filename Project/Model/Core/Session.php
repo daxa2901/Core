@@ -9,31 +9,43 @@ class Model_Core_Session
 
 	public function start()
 	{
-		if(!$this->getId())
+		if(!$this->isStarted())
 		{
 			session_start();
 		}
 		return $this;
 	}
 
-	public function getId()
+	public function isStarted()
 	{
+		if(!$this->getId())
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public function getId($id = null)
+	{
+		if($id)
+		{
+			return session_id($id);
+		}
 		return session_id();
 	}
 
 	public function regenerateId()
 	{
-		if(!$this->getId())
+		if(!$this->isStarted())
 		{
 			$this->start();
 		}
-		
 		return session_regenerate_id();
 	}
 
 	public function destroy()
 	{
-		if($this->getId())
+		if($this->isStarted())
 		{
 			session_destroy();
 		}
@@ -42,7 +54,7 @@ class Model_Core_Session
 
 	public function __set($key,$value)
 	{
-		if (!$this->getId()) 
+		if (!$this->isStarted()) 
 		{
 			$this->start();
 		}
@@ -52,7 +64,7 @@ class Model_Core_Session
 
 	public function __get($key)
 	{
-		if (!$this->getId()) 
+		if (!$this->isStarted()) 
 		{
 			return null;
 		}
@@ -65,7 +77,7 @@ class Model_Core_Session
 
 	public function __unset($key)
 	{
-		if (!$this->getId()) 
+		if (!$this->isStarted()) 
 		{
 			$this->start();
 		}

@@ -81,7 +81,7 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("System is unable to update.", 1);
 				}
 				
-				$messages->addMessage('Admin Details Updated Successfully.',get_class($messages)::SUCCESS);
+				$messages->addMessage('Admin Details Updated Successfully.');
 			}
 			else
 			{
@@ -98,7 +98,7 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("System is unable to insert.", 1);
 				}
 				
-				$messages->addMessage('Admin Details Inserted Successfully.',get_class($messages)::SUCCESS);
+				$messages->addMessage('Admin Details Inserted Successfully.');
 			}
 			
 			$this->redirect('grid',null,null,true);
