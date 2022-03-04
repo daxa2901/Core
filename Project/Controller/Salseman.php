@@ -44,7 +44,9 @@ class Controller_Salseman extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Salseman_Grid')->getUrl('grid',null,null,true));
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -52,6 +54,7 @@ class Controller_Salseman extends Controller_Core_Action
 	{
 		try 
 		{
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -76,6 +79,7 @@ class Controller_Salseman extends Controller_Core_Action
 				if (!$update) {
 					throw new Exception("System is unable to update.", 1);
 				}
+				$messages->addMessage('Salseman Details Updated Successfully.');
 
 			}
 			else
@@ -86,13 +90,15 @@ class Controller_Salseman extends Controller_Core_Action
 				if (!$insert) {
 					throw new Exception("System is unable to Insert.", 1);
 				}
+				$messages->addMessage('Salseman Details Inserted Successfully.');
 			}
 
-			$this->redirect(Ccc::getBlock('Salseman_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 		} 	
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Salseman_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 			
 		}
 	}
@@ -100,7 +106,9 @@ class Controller_Salseman extends Controller_Core_Action
 	public function deleteAction()
 	{
 		try 
-		{	$salsemanRow = Ccc::getModel('Salseman');
+		{	
+			$messages = $this->getMessage();
+			$salsemanRow = Ccc::getModel('Salseman');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -119,12 +127,14 @@ class Controller_Salseman extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Salseman_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage('Salseman Details Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Salseman_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 }

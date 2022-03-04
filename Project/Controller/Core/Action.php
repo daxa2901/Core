@@ -1,8 +1,8 @@
-<?php Ccc::getBlock('Core_Layout'); ?>
 <?php
 class Controller_Core_Action
 {
 	protected $layout = null;
+	protected $message = null;
 	
 	public function getRequest()
 	{
@@ -15,8 +15,9 @@ class Controller_Core_Action
 		return $adapter;
 	}
 
-	public function redirect($url)
+	public function redirect($action=null,$controller=null,$parameters=[],$reset=false)
 	{
+		$url = $this->getLayout()->getUrl($action,$controller,$parameters,$reset);
 		header('location:'.$url);	
 		exit();			
 	}
@@ -29,8 +30,9 @@ class Controller_Core_Action
 
 	public function getLayout()
 	{
-		if(!$this->layout){
-			$this->setlayout(new Block_Core_layout);
+		if(!$this->layout)
+		{
+			$this->setlayout(Ccc::getBlock('Core_Layout'));
 		}
 		return $this->layout;
 	}
@@ -38,6 +40,21 @@ class Controller_Core_Action
 	public function renderLayout()
 	{
 		$this->getLayout()->toHtml();
+	}
+
+	public function setMessage($message)
+	{
+		$this->message = $message;
+		return $this;
+	}
+	
+	public function getMessage()
+	{
+		if(!$this->message)
+		{
+			$this->setMessage(Ccc::getModel('Core_Message'));
+		}
+		return $this->message;
 	}
 	
 }

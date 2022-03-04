@@ -4,7 +4,6 @@ Ccc::loadClass('Controller_Core_Action');
 class Controller_Product extends Controller_Core_Action{
 	public function gridAction()
 	{
-		
 		$content = $this->getLayout()->getContent();
 		$productRow = Ccc::getBlock('Product_Grid');
 		$content->addChild($productRow);
@@ -41,8 +40,9 @@ class Controller_Product extends Controller_Core_Action{
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
-			//echo $e->getMessage();
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -50,6 +50,7 @@ class Controller_Product extends Controller_Core_Action{
 	{
 		try 
 		{
+			$messages = $this->getMessage();
 			$productRow = Ccc::getModel('Product');
 			$request = $this->getRequest();
 			if(!$request->isPost())
@@ -76,6 +77,8 @@ class Controller_Product extends Controller_Core_Action{
 				{
 					throw new Exception("System is unable to update.", 1);					
 				}
+				$messages->addMessage('Product Updated Successfully.');
+
 			}
 			else
 			{
@@ -86,11 +89,15 @@ class Controller_Product extends Controller_Core_Action{
 				{
 					throw new Exception("System is unable to insert.", 1);					
 				}
+				$messages->addMessage('product Inserted Successfully.');
 			}
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 			
-		} catch (Exception $e) {
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -98,6 +105,7 @@ class Controller_Product extends Controller_Core_Action{
 	{
 		try 
 		{
+			$messages = $this->getMessage();
 			$productRow = Ccc::getModel('Product');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
@@ -124,10 +132,12 @@ class Controller_Product extends Controller_Core_Action{
 				throw new Exception("System is unable to delete.", 1);							
 			}
 			
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage('Product Deleted Successfully.');
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
 			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
 		}
 	}

@@ -41,13 +41,12 @@ class Controller_Config extends Controller_Core_Action
 			$configRow = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
 			$content->addChild($configRow);
 			$this->renderLayout();
-			
-
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
-			//echo $e->getMessage();
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 		
 	}
@@ -56,7 +55,7 @@ class Controller_Config extends Controller_Core_Action
 	{
 		try
 		{
-
+			$messages = $this->getMessage();
 			$configRow = Ccc::getModel('Config');
 			$request = $this->getRequest();
 			if(!$request->isPost())
@@ -69,7 +68,6 @@ class Controller_Config extends Controller_Core_Action
 			}			
 
 			$row = $request->getPost('config');
-			print_r($row);
 			if (array_key_exists('configId', $row))
 			{
 				if(!(int)$row['configId'])
@@ -82,6 +80,7 @@ class Controller_Config extends Controller_Core_Action
 				{ 
 					throw new Exception("System is unable to update.", 1);
 				}
+				$messages->addMessage('Config Updated Successfully.');
 				
 			}
 			else
@@ -93,12 +92,14 @@ class Controller_Config extends Controller_Core_Action
 				{	
 					throw new Exception("System is unable to insert.", 1);
 				}
+				$messages->addMessage('Config Inserted Successfully.');
 			}
-			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -106,7 +107,7 @@ class Controller_Config extends Controller_Core_Action
 	{
 		try 
 		{	
-
+			$messages = $this->getMessage();
 			$configRow = Ccc::getModel('Config');
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
@@ -126,12 +127,14 @@ class Controller_Config extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage('Config Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Config_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 }

@@ -43,7 +43,9 @@ class Controller_Page extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Page_Grid')->getUrl('grid',null,null,true));
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 			//echo $e->getMessage();
 		}
 		
@@ -53,7 +55,7 @@ class Controller_Page extends Controller_Core_Action
 	{
 		try
 		{
-
+			$messages = $this->getMessage();
 			$pageRow = Ccc::getModel('Page');
 			$request = $this->getRequest();
 			if(!$request->isPost())
@@ -79,6 +81,7 @@ class Controller_Page extends Controller_Core_Action
 				{ 
 					throw new Exception("System is unable to update.", 1);
 				}
+				$messages->addMessage('Page Info Updated Successfully.');
 				
 			}
 			else
@@ -90,12 +93,14 @@ class Controller_Page extends Controller_Core_Action
 				{	
 					throw new Exception("System is unable to insert.", 1);
 				}
+				$messages->addMessage('Page Info Inserted Successfully.');
 			}
-			$this->redirect(Ccc::getBlock('Page_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Page_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -123,12 +128,14 @@ class Controller_Page extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Page_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage('Page Info Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Page_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 }
