@@ -45,16 +45,7 @@ class Model_Core_Row_Resource
 		return $this;
 	}
 
-	public function escapString($value)
-	{
-		if(!$this->getAdapter()->getConnect())
-		{
-			$this->getAdapter()->connect();
-		}
-		return mysqli_real_escape_string($this->getAdapter()->getConnect(),$value);
-
-
-	}
+	
 	public function insert(array $data)
 	{
 		if(!$data)
@@ -62,7 +53,7 @@ class Model_Core_Row_Resource
 			return false;
 		}
 		$keys = '`'.implode("`,`", array_keys($data)).'`';
-		$escapedValue = array_map(array($this,'escapString'),array_values($data));
+		$escapedValue = array_map(array($this->getAdapter(),'escapString'),array_values($data));
 		$values = '\''.implode("','", array_values($escapedValue)).'\'';
 		$query = "INSERT INTO ".$this->getTableName()." (".$keys.") VALUES (".$values.")";
 		return $this->getAdapter()->insert($query);
@@ -74,7 +65,7 @@ class Model_Core_Row_Resource
 		$fields = null;		
 		if(!is_array($id))
 		{
-			$whereClause = $this->getPrimaryKey() ." = '".$this->escapString($id)."'";
+			$whereClause = $this->getPrimaryKey() ." = '".$this->getAdapter()->escapString($id)."'";
 		}
 		else
 		{
@@ -91,7 +82,7 @@ class Model_Core_Row_Resource
 		{
 			if($value != null)
 			{
-				$fields = $fields . $col . " = '".$this->escapString($value)."',";
+				$fields = $fields . $col . " = '".$this->getAdapter()->escapString($value)."',";
 
 			}
 			else

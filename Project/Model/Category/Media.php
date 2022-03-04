@@ -33,9 +33,9 @@ class Model_Category_Media extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
-	public function uploadImage($file)
+	public function uploadImage($tempName , $path)
 	{
-		if(!move_uploaded_file($temp_name['fileName'], $path))
+		if(!move_uploaded_file($tempName, $path))
 		{
 			throw new Exception("Unable to Upload image.", 1);
 		}

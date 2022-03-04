@@ -20,7 +20,6 @@ class Controller_Customer extends Controller_Core_Action{
 		$content = $this->getLayout()->getContent();
 		$content->addChild($customerRow);
 		$this->renderLayout();	
-		// Ccc::getBlock('Customer_Add')->toHtml();
 	}
 
 	public function editAction()
@@ -56,11 +55,14 @@ class Controller_Customer extends Controller_Core_Action{
 		} 
 		catch (Exception $e) 
 		{
-				echo $e->getMessage();		
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,null);		
 		}
 	}
 	protected function saveCustomer()
 	{
+		$messages = $this->getMessage();
 		$customerRow = Ccc::getModel("Customer");
 		
 		$request=$this->getRequest();
@@ -90,6 +92,7 @@ class Controller_Customer extends Controller_Core_Action{
 			{ 
 				throw new Exception("System is unable to update.", 1);
 			}
+			$messages->addMessage('Customer Details Updated Successfully.');
 			
 		}
 		else
@@ -101,6 +104,7 @@ class Controller_Customer extends Controller_Core_Action{
 			{	
 					throw new Exception("System is unable to insert.", 1);
 			}
+			$messages->addMessage('Customer Details Inserted Successfully.');
 			
 		}
 	
@@ -109,7 +113,7 @@ class Controller_Customer extends Controller_Core_Action{
 
 	protected function saveAddress($customerId)
 	{
-
+		$messages = $this->getMessage();
 		$addressRow = Ccc::getModel("Customer_Address");
 		$request = $this->getRequest();
 		
@@ -134,7 +138,7 @@ class Controller_Customer extends Controller_Core_Action{
 		{
 				$shipping = 1;
 		}
-		$addressData = $addressRow->load($customerId);
+		$addressData = $addressRow->load($customerId,'customerId');
 		$addressRow->setData($row);
 		$addressRow->billing = $billing;
 		$addressRow->shipping = $shipping;
@@ -145,15 +149,17 @@ class Controller_Customer extends Controller_Core_Action{
 			{ 
 				throw new Exception("System is unable to update.", 1);
 			}
+			$messages->addMessage('Customer Address Updated Successfully');
 		}
 		else
 		{
 			$addressRow->customerId = $customerId;
-			$result = $addressRow->save();
-			if (!$result) 
+			$insert = $addressRow->save();
+			if (!$insert) 
 			{
 				throw new Exception("System is unable to insert", 1);
 			}
+			$messages->addMessage('Customer Address Inserted Successfully.');
 		}	
 	}
 
@@ -161,13 +167,15 @@ class Controller_Customer extends Controller_Core_Action{
 	{
 		try
 		{
+			$messages = $this->getMessage();
 			$customerId = $this->saveCustomer();
 			$this->saveAddress($customerId);
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -175,6 +183,7 @@ class Controller_Customer extends Controller_Core_Action{
 	{
 		try 
 		{
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -194,13 +203,15 @@ class Controller_Customer extends Controller_Core_Action{
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage('Customer Details Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Customer_Grid')->getUrl('grid',null,null,true));	
-			//echo $e->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
+			
 		}
 	}
 }

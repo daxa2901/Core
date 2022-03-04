@@ -53,11 +53,14 @@ class Controller_Vendor extends Controller_Core_Action{
 		} 
 		catch (Exception $e) 
 		{
-				echo $e->getMessage();		
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);	
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 	protected function saveVendor()
 	{
+		$messages = $this->getMessage();
 		$vendorRow = Ccc::getModel("Vendor");
 		
 		$request=$this->getRequest();
@@ -87,6 +90,7 @@ class Controller_Vendor extends Controller_Core_Action{
 			{ 
 				throw new Exception("System is unable to update.", 1);
 			}
+			$messages->addMessage("Vendor Details Updated Successfully.");
 			
 		}
 		else
@@ -98,7 +102,7 @@ class Controller_Vendor extends Controller_Core_Action{
 			{	
 					throw new Exception("System is unable to insert.", 1);
 			}
-			
+			$messages->addMessage("Vendor Details Inserted Successfully.");
 		}
 	
 		return $vendorId;
@@ -106,7 +110,7 @@ class Controller_Vendor extends Controller_Core_Action{
 
 	protected function saveAddress($vendorId)
 	{
-
+		$messages = $this->getMessage();
 		$vendorRow = Ccc::getModel("Vendor_Address");
 		$request = $this->getRequest();
 		
@@ -120,7 +124,7 @@ class Controller_Vendor extends Controller_Core_Action{
 		}
 		$row = $request->getPost('address');
 	
-		$addressData = $vendorRow->load($customerId);
+		$addressData = $vendorRow->load($vendorId,'vendorId');
 		$vendorRow->setData($row);
 		if($addressData)
 		{
@@ -129,6 +133,7 @@ class Controller_Vendor extends Controller_Core_Action{
 			{ 
 				throw new Exception("System is unable to update.", 1);
 			}
+			$messages->addMessage('Vendor Address Updated Successfully.');
 		}
 		else
 		{
@@ -138,6 +143,7 @@ class Controller_Vendor extends Controller_Core_Action{
 			{
 				throw new Exception("System is unable to insert", 1);
 			}
+			$messages->addMessage('Vendor Address Inserted Successfully.');
 		}	
 	}
 
@@ -147,11 +153,13 @@ class Controller_Vendor extends Controller_Core_Action{
 		{
 			$vendorId = $this->saveVendor();
 			$this->saveAddress($vendorId);
-			$this->redirect(Ccc::getBlock('Vendor_Grid')->getUrl('grid',null,null,true));
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Vendor_Grid')->getUrl('grid',null,null,true));
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
@@ -159,6 +167,7 @@ class Controller_Vendor extends Controller_Core_Action{
 	{
 		try 
 		{
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -175,16 +184,16 @@ class Controller_Vendor extends Controller_Core_Action{
 			$delete = $vendorId->delete(); 
 			if(!$delete)
 			{
-				throw new Exception("System is unable to delete record.", 1);
-										
+				throw new Exception("System is unable to delete record.", 1);							
 			}
-			$this->redirect(Ccc::getBlock('Vendor_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage('Vendor Details Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Vendor_Grid')->getUrl('grid',null,null,true));	
-			//echo $e->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 }

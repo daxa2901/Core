@@ -27,30 +27,20 @@ class Controller_Product_Media extends Controller_Core_Action
 			$this->renderLayout();
 
 		}
-		catch(Excaption $e)
+		catch(Exception $e)
 		{
-			echo $e->getMessage();
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid','Product',null,true);
 		}
 		
 	}
-	
-	 function GetImageExtension($imagetype)
-	 {
-	   if(empty($imagetype['fileName'])) return false;
-	   switch($imagetype['fileName'])
-	   {
-		   case 'image/bmp': return '.bmp';
-		   case 'image/gif': return '.gif';
-		   case 'image/jpeg': return '.jpg';
-		   case 'image/png': return '.png';
-		   default: return false;
-	   }
-	 }
 						
 	public function saveAction()
 	{
 		try
 		{
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -81,7 +71,7 @@ class Controller_Product_Media extends Controller_Core_Action
 					$update = $this->getAdapter()->update("UPDATE product SET base =null ,thumb = null, small = null where productId = ".$productId);
 					if(!$update)
 					{
-						throw new Exception("Unable to update product media.", 1);	
+						throw new Exception("Unable to update product.", 1);	
 					}
 
 					if(array_key_exists('remove',$rows))
@@ -171,6 +161,7 @@ class Controller_Product_Media extends Controller_Core_Action
 						}
 
 					}
+					$messages->addMessage('Product Media Updated Successfully.');
 				}
 			}
 			
@@ -182,17 +173,17 @@ class Controller_Product_Media extends Controller_Core_Action
 
 					throw new Exception("Select Image.", 1);				
 				}
-				// $media = Ccc::getModel('Product_Media')->uploadImage($_FILES['media']['name']['fileName']);
-				$file_name=$_FILES["media"]["name"]['fileName'];
-				$file_name = explode('.',$file_name);
+				$file_name = pathinfo($_FILES['media']['name']['fileName'],PATHINFO_FILENAME);
 				$temp_name=$_FILES["media"]["tmp_name"];
-				$imagetype=$_FILES["media"]["type"];
-				$ext= $this->GetImageExtension($imagetype);
-				if (!$ext) {
-					throw new Exception("Image must of type JPG, JPEG or PNG", 1);
+				$ext = pathinfo($_FILES['media']['name']['fileName'],PATHINFO_EXTENSION);
+				if($ext !='png' && $ext != 'jpg' && $ext = 'jpeg')
+				{
+					throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
 				}
-				$imagename=$file_name['0'].'_'.date("dmYhms").$ext;
+				
+				$imagename=$file_name.'_'.date("dmYhms").'.'.$ext;
 				$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$imagename;
+				$media = Ccc::getModel('Product_Media')->uploadImage($temp_name['fileName'],$path);
 				
 				$mediaRow->setData(['productId'=>$productId]);
 				$mediaRow->media = $imagename;
@@ -201,19 +192,17 @@ class Controller_Product_Media extends Controller_Core_Action
 				{
 					throw new Exception("Unable to insert image.", 1);
 				}
-				if(!move_uploaded_file($temp_name['fileName'], $path))
-				{
-					throw new Exception("Unable to Upload image.", 1);
-				}
+				
+				$messages->addMessage('Product Media Uploaded Successfully.');
 			}
 
-			$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
+			$this->redirect('grid');
 			
 		}
-				catch (Exception $e) 
+		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Product_Media_Grid')->getUrl('grid'));
-			// echo $e->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid');
 		}
 
 	}

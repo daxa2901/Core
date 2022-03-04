@@ -124,4 +124,13 @@ class Model_Core_Adapter{
         $key = $result['0']['0'];
         return $key;
     }
+
+    public function escapString($value)
+    {
+        if(!$this->getConnect())
+        {
+            $this->connect();
+        }
+        return mysqli_real_escape_string($this->getConnect(),$value);
+    }
 } 

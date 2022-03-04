@@ -6,22 +6,12 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function gridAction()
 	{	
-		$session = Ccc::getModel('Core_Session');
-		// $session->name = 'session1<br>';
-		// echo $session->name;
-		// $session->value = 'value<br>';
-		// echo $session->value;
-		$session->destroy();
-		// $session->start();
-		// var_dump($session->getId());
-		// echo $session->regenerateId();
-		// print_r($session;
-		// $content = $this->getLayout()->getContent();
-		// $adminRow = Ccc::getBlock('Admin_Grid');
-		// $content->addChild($adminRow);
-		// $this->renderLayout();
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Grid');
+		$content->addChild($adminRow);
+		$this->renderLayout();
 	}
-
+	
 	public function addAction()
 	{
 		$admin = Ccc::getModel('Admin');
@@ -53,8 +43,9 @@ class Controller_Admin extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
-			//echo $e->getMessage();
+			$messages = $this->getMessage();
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 		
 	}
@@ -63,6 +54,7 @@ class Controller_Admin extends Controller_Core_Action
 	{
 		try
 		{
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			$adminRow = Ccc::getModel('Admin');
 			if(!$request->isPost())
@@ -89,6 +81,7 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("System is unable to update.", 1);
 				}
 				
+				$messages->addMessage('Admin Details Updated Successfully.');
 			}
 			else
 			{
@@ -105,19 +98,24 @@ class Controller_Admin extends Controller_Core_Action
 					throw new Exception("System is unable to insert.", 1);
 				}
 				
+				$messages->addMessage('Admin Details Inserted Successfully.');
 			}
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
+			
+			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);
 		}
 	}
 
 	public function deleteAction()
 	{
 		try 
-		{	$adminRow = Ccc::getModel('Admin');
+		{	
+			$adminRow = Ccc::getModel('Admin');
+			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) 
 			{
@@ -136,12 +134,15 @@ class Controller_Admin extends Controller_Core_Action
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));	
+
+			$messages->addMessage('Admin Detail Deleted Successfully.');
+			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->redirect(Ccc::getBlock('Admin_Grid')->getUrl('grid',null,null,true));	
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->redirect('grid',null,null,true);	
 		}
 	}
 }
