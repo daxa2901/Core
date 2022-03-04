@@ -25,19 +25,19 @@
 					<tr>
 			    		<td><?php echo $row->categoryId ?></td>
 			    		<td><?php if($row->base): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->baseImage ?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
 				    	</td>
 			    		<td><?php if($row->thumb): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->thumbImage ?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
 				    	</td>
 			    		<td><?php if($row->small): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->smallImage ?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
