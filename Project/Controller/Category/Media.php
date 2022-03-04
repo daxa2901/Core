@@ -19,7 +19,11 @@ class Controller_Category_Media extends Controller_Core_Action
 				throw new Exception("Unable to load Category.", 1);
 			}
 			$medias = Ccc::getModel('Category_Media');
-			$query = "SELECT cm.*,c.base,c.thumb,c.small FROM category_media cm JOIN category c ON cm.categoryId = c.categoryId WHERE c.categoryId = ".$id;
+			$query = "SELECT cm.*,c.base,c.thumb,c.small FROM category_media cm 
+						JOIN category c 
+							ON cm.categoryId = c.categoryId
+					WHERE c.categoryId = ".$id;
+					
 			$medias = $medias->fetchAll($query);
 			$categoryMediaRow =Ccc::getBlock('Category_Media_Grid')->setData(['media'=>$medias]);
 		 	$content = $this->getLayout()->getContent();
@@ -27,7 +31,7 @@ class Controller_Category_Media extends Controller_Core_Action
 			$this->renderLayout();
 
 		}
-		catch(Excaption $e)
+		catch(Exception $e)
 		{
 			$messages = $this->getMessage();
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);

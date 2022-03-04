@@ -11,10 +11,6 @@ class Block_Category_Grid extends Block_Core_Template
 	public function getCategory()
 	{
 		$categoryTable = Ccc::getModel('Category');
-		// $query = "SELECT 
-		// 		c.*,cm.media 
-		// 	FROM Category c LEFT JOIN category_media cm ON c.categoryId = cm.categoryId order by c.categoryPath";
-
 		$query = "SELECT 
 		 		c.*,b.media as baseImage, t.media as thumbImage,s.media as smallImage
 			FROM Category c 

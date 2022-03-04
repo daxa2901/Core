@@ -27,7 +27,7 @@ class Controller_Product_Media extends Controller_Core_Action
 			$this->renderLayout();
 
 		}
-		catch(Excaption $e)
+		catch(Exception $e)
 		{
 			$messages = $this->getMessage();
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);

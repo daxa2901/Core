@@ -25,12 +25,12 @@ class Ccc
 
 	public static function loadFile($path)
 	{
-		require_once(getcwd().'/'.$path);
+		require_once(getcwd()."\\".$path);
 	}
 
 	public static function loadClass($className)
 	{
-		$path = str_replace("_", "/", $className).'.php';
+		$path = str_replace("_", "\\", $className).'.php';
 		Ccc::loadFile($path);
 	}
 
