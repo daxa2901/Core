@@ -1,4 +1,8 @@
 <?php $product = $this->getProduct(); ?>
+<?php $categories = $this->getCategories(); ?>
+<?php $categoryPath = $this->getCategoryToPath(); ?>
+<?php $categoryProductPair = $this->getCategoryProductPair(); ?>
+
 <form action=<?php echo  $this->getUrl('save');?>  method='post'>
 <table border="1" width="100%" cellspacing="4">
     <tr>
@@ -8,6 +12,14 @@
     <tr>
       <td width="10%"> Price</td>
       <td><input type="float" name="product[price]" value="<?php echo $product->price ?>"></td>
+    </tr>
+    <tr>
+      <td width="10%"> Cost</td>
+      <td><input type="float" name="product[cost]" value="<?php echo $product->cost ?>"></td>
+    </tr>
+    <tr>
+      <td width="10%"> Sku</td>
+      <td><input type="float" name="product[sku]" value="<?php echo $product->sku ?>"></td>
     </tr>
     <tr>
       <td width="10%"> Quantity</td>
@@ -21,6 +33,30 @@
             <option <?php if($product->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
           <?php endforeach; ?>          
         </select>
+      </td>
+    </tr>
+    <tr>
+      <td width="=10%"> Category</td>
+      <td width="=10%"> 
+          <table border="1">
+            <tr>
+              <th>Checkbox</th>
+              <th>categoryId</th>
+              <th>Category</th>
+            </tr>
+            <?php foreach($categories as $category): ?>
+              <tr>
+                 <td><input type="checkbox" name="product[category][]" value="<?php echo $category->categoryId ?>"
+                  <?php if($categoryProductPair):
+                    if(in_array($category->categoryId, $categoryProductPair)): ?> 
+                      checked 
+                    <?php endif; ?>
+                  <?php endif; ?>></td>
+                 <td><?php echo $category->categoryId ?></td>
+                 <td><?php echo $categoryPath[$category->categoryId] ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </table>
       </td>
     </tr>
     <?php if($product->productId): ?>
