@@ -14,9 +14,11 @@
 				<th> Last Name </th>
 				<th> Email </th>
 				<th> Mobile </th>
+				<th> Percentage </th>
 				<th> Status </th>
 				<th> Create Date </th>
 				<th> Update Date </th>
+				<th> Manage Customer </th>
 				<th> Action </th>
 			</tr>
 			<?php if($salsemans): ?>
@@ -27,9 +29,11 @@
 			    		<td><?php echo $row->lastName ?></td>
 			    		<td><?php echo $row->email ?></td>
 			    		<td><?php echo $row->mobile ?></td>
+			    		<td><?php echo $row->percentage ?></td>
 			    		<td><?php echo $row->getStatus($row->status) ?> </td>
 			    		<td><?php echo $row->createdAt ?></td>
 			    		<td><?php echo $row->updatedAt ?></td>
+			    		<td> <a href="<?php echo  $this->getUrl('grid','salseman_customer',['id'=>$row->salsemanId],true);?>">Manage Customer</a> </td>
 			    		<td>
 			    			<a href="<?php echo  $this->getUrl('delete',null,['id'=>$row->salsemanId],true);?>">Delete</a> 
 			    			<a href="<?php echo  $this->getUrl('edit',null,['id'=>$row->salsemanId],true);?>">Update</a>
@@ -37,7 +41,7 @@
 			   		</tr>
 			 	<?php endforeach;?>
 			<?php else:?>
-				<tr><td colspan='10'>No Record Available</td></tr>			
+				<tr><td colspan='11'>No Record Available</td></tr>			
 			<?php endif; ?>
 		</table>	
 	</div>
