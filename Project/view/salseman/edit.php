@@ -18,6 +18,10 @@
     <td><input type="text" name="salseman[mobile]" value="<?php echo $row->mobile ?>"></td>
   </tr>
   <tr>
+    <td width="10%">Percentage</td>
+    <td><input type="float" name="salseman[percentage]" value="<?php echo $row->percentage ?>"></td>
+  </tr>
+  <tr>
     <td width="10%">Status</td>
     <td>
       <select name="salseman[status]">
