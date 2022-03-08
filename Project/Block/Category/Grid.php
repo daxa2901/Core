@@ -25,27 +25,9 @@ class Block_Category_Grid extends Block_Core_Template
 		$category = $categoryTable->fetchAll($query);	
 		return $category;
 	}
+	
 	public function getCategoryToPath()
-    {
-        $categoryName=$this->getAdapter()->fetchPair('SELECT categoryId,name FROM Category');
-        $categoryPath=$this->getAdapter()->fetchPair('SELECT categoryId,categoryPath FROM Category');
-        $categories=[];
-        foreach ($categoryPath as $key => $value) 
-        {
-                $explodeArray=explode('/', $value);
-                $tempArray = [];
-
-                foreach ($explodeArray as $keys => $value) 
-                {
-                    if(array_key_exists($value,$categoryName))
-                    {
-                        array_push($tempArray,$categoryName[$value]);
-                    }
-                }
-
-                $implodeArray = implode('/', $tempArray);
-                $categories[$key]= $implodeArray;
-        }
-        return $categories;
+	{
+		return $this->getData('categoryPath');
 	}
 }

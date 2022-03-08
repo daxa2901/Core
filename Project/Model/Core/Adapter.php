@@ -5,7 +5,7 @@ class Model_Core_Adapter{
         'host' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'dbname' => 'cybercom'
+        'dbname' => 'project_daxa'
     ];
     private $connect = NULL;
     

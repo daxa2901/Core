@@ -104,10 +104,10 @@ class Model_Core_View{
 
 	public function baseUrl($suburl = null)
 	{
-		$url = 'C:/xampp/htdocs/Cybercom/message/Core/Project';
+		$url = getcwd();
 		if($suburl)
 		{
-			$url = $url.'/'.$suburl;
+			$url = $url.'\\'.$suburl;
 		}
 		return $url;
 	}

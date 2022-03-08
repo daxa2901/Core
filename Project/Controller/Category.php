@@ -5,18 +5,21 @@ class Controller_Category extends Controller_Core_Action
 
 	public function gridAction()
 	{
+		$categoryPath = Ccc::getModel('Category')->getCategoryToPath();
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Grid');
+		$categoryRow = Ccc::getBlock('Category_Grid')->setData(['categoryPath'=>$categoryPath]);
 		$content->addChild($categoryRow);
 		$this->renderLayout();
-		// Ccc::getBlock('Category_Grid')->toHtml();
 	}
 
 	public function addAction()
 	{
 		$category = Ccc::getModel('Category');
+		$categoryPath = $category->getCategoryToPath();
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
+		$categoryRow = Ccc::getBlock('Category_Edit');
+		$categoryRow->setData(['categoryPath'=>$categoryPath]);
+		$categoryRow->addData('category',$category);
 		$content->addChild($categoryRow);
 		$this->renderLayout();
 		
@@ -36,7 +39,10 @@ class Controller_Category extends Controller_Core_Action
       			throw new Exception("Unable to Load Category.", 1);
       		}
       		$content = $this->getLayout()->getContent();
-			$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
+      		$categoryPath = Ccc::getModel('Category')->getCategoryToPath();
+			$categoryRow = Ccc::getBlock('Category_Edit');
+			$categoryRow->setData(['categoryPath'=>$categoryPath]);
+			$categoryRow->addData('category',$category);
 			$content->addChild($categoryRow);
 			$this->renderLayout();
 		

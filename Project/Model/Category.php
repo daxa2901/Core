@@ -33,4 +33,28 @@ class Model_Category extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
+	public function getCategoryToPath()
+    {
+        $categoryName=$this->getResource()->getAdapter()->fetchPair('SELECT categoryId,name FROM Category');
+        $categoryPath=$this->getResource()->getAdapter()->fetchPair('SELECT categoryId,categoryPath FROM Category');
+        $categories=[];
+        foreach ($categoryPath as $key => $value) 
+        {
+                $explodeArray=explode('/', $value);
+                $tempArray = [];
+
+                foreach ($explodeArray as $keys => $value) 
+                {
+                    if(array_key_exists($value,$categoryName))
+                    {
+                        array_push($tempArray,$categoryName[$value]);
+                    }
+                }
+
+                $implodeArray = implode('/', $tempArray);
+                $categories[$key]= $implodeArray;
+        }
+        return $categories;
+	}
+
 }
