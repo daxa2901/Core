@@ -15,12 +15,12 @@ class Block_Category_Edit extends Block_Core_Template
 
 	public function getCategoryPathPair()
 	{
-        $categoryPathPair = $this->getAdapter()->fetchPair('SELECT categoryId,categoryPath FROM Category');
+        $categoryPathPair = $this->getAdapter()->fetchPair('SELECT `categoryId`,`categoryPath` FROM `Category`');
 		return $categoryPathPair;
 	}
 
 	public function getCategoryToPath()
-    {
-       return $this->getData('categoryPath');
+   {
+			return Ccc::getModel('Category')->getCategoryToPath();
 	}
 }

@@ -25,16 +25,16 @@
 				<tr>
 		    		<td>
 			    		<?php if($row->customerPrice):?>
-			    			<input type="number" name="price[old][<?php echo $row->entityId ?>]" required min = "<?php echo $row->price - ($row->price/100) * $data['salseman']->percentage ?>" max = <?php echo $row->price ?> value = <?php echo $row->customerPrice ?>>
+			    			<input type="number" name="price[exists][<?php echo $row->entityId ?>]" required min = "<?php echo floor($row->price - ($row->price/100) * $data['salseman']->percentage) ?>" max = <?php echo $row->price ?> value = <?php echo floor($row->customerPrice) ?>>
 			    		<?php else: ?> 
-			    			<input type="number" name="price[new][<?php echo $row->productId ?>]" min = "<?php echo $row->price - ($row->price/100) * $data['salseman']->percentage ?>" max = <?php echo $row->price ?> required value = "<?php echo $row->price ?>">
+			    			<input type="number" name="price[new][<?php echo $row->productId ?>]" min = "<?php echo floor($row->price - ($row->price/100) * $data['salseman']->percentage) ?>" max = <?php echo floor($row->price) ?> required value = "<?php echo $row->price ?>">
 			    		<?php endif; ?>
 		    		</td>
 					<td><?php echo $row->productId ?></td>
 					<td><?php echo $row->name ?></td>
 					<td><?php echo $row->price ?></td>
 					<td><?php echo $row->sku ?></td>
-					<td><?php echo $row->price - ($row->price/100) * $data['salseman']->percentage ?></td>
+					<td><?php echo floor($row->price - ($row->price/100) * $data['salseman']->percentage) ?></td>
 					
 		    		</tr>
 		  	<?php endforeach; ?>

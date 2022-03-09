@@ -33,12 +33,24 @@ class Model_Product_Media extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
-	public function uploadImage($tempName , $path)
+	public function uploadImage($file)
 	{
-		if(!move_uploaded_file($tempName, $path))
+		$file_name = pathinfo($file['name']['fileName'],PATHINFO_FILENAME);
+		$temp_name=$file["tmp_name"]['fileName'];
+		$ext = strtolower(pathinfo($file['name']['fileName'],PATHINFO_EXTENSION));
+		if(!in_array($ext, ['png','jpg','jpeg']))
 		{
-			throw new Exception("Unable to Upload image.", 1);
+			throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
 		}
+		
+		$imagename=$file_name.'_'.date("dmYhms").'.'.$ext;
+		$path =  Ccc::getBlock('Product_Media_Grid')->baseUrl($this->getResource()->getMediaPath()).'\\'.$imagename;
+		if(!move_uploaded_file($temp_name,$path))
+		{
+			throw new Exception("Unable to Upload image111.", 1);
+		}
+		
+		return $imagename;
 	}
 
 }

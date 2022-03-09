@@ -7,17 +7,17 @@ class Controller_Page extends Controller_Core_Action
 	public function gridAction()
 	{	
 		$content = $this->getLayout()->getContent();
-		$pageRow = Ccc::getBlock('Page_Grid');
-		$content->addChild($pageRow);
+		$page = Ccc::getBlock('Page_Grid');
+		$content->addChild($page);
 		$this->renderLayout();
 	}
 
 	public function addAction()
 	{
 		$page = Ccc::getModel('Page');
-		$pageRow = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
+		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
 		$content = $this->getLayout()->getContent();
-		$content->addChild($pageRow);
+		$content->addChild($page);
 		$this->renderLayout();
 	}
 
@@ -35,18 +35,16 @@ class Controller_Page extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load page.", 1);
       		}
-     		$pageRow = Ccc::getBlock('Page_Edit')->addData('page',$page);
+     		$page = Ccc::getBlock('Page_Edit')->addData('page',$page);
 			$content = $this->getLayout()->getContent();
-			$content->addChild($pageRow);
+			$content->addChild($page);
 			$this->renderLayout();
 
 		} 
 		catch (Exception $e) 
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
-			//echo $e->getMessage();
 		}
 		
 	}
@@ -55,8 +53,6 @@ class Controller_Page extends Controller_Core_Action
 	{
 		try
 		{
-			$messages = $this->getMessage();
-			$pageRow = Ccc::getModel('Page');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -68,38 +64,32 @@ class Controller_Page extends Controller_Core_Action
 			}			
 
 			$row = $request->getPost('page');
-			print_r($row);
 			if (array_key_exists('pageId', $row))
 			{
 				if(!(int)$row['pageId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$pageRow->setData($row);
-				$update = $pageRow->save();
-				if(!$update)
-				{ 
-					throw new Exception("System is unable to update.", 1);
-				}
-				$messages->addMessage('Page Info Updated Successfully.');
-				
+				$page = Ccc::getModel('Page')->load($row['pageId']);
 			}
 			else
 			{
-				$pageRow->setData($row);
-				$pageRow->createdAt = date('Y-m-d H:i:s');
-				$insert = $pageRow->save();
-				if(!$insert)
-				{	
-					throw new Exception("System is unable to insert.", 1);
-				}
-				$messages->addMessage('Page Info Inserted Successfully.');
+				$page = Ccc::getModel('Page');
+				$page->createdAt = date('Y-m-d H:i:s');
 			}
+			
+			$page->setData($row);
+			$page = $page->save();
+			if(!$page)
+			{	
+				throw new Exception("System is unable to insert.", 1);
+			}
+			$this->getMessage()->addMessage('Page saved successfully.');
 			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 	}
@@ -108,33 +98,30 @@ class Controller_Page extends Controller_Core_Action
 	{
 		try 
 		{	
-
-			$pageRow = Ccc::getModel('Page');
-			$request = $this->getRequest();
-			if (!$request->getRequest('id')) 
+			$id=$this->getRequest()->getRequest('id');
+			if (!$id) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			$id=$request->getRequest('id');
-			$pageRow = $pageRow->load($id);
-			if(!$pageRow)
+			
+			$page = Ccc::getModel('Page')->load($id);
+			if(!$page)
 			{
-
 				throw new Exception("Record not found.", 1);
 			}
-			$delete = $pageRow->delete(); 
-			if(!$delete)
+
+			$page = $page->delete(); 
+			if(!$page)
 			{
 				throw new Exception("System is unable to delete record.", 1);
-										
 			}
-			$messages->addMessage('Page Info Deleted Successfully.');
+			$this->getMessage()->addMessage('Page Info Deleted Successfully.');
 			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);	
 		}
 	}

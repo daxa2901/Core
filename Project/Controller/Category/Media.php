@@ -12,32 +12,23 @@ class Controller_Category_Media extends Controller_Core_Action
 			{
 				throw new Exception("Invalid Id.", 1);				
 			}
-			$product = Ccc::getModel('Category')->load($id);
 
+			$product = Ccc::getModel('Category')->load($id);
 			if (!$product) 
 			{
 				throw new Exception("Unable to load Category.", 1);
 			}
-			$medias = Ccc::getModel('Category_Media');
-			$query = "SELECT cm.*,c.base,c.thumb,c.small FROM category_media cm 
-						JOIN category c 
-							ON cm.categoryId = c.categoryId
-					WHERE c.categoryId = ".$id;
-					
-			$medias = $medias->fetchAll($query);
-			$categoryMediaRow =Ccc::getBlock('Category_Media_Grid')->setData(['media'=>$medias]);
+			$categoryMedia =Ccc::getBlock('Category_Media_Grid')->setData(['id'=>$id]);
 		 	$content = $this->getLayout()->getContent();
-			$content->addChild($categoryMediaRow);
+			$content->addChild($categoryMedia);
 			$this->renderLayout();
 
 		}
 		catch(Exception $e)
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid','product',null,true);
 		}
-		
 	}
 	
 						
@@ -45,7 +36,6 @@ class Controller_Category_Media extends Controller_Core_Action
 	{
 		try
 		{
-			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -67,13 +57,13 @@ class Controller_Category_Media extends Controller_Core_Action
 				{
 					$ids = implode(',',array_values($rows['mediaId']));
 					 
-					$update = $this->getAdapter()->update("UPDATE category_media SET gallery = 2, status = 2 where mediaId IN ({$ids})");
+					$update = $this->getAdapter()->update("UPDATE `category_media` SET `gallery` = 2, `status` = 2 where `mediaId` IN ({$ids})");
 					if(!$update)
 					{
 						throw new Exception("Unable to update Category media.", 1);	
 					}
 
-					$update = $this->getAdapter()->update("UPDATE category SET base =null ,thumb = null, small = null where categoryId = ".$categoryId);
+					$update = $this->getAdapter()->update("UPDATE `category` SET `base` =null ,`thumb` = null, `small` = null where `categoryId` = ".$categoryId);
 					if(!$update)
 					{
 						throw new Exception("Unable to update Category.", 1);	
@@ -88,13 +78,11 @@ class Controller_Category_Media extends Controller_Core_Action
 							unlink($path);
 						}
 						$removeId = implode(',',array_values($rows['remove']));
-						$delete = $this->getAdapter()->delete("DELETE FROM  category_media WHERE mediaId IN ({$removeId})");
+						$delete = $this->getAdapter()->delete("DELETE FROM  `category_media` WHERE `mediaId` IN ({$removeId})");
 						if(!$delete)
 						{
 							throw new Exception("Unable to delete Category media.", 1);	
 						}
-
-
 					}
 					
 					if(array_key_exists('base',$rows))
@@ -110,7 +98,6 @@ class Controller_Category_Media extends Controller_Core_Action
 								throw new Exception("Unable to update Category.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('thumb',$rows))
@@ -126,7 +113,6 @@ class Controller_Category_Media extends Controller_Core_Action
 								throw new Exception("Unable to update Category.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('small',$rows))
@@ -142,33 +128,29 @@ class Controller_Category_Media extends Controller_Core_Action
 								throw new Exception("Unable to update Category.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('gallery',$rows))
 					{
 						$ids = implode(',',array_values($rows['gallery']));
-						$update = $this->getAdapter()->update("UPDATE category_media SET gallery = 1 WHERE mediaId IN ({$ids})");
+						$update = $this->getAdapter()->update("UPDATE `category_media` SET `gallery` = 1 WHERE `mediaId` IN ({$ids})");
 						if(!$update)
 						{
 							throw new Exception("Unable to update Category media.", 1);	
 						}
-
 					}
 
 					if(array_key_exists('status',$rows))
 					{
 						$ids = implode(',',array_values($rows['status']));
-						$update = $this->getAdapter()->update("UPDATE category_media SET status = 1 WHERE mediaId IN ({$ids})");
+						$update = $this->getAdapter()->update("UPDATE `category_media` SET `status` = 1 WHERE `mediaId` IN ({$ids})");
 						if(!$update)
 						{
 							throw new Exception("Unable to update Category media.", 1);	
 						}
-
 					}
-					$messages->addMessage('Cataegory Media Updated Successfully.');
+					$this->getMessage()->addMessage('Cataegory Media Updated Successfully.');
 				}
-
 			}
 			
 			else
@@ -176,21 +158,10 @@ class Controller_Category_Media extends Controller_Core_Action
 				
 				if (empty($_FILES['media']['name']['fileName'])) 
 				{
-					throw new Exception("No Image Selected.", 1);				
+					throw new Exception("No image selected.", 1);				
 				}
 
-				$file_name = pathinfo($_FILES['media']['name']['fileName'],PATHINFO_FILENAME);
-				$temp_name=$_FILES["media"]["tmp_name"];
-				$ext = pathinfo($_FILES['media']['name']['fileName'],PATHINFO_EXTENSION);
-				if($ext !='png' && $ext != 'jpg' && $ext = 'jpeg')
-				{
-					throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
-				}
-				
-				$imagename=$file_name.'_'.date("dmYhms").'.'.$ext;
-				$path =  $this->getLayout()->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$imagename;
-				$media = Ccc::getModel('Category_Media')->uploadImage($temp_name['fileName'],$path);
-				
+				$imagename = Ccc::getModel('Category_Media')->uploadImage($_FILES['media']);
 				$mediaRow->setData(['categoryId'=>$categoryId]);
 				$mediaRow->media = $imagename;
 				$insert = $mediaRow->save();
@@ -199,7 +170,7 @@ class Controller_Category_Media extends Controller_Core_Action
 					throw new Exception("Unable to insert Image.", 1);
 				}
 				
-				$messages->addMessage('Category Media Uploaded Successfully.');
+				$this->getMessage()->addMessage('Category Media Uploaded Successfully.');
 			}
 
 			$this->redirect('grid');
@@ -207,11 +178,9 @@ class Controller_Category_Media extends Controller_Core_Action
 		}
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid');
 		}
-
 	}
-
 }
 	

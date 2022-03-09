@@ -23,7 +23,8 @@ class Model_Core_Row
 	}
 	public function setData(array $data)
 	{
-		$this->data = $data;
+
+		$this->data = array_merge($this->data,$data);
 		return $this;
 	}
 
@@ -79,7 +80,8 @@ class Model_Core_Row
 		{
 			$id = $this->getResource()->insert($this->data);
 		}
-		return $id;
+		
+		return $this->load($id);
 	}
 
 	public function delete()
@@ -124,6 +126,6 @@ class Model_Core_Row
 		{
 			$column= $this->getResource()->getPrimaryKey();
 		}
-		return $this->fetchRow("SELECT * FROM ".$this->getResource()->getTableName(). " WHERE ".$column." = ".$id);
+		return $this->fetchRow("SELECT * FROM ".'`'.$this->getResource()->getTableName().'`'. " WHERE ".'`'.$column.'`'." = ".$id);
 	}
 }

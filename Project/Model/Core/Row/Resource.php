@@ -65,34 +65,31 @@ class Model_Core_Row_Resource
 		$fields = null;		
 		if(!is_array($id))
 		{
-			$whereClause = $this->getPrimaryKey() ." = '".$this->getAdapter()->escapString($id)."'";
+			$whereClause = '`'.$this->getPrimaryKey().'`'." = '".$this->getAdapter()->escapString($id)."'";
 		}
 		else
 		{
-
 			foreach ($id as $key => $value) 
 			{
-				$whereClause = $whereClause . $key . " = '".$value."' and ";
+				$whereClause = $whereClause .'`'.$key.'`'. " = '".$value."' and ";
 			}
 			$whereClause = rtrim($whereClause,' and ');
-
-			
 		}
 		foreach ($data as $col => $value) 
 		{
 			if($value != null)
 			{
-				$fields = $fields . $col . " = '".$this->getAdapter()->escapString($value)."',";
+				$fields = $fields .'`'.$col.'`'. " = '".$this->getAdapter()->escapString($value)."',";
 
 			}
 			else
 			{
 				$fields = $fields . $col . ' = null ,';
-
 			}
 		}
+
 		$fields = rtrim($fields,',');
-		$query = "UPDATE ".$this->table." SET ".$fields." WHERE ".$whereClause;
+		$query = "UPDATE ".'`'.$this->table.'`'." SET ".$fields." WHERE ".$whereClause;
 		return $this->getAdapter()->update($query);
 	}
 
@@ -101,18 +98,18 @@ class Model_Core_Row_Resource
 		$whereClause = null;
 		if(!is_array($id))
 		{
-			$whereClause = $this->primaryKey. " = '".$id."'";
+			$whereClause = '`'.$this->getPrimaryKey().'`'. " = '".$id."'";
 
 		}
 		else
 		{
 			foreach ($id as $key => $value) 
 			{
-				$whereClause = $whereClause . $key . " = '".$value."' and ";
+				$whereClause = $whereClause . '`'.$key.'`'. " = '".$value."' and ";
 			}
 			$whereClause = rtrim($whereClause,' and ');
 		}
-		$query = 'DELETE FROM '.$this->getTableName().' WHERE '.$whereClause;
+		$query = "DELETE FROM ".'`'.$this->getTableName().'`'." WHERE ".$whereClause;
 		return $this->getAdapter()->delete($query);	
 
 	}
@@ -126,8 +123,6 @@ class Model_Core_Row_Resource
 	{
 		return $this->getAdapter()->fetchAll($query);
 	}
-
-	
 	
 	public function getAdapter()
 	{

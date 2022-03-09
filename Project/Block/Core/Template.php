@@ -3,7 +3,7 @@
 class Block_Core_Template extends Model_Core_View
 {
 	protected $children = [];
-	public function setChildren($children)
+	public function setChildren(array $children)
 	{
 		$this->children = $children;
 		return $this;

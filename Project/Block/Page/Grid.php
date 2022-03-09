@@ -11,7 +11,7 @@ class Block_Page_Grid extends Block_Core_Template
 	public function getPages()
 	{
 		$pageRow = Ccc::getModel('Page');
-		$query = "SELECT * FROM Page";
+		$query = "SELECT * FROM `Page`";
 		return $pageRow-> fetchAll($query);
 	}
 }
