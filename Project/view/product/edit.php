@@ -46,7 +46,7 @@
             </tr>
             <?php foreach($categories as $category): ?>
               <tr>
-                 <td><input type="checkbox" name="product[category][]" value="<?php echo $category->categoryId ?>"
+                 <td><input type="checkbox" name="category[]" value="<?php echo $category->categoryId ?>"
                   <?php if($categoryProductPair):
                     if(in_array($category->categoryId, $categoryProductPair)): ?> 
                       checked 

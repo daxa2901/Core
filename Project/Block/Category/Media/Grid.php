@@ -10,7 +10,13 @@ class Block_Category_Media_Grid extends Block_Core_Template
 
 	public function getMedias()
 	{
-		return $this->getData('media');
-
+		$id = $this->getData('id');
+		$medias = Ccc::getModel('Category_Media');
+			$query = "SELECT cm.*,c.`base`,c.`thumb`,c.`small` FROM `category_media` cm 
+						JOIN `category` c 
+							ON cm.`categoryId` = c.`categoryId`
+					WHERE c.`categoryId` = {$id}";
+					
+		return $medias->fetchAll($query);
 	}
 }

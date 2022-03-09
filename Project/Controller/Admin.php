@@ -23,28 +23,24 @@ class Controller_Admin extends Controller_Core_Action
 
 	public function editAction()
 	{
-		try 
-		{
+		try{
 			$id=(int)$this->getRequest()->getRequest('id');
-      		if (!$id) 
-      		{
+      		if (!$id) {
       			throw new Exception("Invalid Id.", 1);
       		}
+
 			$admin = Ccc::getModel('Admin')->load($id);
-      		if (!$admin) 
-      		{
+      		if (!$admin){
       			throw new Exception("Unable to Load Admin.", 1);
       		}
+
       		$content = $this->getLayout()->getContent();
 			$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
 			$content->addChild($adminRow);
 			$this->renderLayout();
-
 		} 
-		catch (Exception $e) 
-		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+		catch (Exception $e) {
+			$this->getMessage()->addMessage($e->getMessage(),get_class($messages)::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 		
@@ -52,59 +48,38 @@ class Controller_Admin extends Controller_Core_Action
 	
 	public function saveAction()
 	{
-		try
-		{
+		try{
 			$messages = $this->getMessage();
 			$request = $this->getRequest();
-			$adminRow = Ccc::getModel('Admin');
-			if(!$request->isPost())
-			{
+			if(!$request->isPost() ||  !$request->getPost('admin')){
 				throw new Exception("Invalid Request.", 1);				
-			}
-			if (!$request->getPost('admin')) 
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}			
-
-			$row = $request->getPost('admin');
-			if (array_key_exists('adminId', $row))
-			{
-				if(!(int)$row['adminId'])
-				{
-					throw new Exception("Invalid Request.", 1);
-				}
-				$adminRow->setData($row);
-				$adminRow->updatedDate = date('Y-m-d H:i:s');
-				$update = $adminRow->save();
-				if(!$update)
-				{ 
-					throw new Exception("System is unable to update.", 1);
-				}
-				
-				$messages->addMessage('Admin Details Updated Successfully.');
-			}
-			else
-			{
-				if($row['password'] !=$row['confirmPassword'])
-				{
-					throw new Exception("password must be same.", 1);
-				}
-				unset($row['confirmPassword']);
-				$adminRow->setData($row);
-				$adminRow->createdDate = date('Y-m-d H:i:s');
-				$insert = $adminRow->save($row);
-				if(!$insert)
-				{	
-					throw new Exception("System is unable to insert.", 1);
-				}
-				
-				$messages->addMessage('Admin Details Inserted Successfully.');
 			}
 			
+			$row = $request->getPost('admin');
+			if (array_key_exists('adminId', $row)){
+				$admin = Ccc::getModel('Admin')->load($row['adminId']);
+				$admin->updatedDate = date('Y-m-d H:i:s');
+			}
+			else{
+				if($row['password'] !=$row['confirmPassword']) {
+					throw new Exception("password must be same.", 1);
+				}
+
+				unset($row['confirmPassword']);
+				$admin = Ccc::getModel('Admin');
+				$admin->createdDate = date('Y-m-d H:i:s');
+			}
+
+			$admin->setData($row);
+			$admin = $admin->save();
+			if(!$admin){	
+				throw new Exception("System is unable to insert.", 1);
+			}
+
+			$messages->addMessage('Admin details saved Successfully.');
 			$this->redirect('grid',null,null,true);
 		} 
-		catch (Exception $e) 
-		{
+		catch (Exception $e) {
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
@@ -114,33 +89,27 @@ class Controller_Admin extends Controller_Core_Action
 	{
 		try 
 		{	
-			$adminRow = Ccc::getModel('Admin');
 			$messages = $this->getMessage();
 			$request = $this->getRequest();
-			if (!$request->getRequest('id')) 
-			{
+			if (!$request->getRequest('id')) {
 				throw new Exception("Invalid Request.", 1);
 			}
 			
 			$id=$request->getRequest('id');
-			$adminRow = $adminRow->load($id);
-			if(!$adminRow)
-			{
+			$admin = Ccc::getModel('Admin')->load($id);
+			if(!$admin){
 				throw new Exception("Record not found.", 1);
 			}
-			$delete = $adminRow->delete(); 
-			if(!$delete)
-			{
+
+			$delete = $admin->delete(); 
+			if(!$delete){
 				throw new Exception("System is unable to delete record.", 1);
-										
 			}
 
-			$messages->addMessage('Admin Detail Deleted Successfully.');
+			$messages->addMessage('Admin detail deleted successfully.');
 			$this->redirect('grid',null,null,true);	
-				
 		} 
-		catch (Exception $e) 
-		{
+		catch (Exception $e) {
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
 			$this->redirect('grid',null,null,true);	
 		}

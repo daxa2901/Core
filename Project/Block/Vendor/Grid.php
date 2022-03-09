@@ -11,7 +11,8 @@ class Block_Vendor_Grid extends Block_Core_Template
 	public function getVendors()
 	{
 		$vendorRow = Ccc::getModel('Vendor');
-		$query = "SELECT v.*, a.address FROM Vendor v JOIN vendor_address a ON v.vendorId = a.vendorId";
+		$query = "SELECT v.*, a.`address` 
+		FROM `Vendor` v JOIN `vendor_address` a ON v.`vendorId` = a.`vendorId`";
 		$vendors = $vendorRow->fetchAll($query);
 		return $vendors;
 	}

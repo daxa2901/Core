@@ -11,7 +11,7 @@ class Block_Config_Grid extends Block_Core_Template
 	public function getConfigs()
 	{
 		$configRow = Ccc::getModel('Config');
-		$query = "SELECT * FROM config";
+		$query = "SELECT * FROM `config`";
 		return $configRow-> fetchAll($query);
 	}
 }

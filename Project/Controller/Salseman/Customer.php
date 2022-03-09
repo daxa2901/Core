@@ -18,19 +18,14 @@ class COntroller_Salseman_Customer extends Controller_Core_Action
 			{
 				throw new Exception("Unable to load Salseman.", 1);
 			}
-			$customers = Ccc::getModel('Customer');
-			$query = "SELECT * FROM customer WHERE salsemanId = {$id} OR salsemanId IS NULL";
-			$customers = $customers->fetchAll($query);
-			$salsemanCustomerRow =Ccc::getBlock('Salseman_Customer_Grid')->setData(['customers'=>$customers]);
+			$salsemanCustomer =Ccc::getBlock('Salseman_Customer_Grid')->setData(['id'=>$id]);
 			$content = $this->getLayout()->getContent();
-			$content->addChild($salsemanCustomerRow);
+			$content->addChild($salsemanCustomer);
 			$this->renderLayout();
-
 		}
 		catch(Exception $e)
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid','Salseman',null,true);
 		}
 		
@@ -40,7 +35,6 @@ class COntroller_Salseman_Customer extends Controller_Core_Action
 	{
 		try
 		{
-			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -57,21 +51,19 @@ class COntroller_Salseman_Customer extends Controller_Core_Action
 			{
 				$customerIds =  $request->getPost('customer');
 				$ids = implode(',',$customerIds);
-				echo $ids;
-				$query = "UPDATE customer SET salsemanId = {$salsemanId} WHERE customerId IN ({$ids}) AND salsemanId IS NULL";
-				echo $query;
+				$query = "UPDATE `customer` SET `salsemanId` = {$salsemanId} WHERE `customerId` IN ({$ids}) AND `salsemanId` IS NULL";
 				$update = $this->getAdapter()->update($query);
 				if(!$update)
 				{
 					throw new Exception("Unable to update Salseman Customer.", 1);	
 				}
-				$messages->addMessage('Salseman Customer Updated Successfully.');
+				$this->getMessage()->addMessage('Salseman Customer Updated Successfully.');
 			}
 			$this->redirect('grid');
 		}
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid');
 		}
 

@@ -12,7 +12,7 @@ class Block_Salseman_Grid extends Block_Core_Template
 	public function getSalsemans()
 	{
 		$model = Ccc::getModel('Salseman');
-		$query = "SELECT * FROM salseman";
+		$query = "SELECT * FROM `salseman`";
 		$salsemans = $model->fetchAll($query);
 		return $salsemans;
 		

@@ -57,20 +57,8 @@
     <td><input type="text" name="address[country]" value="<?php echo $address->country; ?>"></td>
   </tr>
   <tr>    
-    <td>
-      <?php if($address->billing == '1'): ?>
-        <input type="checkbox" name="address[billing]" value=1 checked>Billing Addres</td>
-      <?php else: ?>
-        <input type="checkbox" name="address[billing]" value=1>Billing Addres</td>
-      <?php endif; ?>
-
-    <td>
-      <?php if($address->shipping == '1'): ?>
-        <input type="checkbox" name="address[shipping]" checked value=1> Shipping Address</td>
-      <?php else: ?>
-        <input type="checkbox" name="address[shipping]" value=1> Shipping Address</td>
-      <?php endif; ?>
-
+    <td> <input type="checkbox" name="address[billing]" value=1 <?php if($address->billing == '1'): ?> checked <?php endif; ?>>Billing Addres</td>
+    <td><input type="checkbox" name="address[shipping]" <?php if($address->shipping == '1'): ?> checked <?php endif; ?>value=1> Shipping Address</td>
   </tr>
   <tr>
     <td width="25%">&nbsp;</td>

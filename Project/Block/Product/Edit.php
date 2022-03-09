@@ -18,14 +18,14 @@ class Block_Product_Edit extends Block_Core_Template
 		$categoryTable = Ccc::getModel('Category');
 		$query = "SELECT 
 		 		*
-			FROM Category WHERE status = 1";
+			FROM `Category` WHERE `status` = 1";
 		$category = $categoryTable->fetchAll($query);	
 		return $category;
 	}
 
 	public function getCategoryToPath()
-    {
-       return $this->getData('categoryPath');
+   {
+		return Ccc::getModel('Category')->getCategoryToPath();
 	}
 
 	public function getCategoryProductPair()

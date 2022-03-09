@@ -33,4 +33,40 @@ class Model_Product extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
+	public function saveCategories($categoryIds)
+	{
+		if(!$categoryIds)
+		{
+			$delete = $this->getResource()->getAdapter()->delete("DELETE FROM `category_product` WHERE `productId` = ({$this->productId})"); 
+			if(!$delete)
+			{
+				throw new Exception("System is unable to delete.", 1);							
+			}
+		}
+		else
+		{
+			$query = "SELECT `entityId`,`categoryId` FROM `category_product` WHERE `productId` = {$this->productId}";
+			 $categoryProductPair=$this->getResource()->getAdapter()->fetchPair($query);
+			 if (!$categoryProductPair) {
+			 	$categoryProductPair = [];
+			 }
+
+			foreach (array_diff($categoryIds, $categoryProductPair) as $key => $value) 
+			{
+				$categoryProductRow = Ccc::getModel('Category_Product');
+				$categoryProductRow->productId = $this->productId;
+				$categoryProductRow->categoryId = $value;
+				$insert = $categoryProductRow->save();
+			}
+
+			$ids = implode(',',array_keys(array_diff($categoryProductPair, $categoryIds)));
+			if($ids)
+			{
+				$query = "DELETE FROM `category_product` WHERE `entityId` IN ({$ids})";
+				$delete = $this->getResource()->getAdapter()->delete($query);
+				
+			}
+		}
+	}
 }
+

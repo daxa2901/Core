@@ -5,9 +5,8 @@ class Controller_Category extends Controller_Core_Action
 
 	public function gridAction()
 	{
-		$categoryPath = Ccc::getModel('Category')->getCategoryToPath();
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Grid')->setData(['categoryPath'=>$categoryPath]);
+		$categoryRow = Ccc::getBlock('Category_Grid');
 		$content->addChild($categoryRow);
 		$this->renderLayout();
 	}
@@ -15,11 +14,8 @@ class Controller_Category extends Controller_Core_Action
 	public function addAction()
 	{
 		$category = Ccc::getModel('Category');
-		$categoryPath = $category->getCategoryToPath();
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Edit');
-		$categoryRow->setData(['categoryPath'=>$categoryPath]);
-		$categoryRow->addData('category',$category);
+		$categoryRow = Ccc::getBlock('Category_Edit')->addData('category',$category);
 		$content->addChild($categoryRow);
 		$this->renderLayout();
 		
@@ -30,7 +26,8 @@ class Controller_Category extends Controller_Core_Action
 		try 
 		{
 			$id=(int)$this->getRequest()->getRequest('id');
-      		if (!$id) {
+      		if (!$id) 
+      		{
       			throw new Exception("Invalid Id.", 1);
       		}
 			$category = Ccc::getModel('Category')->load($id);
@@ -39,18 +36,14 @@ class Controller_Category extends Controller_Core_Action
       			throw new Exception("Unable to Load Category.", 1);
       		}
       		$content = $this->getLayout()->getContent();
-      		$categoryPath = Ccc::getModel('Category')->getCategoryToPath();
-			$categoryRow = Ccc::getBlock('Category_Edit');
-			$categoryRow->setData(['categoryPath'=>$categoryPath]);
-			$categoryRow->addData('category',$category);
+			$categoryRow = Ccc::getBlock('Category_Edit')->addData('category',$category);
 			$content->addChild($categoryRow);
 			$this->renderLayout();
 		
 		} 
 		catch (Exception $e) 
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 	}
@@ -60,7 +53,7 @@ class Controller_Category extends Controller_Core_Action
 		try 
 		{	
 			$request=$this->getRequest();
-			$messages = $this->getMessage();
+			$categoryRow = Ccc::getModel('Category');
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
@@ -70,7 +63,6 @@ class Controller_Category extends Controller_Core_Action
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			$categoryRow = Ccc::getModel('Category');
 			$row = $request->getPost('category');
 			$path = '';
 
@@ -86,21 +78,20 @@ class Controller_Category extends Controller_Core_Action
 				$id = $row['categoryId'];
 
 				$category=$categoryRow->load($id);
-				$categoryPath=$categoryRow->fetchAll("SELECT categoryId,categoryPath,updatedAt,parentId FROM Category WHERE categoryPath LIKE '".$category->categoryPath.'/%'."' ORDER BY categoryPath");
+				$categoryPath=$categoryRow->fetchAll("SELECT `categoryId`,`categoryPath`,`updatedAt`,`parentId` FROM `Category` WHERE `categoryPath` LIKE '".$category->categoryPath.'/%'."' ORDER BY `categoryPath`");
 		
 				
 				if($categoryRow->parentId == null)
 				{	
 					$categoryRow->parentId = null;
 					$categoryRow->categoryPath = $id; 
-					$update = $categoryRow->save();
 				}
 				else 	
 				{
 					$parent=$categoryRow->load($categoryRow->parentId);
 					$categoryRow->categoryPath = $parent->categoryPath.'/'.$id;
-					$update = $categoryRow->save();
 				}
+				$update = $categoryRow->save();
 				if(!$update)
 				{
 					throw new Exception("System is unable to update.", 1);
@@ -108,7 +99,6 @@ class Controller_Category extends Controller_Core_Action
 		
 				foreach ($categoryPath as $row) 
 				{
-					
 					$parent=$categoryRow->load($row->parentId);
 					$newPath = $parent->categoryPath.'/'.$row->categoryId;
 					$row->categoryPath = $newPath;
@@ -120,38 +110,32 @@ class Controller_Category extends Controller_Core_Action
 					}	
 				}
 				
-				$messages->addMessage('Category Updated Successfully.');
+				$this->getMessage()->addMessage('Category Updated Successfully.');
 			}
 			else
 			{
 				$categoryRow->setData($row);
 				$categoryRow->createdAt = date('Y-m-d H:i:s');
-				// print_r($categoryRow);
 
 				if ($categoryRow->parentId == null) 
 				{
 					unset($categoryRow->parentId);
-
-					$insert =$categoryRow->save();
 				}
-				else
-				{
-					$insert = $categoryRow->save();
-				}
-				if(!$insert)
+				$category =$categoryRow->save();
+				if(!$category)
 				{
 					throw new Exception("System is unable to insert.", 1);			
 				}
 
-				$parent=$categoryRow->fetchRow("SELECT parentId,categoryPath,categoryId FROM Category WHERE categoryId=".$insert);
+				$parent=$categoryRow->load($category->categoryId);
 				if ($parent->parentId == NULL) 
 				{
-					$path = $insert;
+					$path = $category->categoryId;
 				}
 				else
 				{
 					$result=$categoryRow->load($parent->parentId);
-					$path = $result->categoryPath.'/'.$insert;
+					$path = $result->categoryPath.'/'.$category->categoryId;
 
 				}
 				$parent->categoryPath = $path;
@@ -160,7 +144,7 @@ class Controller_Category extends Controller_Core_Action
 				{
 					throw new Exception("System is unable to update.", 1);
 				}				
-				$messages->addMessage('Category Inserted Successfully.');
+				$this->getMessage()->addMessage('Category Inserted Successfully.');
 			}
 		
 			$this->redirect('grid',null,null,true);
@@ -168,7 +152,7 @@ class Controller_Category extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);	
 		}
 	}
@@ -177,35 +161,28 @@ class Controller_Category extends Controller_Core_Action
 	{
 		try 
 		{
-			$messages = $this->getMessage();
-			$categoryRow = Ccc::getModel('Category');
-			$request=$this->getRequest();
-			if (!($request->getRequest('id'))) 
-			{
-				throw new Exception("Invalid Request.", 1);
-			}
-			$id=(int) $request->getRequest('id');
+			$id=(int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
 				throw new Exception("Invalid Id.", 1);							
 			}
 
-			$categoryRow= $categoryRow->load($id);
-			if(!$categoryRow)
+			$category = Ccc::getModel('Category')->load($id);
+			if(!$category)
 			{
 				throw new Exception("Record not found.", 1);
 			}
-			$delete = $categoryRow->delete(); 
-			if(!$delete)
+			$category = $category->delete(); 
+			if(!$category)
 			{
 				throw new Exception("System is unable to  delete.", 1);
 			}
-			$messages->addMessage('Category Deleted Successfully.');
+			$this->getMessage()->addMessage('Category deleted successfully.');
 			$this->redirect('grid',null,null,true);		
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);		
 		}
 	}

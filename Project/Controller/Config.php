@@ -7,8 +7,8 @@ class Controller_Config extends Controller_Core_Action
 	public function gridAction()
 	{	
 		$content = $this->getLayout()->getContent();
-		$configRow = Ccc::getBlock('Config_Grid');
-		$content->addChild($configRow);
+		$config = Ccc::getBlock('Config_Grid');
+		$content->addChild($config);
 		$this->renderLayout();
 	}
 
@@ -16,8 +16,8 @@ class Controller_Config extends Controller_Core_Action
 	{
 		$config = Ccc::getModel('Config');
 		$content = $this->getLayout()->getContent();
-		$configRow = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
-		$content->addChild($configRow);
+		$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+		$content->addChild($config);
 		$this->renderLayout();
 		
 	}
@@ -36,16 +36,14 @@ class Controller_Config extends Controller_Core_Action
       		{
       			throw new Exception("Unable to Load Config.", 1);
       		}
-      		$config = Ccc::getModel('Config')->load($id);
 			$content = $this->getLayout()->getContent();
-			$configRow = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
-			$content->addChild($configRow);
+			$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+			$content->addChild($config);
 			$this->renderLayout();
 		} 
 		catch (Exception $e) 
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 		
@@ -55,14 +53,8 @@ class Controller_Config extends Controller_Core_Action
 	{
 		try
 		{
-			$messages = $this->getMessage();
-			$configRow = Ccc::getModel('Config');
 			$request = $this->getRequest();
-			if(!$request->isPost())
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}
-			if (!$request->getPost('config')) 
+			if(!$request->isPost() || !$request->getPost('config')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}			
@@ -72,33 +64,29 @@ class Controller_Config extends Controller_Core_Action
 			{
 				if(!(int)$row['configId'])
 				{
-					throw new Exception("Invalid Request.", 1);
+					throw new Exception("Invalid Id.", 1);
 				}
-				$configRow->setData($row);
-				$update = $configRow->save();
-				if(!$update)
-				{ 
-					throw new Exception("System is unable to update.", 1);
-				}
-				$messages->addMessage('Config Updated Successfully.');
-				
+				$config = Ccc::getModel('Config')->load($row['configId']);
 			}
 			else
 			{
-				$configRow->setData($row);
-				$configRow->createdAt = date('Y-m-d H:i:s');
-				$insert = $configRow->save();
-				if(!$insert)
-				{	
-					throw new Exception("System is unable to insert.", 1);
-				}
-				$messages->addMessage('Config Inserted Successfully.');
+				$config = Ccc::getModel('Config');
+				$config->createdAt = date('Y-m-d H:i:s');
 			}
+
+			$config->setData($row);
+			$config = $config->save();
+			if (!$config) 
+			{
+				throw new Exception("System is unable to save config.", 1);
+			}
+
+			$this->getMessage()->addMessage('Config saved Successfully.');
 			$this->redirect('grid',null,null,true);
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 	}
@@ -107,33 +95,30 @@ class Controller_Config extends Controller_Core_Action
 	{
 		try 
 		{	
-			$messages = $this->getMessage();
-			$configRow = Ccc::getModel('Config');
-			$request = $this->getRequest();
-			if (!$request->getRequest('id')) 
+			$id=$this->getRequest()->getRequest('id');
+			if (!$id) 
 			{
 				throw new Exception("Invalid Request.", 1);
 			}
-			$id=$request->getRequest('id');
-			$configRow = $configRow->load($id);
-			if(!$configRow)
+			$config = Ccc::getModel('Config')->load($id);
+			if(!$config)
 			{
-
 				throw new Exception("Record not found.", 1);
 			}
-			$delete = $configRow->delete(); 
+			
+			$delete = $config->delete(); 
 			if(!$delete)
 			{
 				throw new Exception("System is unable to delete record.", 1);
-										
 			}
-			$messages->addMessage('Config Deleted Successfully.');
+
+			$this->getMessage()->addMessage('Config Deleted Successfully.');
 			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);	
 		}
 	}

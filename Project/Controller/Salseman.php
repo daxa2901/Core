@@ -30,6 +30,7 @@ class Controller_Salseman extends Controller_Core_Action
       		{
       			throw new Exception("Invalid Id.", 1);
       		}
+
 			$salseman = Ccc::getModel('salseman')->load($id);
       		if (!$salseman) 
       		{
@@ -44,8 +45,7 @@ class Controller_Salseman extends Controller_Core_Action
 		} 
 		catch (Exception $e) 
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 		}
 	}
@@ -54,50 +54,39 @@ class Controller_Salseman extends Controller_Core_Action
 	{
 		try 
 		{
-			$messages = $this->getMessage();
 			$request = $this->getRequest();
-			if(!$request->isPost())
-			{
-				throw new Exception("Invalid Request.", 1);
-			}
-
-			if(!$request->getPost('salseman'))
+			if(!$request->isPost() || !$request->getPost('salseman'))
 			{
 				throw new Exception("Invalid Request", 1);
 			}
 			$row = $request->getPost('salseman');
-			$salsemanRow = Ccc::getModel('Salseman');
 			if(array_key_exists('salsemanId',$row))
 			{
 				if(!(int)$row['salsemanId'])
 				{
 					throw new Exception("Invalid Request.", 1);
 				}
-				$salsemanRow->setData($row);
-				$salsemanRow->updatedAt = date('Y-m-d H:i:s');
-				$update = $salsemanRow->save();
-				if (!$update) {
-					throw new Exception("System is unable to update.", 1);
-				}
-				$messages->addMessage('Salseman Details Updated Successfully.');
-
+				$salseman = Ccc::getModel('Salseman')->load($row['salsemanId']);
+				$salseman->updatedAt = date('Y-m-d H:i:s');
 			}
 			else
 			{
-				$salsemanRow->setData($row);
-				$salsemanRow->createdAt = date('Y-m-d H:i:s');
-				$insert = $salsemanRow->save();
-				if (!$insert) {
-					throw new Exception("System is unable to Insert.", 1);
-				}
-				$messages->addMessage('Salseman Details Inserted Successfully.');
+				$salseman = Ccc::getModel('Salseman');
+				$salseman->createdAt = date('Y-m-d H:i:s');
+				
 			}
-
+			$salseman->setData($row);
+			$salseman = $salseman->save();
+			if (!$salseman) 
+			{
+				throw new Exception("System is unable to Insert.", 1);
+			}
+			$this->getMessage()->addMessage('Salseman saved successfully.');
 			$this->redirect('grid',null,null,true);
 		} 	
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);
 			
 		}
@@ -107,33 +96,31 @@ class Controller_Salseman extends Controller_Core_Action
 	{
 		try 
 		{	
-			$messages = $this->getMessage();
-			$salsemanRow = Ccc::getModel('Salseman');
-			$request = $this->getRequest();
-			if (!$request->getRequest('id')) 
+			$id=$this->getRequest()->getRequest('id');
+			if (!$id) 
 			{
-				throw new Exception("Invalid Request.", 1);
+				throw new Exception("Invalid Id.", 1);
 			}
 			
-			$id=$request->getRequest('id');
-			$salsemanRow = $salsemanRow->load($id);
-			if(!$salsemanRow)
+			$salseman = Ccc::getModel('Salseman')->load($id);
+			if(!$salseman)
 			{
 				throw new Exception("Record not found.", 1);
 			}
-			$delete = $salsemanRow->delete(); 
-			if(!$delete)
+
+			$salseman = $salseman->delete(); 
+			if(!$salseman)
 			{
 				throw new Exception("System is unable to delete record.", 1);
 										
 			}
-			$messages->addMessage('Salseman Details Deleted Successfully.');
+			$this->getMessage()->addMessage('Salseman deleted successfully.');
 			$this->redirect('grid',null,null,true);	
 				
 		} 
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid',null,null,true);	
 		}
 	}

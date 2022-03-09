@@ -23,13 +23,14 @@ class COntroller_Customer_Price extends Controller_Core_Action
 			{
 				throw new Exception("Unable to load Salseman.", 1);
 			}
+
 			if ($salsemanId != $customer->salsemanId) 
 			{
 				throw new Exception("Invalid salsemanId.", 1);
 			}	
 
 			$products = Ccc::getModel('Product');
-			$query = "SELECT p.*,cp.entityId, cp.price as customerPrice FROM product p LEFT JOIN customer_price cp ON p.productId = cp.productId AND customerId = {$customerId} WHERE p.status = 1";
+			$query = "SELECT p.*,cp.`entityId`, cp.`price` as customerPrice FROM `product` p LEFT JOIN `customer_price` cp ON p.`productId` = cp.`productId` AND `customerId` = {$customerId} WHERE p.`status` = 1";
 			$products = $products->fetchAll($query);
 			$customerPriceGrid =Ccc::getBlock('Customer_Price_Grid');
 			$customerPriceGrid->setData(['products'=>$products]);
@@ -41,8 +42,7 @@ class COntroller_Customer_Price extends Controller_Core_Action
 		}
 		catch(Exception $e)
 		{
-			$messages = $this->getMessage();
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getRequest()->addMessage($e->getMessage(),get_class($this->getRequest())::ERROR);
 			$this->redirect('grid','Salseman',null,true);
 		}
 		
@@ -52,7 +52,6 @@ class COntroller_Customer_Price extends Controller_Core_Action
 	{
 		try
 		{
-			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -67,7 +66,6 @@ class COntroller_Customer_Price extends Controller_Core_Action
 			if(!$customer)
 			{
 				throw new Exception("Unable to load Customer.", 1);
-				
 			}
 
 			if ($request->getPost('price')) 
@@ -90,9 +88,9 @@ class COntroller_Customer_Price extends Controller_Core_Action
 					}
 				}
 
-				if (array_key_exists('old',$price)) 
+				if (array_key_exists('exists',$price)) 
 				{
-					foreach ($price['old'] as $key => $value) 
+					foreach ($price['exists'] as $key => $value) 
 					{
 						$customerPriceRow = Ccc::getModel('Customer_Price');
 						$customerPriceRow->entityId = $key;
@@ -104,17 +102,17 @@ class COntroller_Customer_Price extends Controller_Core_Action
 							
 						}
 					}
-
 				}
 				
-				$messages->addMessage('Customer price saved successfully.');
+				$this->getMessage()->addMessage('Customer price saved successfully.');
 			}
 			$this->redirect('grid');
 		}
 		catch (Exception $e) 
 		{
-			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid');
 		}
 	}
 }
+	
