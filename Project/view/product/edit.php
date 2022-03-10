@@ -14,10 +14,6 @@
       <td><input type="float" name="product[price]" value="<?php echo $product->price ?>"></td>
     </tr>
     <tr>
-      <td width="10%"> Cost</td>
-      <td><input type="float" name="product[cost]" value="<?php echo $product->cost ?>"></td>
-    </tr>
-    <tr>
       <td width="10%"> Sku</td>
       <td><input type="float" name="product[sku]" value="<?php echo $product->sku ?>"></td>
     </tr>

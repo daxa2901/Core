@@ -8,6 +8,11 @@ class Model_Core_Message
 
 	protected $session = null;
 
+	public function __construct()
+	{
+
+	}
+	
 	public function setSession($session)
 	{
 		$this->session = $session;
