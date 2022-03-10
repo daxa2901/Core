@@ -14,7 +14,6 @@
 		<th> Small </th>
 		<th> Name </th>
 		<th> Price </th>
-		<th> Cost </th>
 		<th> Quantity </th>
 		<th> Sku </th>
 		<th> Created_At </th>
@@ -48,7 +47,6 @@
 		    	</td>
 	    		<td><?php echo $row->name ?></td>
 	    		<td><?php echo $row->price ?></td>
-	    		<td><?php echo $row->cost ?></td>
 	    		<td><?php echo $row->quantity ?></td>
 	    		<td><?php echo $row->sku ?></td>
 	    		<td><?php echo $row->createdAt ?></td>

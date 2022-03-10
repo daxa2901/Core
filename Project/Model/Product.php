@@ -35,6 +35,10 @@ class Model_Product extends Model_Core_Row
 
 	public function saveCategories($categoryIds)
 	{
+		if(!$this->productId) {
+			throw new Exception("Product is not loaded.", 1);
+		}
+		
 		if(!$categoryIds)
 		{
 			$delete = $this->getResource()->getAdapter()->delete("DELETE FROM `category_product` WHERE `productId` = ({$this->productId})"); 
