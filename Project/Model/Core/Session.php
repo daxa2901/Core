@@ -98,13 +98,12 @@ class Model_Core_Session
 		{
 			$this->start();
 		}
-		if (!array_key_exists($this->getNamespace(),$_SESSION)) 
+		if (array_key_exists($this->getNamespace(),$_SESSION)) 
 		{
-			return $this;
-		}
-		if(array_key_exists($key,$_SESSION[$this->getNamespace()]))
-		{
-			unset($_SESSION[$this->getNamespace()][$key]);
+			if(array_key_exists($key,$_SESSION[$this->getNamespace()]))
+			{
+				unset($_SESSION[$this->getNamespace()][$key]);
+			}
 		}
 		return $this;
 	}
