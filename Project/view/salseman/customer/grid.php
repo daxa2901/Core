@@ -26,7 +26,7 @@
 					<td>
 					<?php if($row->salsemanId): ?> 
 	
-						<a href="<?php echo $this->getUrl('grid','customer_price',['id'=>$row->salsemanId,'customerId'=>$row->customerId],true);?>">Manage Customer Price</a> 
+						<a href="<?php echo $this->getUrl('grid','salseman_customer_price',['id'=>$row->salsemanId,'customerId'=>$row->customerId],true);?>">Manage Customer Price</a> 
 					<?php endif; ?>
 	    		</td>
 		    		</tr>

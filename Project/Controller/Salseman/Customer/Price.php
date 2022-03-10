@@ -1,7 +1,7 @@
 <?php 
 Ccc::loadClass('Controller_Admin_Action');
 
-class COntroller_Customer_Price extends Controller_Admin_Action
+class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 {
 	public function gridAction()
 	{
@@ -32,7 +32,7 @@ class COntroller_Customer_Price extends Controller_Admin_Action
 			$products = Ccc::getModel('Product');
 			$query = "SELECT p.*,cp.`entityId`, cp.`price` as customerPrice FROM `product` p LEFT JOIN `customer_price` cp ON p.`productId` = cp.`productId` AND `customerId` = {$customerId} WHERE p.`status` = 1";
 			$products = $products->fetchAll($query);
-			$customerPriceGrid =Ccc::getBlock('Customer_Price_Grid');
+			$customerPriceGrid =Ccc::getBlock('Salseman_Customer_Price_Grid');
 			$customerPriceGrid->setData(['products'=>$products]);
 			$customerPriceGrid->addData('salseman',$salseman);
 			$content = $this->getLayout()->getContent();
