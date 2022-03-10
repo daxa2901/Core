@@ -48,38 +48,46 @@ class Controller_Admin extends Controller_Admin_Action
 	
 	public function saveAction()
 	{
-		try{
+		try
+		{
 			$messages = $this->getMessage();
 			$request = $this->getRequest();
-			if(!$request->isPost() ||  !$request->getPost('admin')){
+			if(!$request->isPost() ||  !$request->getPost('admin'))
+			{
 				throw new Exception("Invalid Request.", 1);				
 			}
 			
 			$row = $request->getPost('admin');
-			if (array_key_exists('adminId', $row)){
+			if (array_key_exists('adminId', $row))
+			{
 				$admin = Ccc::getModel('Admin')->load($row['adminId']);
 				$admin->updatedDate = date('Y-m-d H:i:s');
 			}
-			else{
-				if($row['password'] !=$row['confirmPassword']) {
+			else
+			{
+				if($row['password'] !=$row['confirmPassword']) 
+				{
 					throw new Exception("password must be same.", 1);
 				}
 
 				unset($row['confirmPassword']);
 				$admin = Ccc::getModel('Admin');
+				$row['password'] = md5($row['password']);
 				$admin->createdDate = date('Y-m-d H:i:s');
 			}
 
 			$admin->setData($row);
 			$admin = $admin->save();
-			if(!$admin){	
+			if(!$admin)
+			{	
 				throw new Exception("System is unable to insert.", 1);
 			}
 
 			$messages->addMessage('Admin details saved Successfully.');
 			$this->redirect('grid',null,null,true);
 		} 
-		catch (Exception $e) {
+		catch (Exception $e) 
+		{
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
 			$this->redirect('grid',null,null,true);
 		}

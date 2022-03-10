@@ -54,12 +54,7 @@ class Controller_Category extends Controller_Admin_Action
 		{	
 			$request=$this->getRequest();
 			$categoryRow = Ccc::getModel('Category');
-			if(!$request->isPost())
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}
-
-			if (!$request->getPost('category')) 
+			if(!$request->isPost() || !$request->getPost('category')) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}

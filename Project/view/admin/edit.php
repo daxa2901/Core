@@ -13,11 +13,12 @@
     <td width="10%">Email</td>
     <td><input type="text" name="admin[email]" value="<?php echo $row->email ?>"></td>
   </tr>
-  <tr>
-    <td width="10%">Password</td>
-    <td><input type="Password" name="admin[password]" value="<?php echo $row->password ?>"></td>
-  </tr>
   <?php if(!$row->password): ?>
+    <tr>
+      <td width="10%">Password</td>
+      <td><input type="Password" name="admin[password]" value="<?php echo $row->password ?>"></td>
+    </tr>
+    
     <tr>
       <td width="10%">Confirm Password</td>
       <td><input type="Password" name="admin[confirmPassword]" ></td>

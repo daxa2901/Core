@@ -4,6 +4,35 @@ class Controller_Core_Action
 	protected $layout = null;
 	protected $message = null;
 	
+	public function __construct()
+	{
+		$this->authenticate();
+	}
+
+	private function authenticate()
+	{
+		$action = $this->getRequest()->getRequest('a');
+		$controller = ucwords($this->getRequest()->getRequest('c'),'_');
+		if($controller == 'Admin_Login' && ($action == 'login' || $action == 'loginPost'))
+		{
+			$login = Ccc::getModel('Admin_Login')->isLoggedIn();
+			if ($login) 
+			{
+				$this->getMessage()->addMessage('You are already logged in.',get_class($this->getMessage())::ERROR);
+				$this->redirect('grid','product');
+			}
+		}
+		else
+		{
+			$login = Ccc::getModel('Admin_Login')->isLoggedIn();
+			if (!$login) 
+			{
+				$this->getMessage()->addMessage('You have to  login first.',get_class($this->getMessage())::ERROR);
+				$this->redirect('login','Admin_Login');
+			}
+		}
+	}
+
 	public function getRequest()
 	{
 		return Ccc::getFront()->getRequest();

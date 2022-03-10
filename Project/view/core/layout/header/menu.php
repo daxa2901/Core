@@ -7,4 +7,6 @@
 		<a href="<?php echo Ccc::getBlock('Salseman_Grid')->getUrl('grid','salseman',null,true);?>"><button type="button" class="cancel">Salseman</button></a>
 		<a href="<?php echo Ccc::getBlock('Vendor_Grid')->getUrl('grid','vendor',null,true);?>"><button type="button" class="cancel">Vendor</button></a>
 		<a href="<?php echo Ccc::getBlock('Page_Grid')->getUrl('grid','page',null,true);?>"><button type="button" class="cancel">Page</button></a>
+		<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('login','Admin_Login',null,true);?>"><button type="button" class="cancel">login</button></a>
+		<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('logout','Admin_Login',null,true);?>"><button type="button" class="cancel">Logout</button></a>
 </div>
