@@ -1,0 +1,138 @@
+<?php
+
+class Model_Core_Pager
+{
+	protected $perPageCount = 20; 
+	protected $totalCount = null; 
+	protected $pageCount = null; 
+	protected $start = null; 
+	protected $end = null; 
+	protected $current = null; 
+	protected $prev = null; 
+	protected $next = null; 
+	protected $startLimit = null; 
+	protected $endLimit = null; 
+
+	public function setPerPageCount($perPageCount)
+	{
+		$this->perPageCount =$perPageCount;
+		return $this;
+	}
+	
+	public function getPerPageCount()
+	{
+		return $this->perPageCount;
+	}
+
+	public function setTotalCount($totalCount)
+	{
+		$this->totalCount =$totalCount;
+		return $this;
+	}
+	
+	public function getTotalCount()
+	{
+		return $this->totalCount;
+	}
+	
+	public function setPageCount($pageCount)
+	{
+		$this->pageCount =$pageCount;
+		return $this;
+	}
+	
+	public function getPageCount()
+	{
+		return $this->pageCount;
+	}
+	
+	public function setStart($start)
+	{
+		$this->start =$start;
+		return $this;
+	}
+	
+	public function getStart()
+	{
+		return $this->start;
+	}
+	
+	public function setEnd($end)
+	{
+		$this->end =$end;
+		return $this;
+	}
+	
+	public function getEnd()
+	{
+		return $this->end;
+	}
+	
+	public function setCurrent($current)
+	{
+		$this->current =$current;
+		return $this;
+	}
+	
+	public function getCurrent()
+	{
+		return $this->current;
+	}
+	
+	public function setPrev($prev)
+	{
+		$this->prev =$prev;
+		return $this;
+	}
+	
+	public function getPrev()
+	{
+		return $this->prev;
+	}
+	
+	public function setNext($next)
+	{
+		$this->next =$next;
+		return $this;
+	}
+	
+	public function getNext()
+	{
+		return $this->next;
+	}
+	
+	public function setStartLimit($startLimit)
+	{
+		$this->startLimit =$startLimit;
+		return $this;
+	}
+	
+	public function getStartLimit()
+	{
+		return $this->startLimit;
+	}
+	public function setEndLimit($endLimit)
+	{
+		$this->endLimit =$endLimit;
+		return $this;
+	}
+	
+	public function getEndLimit()
+	{
+		return $this->endLimit;
+	}
+	
+	public function execute($totalCount,$current)
+	{
+		$this->setTotalCount($totalCount);
+		$this->setPageCount(ceil($this->getTotalCount()/$this->getPerPageCount()));
+		$this->setCurrent(($current > $this->getPageCount()) ? $this->getPageCount() : $current);
+		$this->setCurrent(($current < 1) ? 1 : $current);
+		$this->setStart(($this->current == 1) ? NULL : 1);
+		$this->setEnd(($this->current == $this->getPageCount()) ? NULL : $this->getPageCount());
+		$this->setStartLimit($this->getPerPageCount() * ($this->getCurrent() - 1) + 1);
+		$this->setEndLimit($this->getPerPageCount() * $this->current);
+		$this->setPrev(($this->getCurrent() == 1) ? NULL : $this->getCurrent() - 1);
+		$this->setNext(($this->getCurrent() >= $this->getPageCount()) ? NULL : $this->getCurrent() + 1);
+	}
+}
