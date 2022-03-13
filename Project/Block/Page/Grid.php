@@ -29,11 +29,10 @@ class Block_Page_Grid extends Block_Core_Template
 	{
 		$request = Ccc::getModel('Core_Request');
 		$page = $request->getRequest('p',1);
-		$pager = $this->getPager();
+		$pageCount = $request->getRequest('ppc',20);
 		$query = "SELECT count(`pageId`) FROM `Page`";
 		$totalCount = $this->getAdapter()->fetchOne($query);
-
-		$pager->execute($totalCount,$page);
+		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$pageRow = Ccc::getModel('Page');
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$query = "SELECT * FROM `Page` LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
