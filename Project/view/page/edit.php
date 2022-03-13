@@ -32,7 +32,7 @@
       <td width="25%">&nbsp;</td>
       <td>
         <button type="submit" name="submit" class="Registerbtn">Save </button>
-        <a href=<?php echo  $this->getUrl('grid',null,null,true);?>><button type="button" class="cancelbtn">Cancel</button></a>
+        <a href=<?php echo  $this->getUrl('grid',null,['id'=> null],false);?>><button type="button" class="cancelbtn">Cancel</button></a>
       </td>
     </tr>    
   </div>

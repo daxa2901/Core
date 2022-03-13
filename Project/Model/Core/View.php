@@ -65,23 +65,8 @@ class Model_Core_View{
 		$temp = [];
 		$request = Ccc::getFront()->getRequest();
 		
-		if(!$action)
-		{
-			$temp['a'] = $request->getRequest('a');
-		}
-		else
-		{
-			$temp['a'] = $action;
-		}
-		
-		if(!$controller)
-		{
-			$temp['c'] = $request->getRequest('c');
-		}
-		else
-		{
-			$temp['c'] = $controller;
-		}
+		$temp['a'] = (!$action) ? $request->getRequest('a') : $action;
+		$temp['c'] = (!$controller)? $request->getRequest('c') : $controller;
 
 		if($reset)
 		{
@@ -98,7 +83,10 @@ class Model_Core_View{
 				$temp = array_merge($temp,$parameters);
 			}
 		}
-
+		if(($key =  array_search(null, $temp)))
+		{
+			unset($temp[$key]);
+		}
 		return 'index.php?'.http_build_query($temp);
 	}
 

@@ -85,12 +85,12 @@ class Controller_Page extends Controller_Admin_Action
 				throw new Exception("System is unable to insert.", 1);
 			}
 			$this->getMessage()->addMessage('Page saved successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -116,13 +116,13 @@ class Controller_Page extends Controller_Admin_Action
 				throw new Exception("System is unable to delete record.", 1);
 			}
 			$this->getMessage()->addMessage('Page Info Deleted Successfully.');
-			$this->redirect('grid',null,null,true);	
+			echo $this->redirect('grid',null,['id'=>null]);	
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }
