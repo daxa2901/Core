@@ -6,6 +6,7 @@ class Controller_Salseman extends Controller_Admin_Action
 {
 	public function gridAction()
 	{
+		$this->setPageTitle('Salseman Grid');
 		$content = $this->getLayout()->getContent();
 		$salsemanRow = Ccc::getBlock('Salseman_Grid');
 		$content->addChild($salsemanRow);
@@ -14,6 +15,7 @@ class Controller_Salseman extends Controller_Admin_Action
 
 	public function addAction()
 	{
+		$this->setPageTitle('Salseman Add');
 		$salseman = Ccc::getModel('Salseman');
 		$salsemanRow = Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman]);
 		$content = $this->getLayout()->getContent();
@@ -25,6 +27,7 @@ class Controller_Salseman extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Salseman Edit');
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) 
       		{
@@ -46,7 +49,7 @@ class Controller_Salseman extends Controller_Admin_Action
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -54,6 +57,7 @@ class Controller_Salseman extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Salseman Save');
 			$request = $this->getRequest();
 			if(!$request->isPost() || !$request->getPost('salseman'))
 			{
@@ -82,12 +86,12 @@ class Controller_Salseman extends Controller_Admin_Action
 				throw new Exception("System is unable to Insert.", 1);
 			}
 			$this->getMessage()->addMessage('Salseman saved successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 	
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 			
 		}
 	}
@@ -96,6 +100,7 @@ class Controller_Salseman extends Controller_Admin_Action
 	{
 		try 
 		{	
+			$this->setPageTitle('Salseman Delete');
 			$id=$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -115,13 +120,13 @@ class Controller_Salseman extends Controller_Admin_Action
 										
 			}
 			$this->getMessage()->addMessage('Salseman deleted successfully.');
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }

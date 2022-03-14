@@ -10,6 +10,6 @@ class Block_Config_Edit extends Block_Core_Template
 
 	public function getConfig()
 	{
-		return $this->getData('config');
+		return $this->config;
 	}
 }

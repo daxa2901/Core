@@ -9,6 +9,11 @@ class Controller_Core_Action
 		$this->authenticate();
 	}
 
+	public function setPageTitle($title)
+	{
+		$this->getLayout()->getHead()->setTitle($title);
+		return $this;
+	}
 	private function authenticate()
 	{
 		$action = $this->getRequest()->getRequest('a');
@@ -36,6 +41,11 @@ class Controller_Core_Action
 	public function getRequest()
 	{
 		return Ccc::getFront()->getRequest();
+	}
+
+	public function getResponse()
+	{
+		return Ccc::getFront()->getResponse();
 	}
 
 	public function getAdapter()
@@ -68,7 +78,9 @@ class Controller_Core_Action
 
 	public function renderLayout()
 	{
-		$this->getLayout()->toHtml();
+		$this->getResponse()
+		->setHeader('content-type','text/html')
+		->render($this->getLayout()->toHtml());
 	}
 
 	public function setMessage($message)

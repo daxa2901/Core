@@ -4,6 +4,7 @@ Ccc::loadClass('Controller_Admin_Action');
 class Controller_Customer extends Controller_Admin_Action{
 	public function gridAction()
 	{
+		$this->setPageTitle('Customer Address Grid');
 		$content = $this->getLayout()->getContent();
 		$customer = Ccc::getBlock('Customer_Grid');
 		$content->addChild($customer);
@@ -12,11 +13,12 @@ class Controller_Customer extends Controller_Admin_Action{
 
 	public function addAction()
 	{
+		$this->setPageTitle('Customer Address Add');
 		$customer = Ccc::getModel('Customer');
 		$address = Ccc::getModel('Customer_Address');
 		$customerBlock = Ccc::getBlock('Customer_Edit');
 		$customerBlock->setData(['customer'=>$customer]);
-		$customerBlock->addData('address',$address);
+		$customerBlock->address = $address;
 		$content = $this->getLayout()->getContent();
 		$content->addChild($customerBlock);
 		$this->renderLayout();	
@@ -26,6 +28,7 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Customer Address Edit');
 			$id = (int)$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -46,7 +49,7 @@ class Controller_Customer extends Controller_Admin_Action{
 
 			$customerRow = Ccc::getBlock('Customer_Edit');
 			$customerRow->setData(['customer'=>$customer]);
-			$customerRow->addData('address',$address);	
+			$customerRow->address = $address;	
 			$content = $this->getLayout()->getContent();
 			$content->addChild($customerRow);
 			$this->renderLayout();	
@@ -55,7 +58,7 @@ class Controller_Customer extends Controller_Admin_Action{
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,null);		
+			$this->redirect('grid',null,['id'=>null]);		
 		}
 	}
 	protected function saveCustomer()
@@ -135,15 +138,16 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		try
 		{
+			$this->setPageTitle('Customer Address Save');
 			$customerId = $this->saveCustomer();
 			$this->saveAddress($customerId);
 			$this->getMessage()->addMessage('Customer saved successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -151,6 +155,7 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Customer Address Delete');
 			$id=$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -170,13 +175,13 @@ class Controller_Customer extends Controller_Admin_Action{
 			}
 
 			$this->getMessage()->addMessage('Customer details deleted successfully.');
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 			
 		}
 	}

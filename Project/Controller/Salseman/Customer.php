@@ -7,6 +7,7 @@ class COntroller_Salseman_Customer extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Salseman Customer Grid');
 			$id = (int)$this->getRequest()->getRequest('id');
 			if(!$id)
 			{
@@ -35,6 +36,7 @@ class COntroller_Salseman_Customer extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Salseman Customer Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{

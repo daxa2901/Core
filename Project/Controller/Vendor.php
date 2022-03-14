@@ -4,6 +4,7 @@ Ccc::loadClass('Controller_Admin_Action');
 class Controller_Vendor extends Controller_Admin_Action{
 	public function gridAction()
 	{
+		$this->setPageTitle('Vendor Address Grid');
 		$content = $this->getLayout()->getContent();
 		$vendorRow = Ccc::getBlock('Vendor_Grid');
 		$content->addChild($vendorRow);
@@ -12,11 +13,12 @@ class Controller_Vendor extends Controller_Admin_Action{
 
 	public function addAction()
 	{
+		$this->setPageTitle('Vendor Address Add');
 		$vendor = Ccc::getModel('Vendor');
 		$address = Ccc::getModel('Vendor_Address');
 		$vendorRow = Ccc::getBlock('Vendor_Edit');
 		$vendorRow->setData(['vendor'=>$vendor]);
-		$vendorRow->addData('address',$address);
+		$vendorRow->address = $address;
 		$content = $this->getLayout()->getContent();
 		$content->addChild($vendorRow);
 		$this->renderLayout();	
@@ -26,6 +28,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Vendor Address Edit');
 			$id = (int)$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -46,7 +49,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 
 			$vendorRow = Ccc::getBlock('Vendor_Edit');
 			$vendorRow->setData(['vendor'=>$vendor]);
-			$vendorRow->addData('address',$address);	
+			$vendorRow->address = $address;	
 			$content = $this->getLayout()->getContent();
 			$content->addChild($vendorRow);
 			$this->renderLayout();
@@ -54,7 +57,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);	
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 	protected function saveVendor()
@@ -121,15 +124,16 @@ class Controller_Vendor extends Controller_Admin_Action{
 	{
 		try
 		{
+			$this->setPageTitle('Vendor Address Save');
 			$vendorId = $this->saveVendor();
 			$this->saveAddress($vendorId);
 			$this->getMessage()->addMessage('Vendor details saved successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -137,6 +141,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Vendor Address Delete');
 			$id = $this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -156,13 +161,13 @@ class Controller_Vendor extends Controller_Admin_Action{
 			}
 
 			$this->getMessage()->addMessage('Vendor Details Deleted Successfully.');
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }

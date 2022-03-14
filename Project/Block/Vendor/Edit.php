@@ -10,11 +10,11 @@ class Block_Vendor_Edit extends Block_Core_Template
 
 	public function getVendor()
 	{
-		return $this->getData('vendor');
+		return $this->vendor;
 	}
 
 	public function getAddress()
 	{
-		return $this->getData('address');
+		return $this->address;
 	}
 }

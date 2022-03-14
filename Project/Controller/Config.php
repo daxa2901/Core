@@ -6,6 +6,7 @@ class Controller_Config extends Controller_Admin_Action
 	
 	public function gridAction()
 	{	
+		$this->setPageTitle('Config Grid');
 		$content = $this->getLayout()->getContent();
 		$config = Ccc::getBlock('Config_Grid');
 		$content->addChild($config);
@@ -14,6 +15,7 @@ class Controller_Config extends Controller_Admin_Action
 
 	public function addAction()
 	{
+		$this->setPageTitle('Config Add');
 		$config = Ccc::getModel('Config');
 		$content = $this->getLayout()->getContent();
 		$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
@@ -26,6 +28,7 @@ class Controller_Config extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Config Edit');
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) 
       		{
@@ -44,7 +47,7 @@ class Controller_Config extends Controller_Admin_Action
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 		
 	}
@@ -53,6 +56,7 @@ class Controller_Config extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Config Save');
 			$request = $this->getRequest();
 			if(!$request->isPost() || !$request->getPost('config')) 
 			{
@@ -82,12 +86,12 @@ class Controller_Config extends Controller_Admin_Action
 			}
 
 			$this->getMessage()->addMessage('Config saved Successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -95,6 +99,7 @@ class Controller_Config extends Controller_Admin_Action
 	{
 		try 
 		{	
+			$this->setPageTitle('Config Delete');
 			$id=$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{
@@ -113,13 +118,13 @@ class Controller_Config extends Controller_Admin_Action
 			}
 
 			$this->getMessage()->addMessage('Config Deleted Successfully.');
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }

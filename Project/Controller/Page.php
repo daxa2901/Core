@@ -6,6 +6,7 @@ class Controller_Page extends Controller_Admin_Action
 	
 	public function gridAction()
 	{	
+		$this->setPageTitle('Page Grid');
 		$content = $this->getLayout()->getContent();
 		$page = Ccc::getBlock('Page_Grid');
 		$content->addChild($page);
@@ -14,6 +15,7 @@ class Controller_Page extends Controller_Admin_Action
 
 	public function addAction()
 	{
+		$this->setPageTitle('Page Add');
 		$page = Ccc::getModel('Page');
 		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
 		$content = $this->getLayout()->getContent();
@@ -25,6 +27,7 @@ class Controller_Page extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Page Edit');
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) 
       		{
@@ -35,7 +38,7 @@ class Controller_Page extends Controller_Admin_Action
       		{
       			throw new Exception("Unable to Load page.", 1);
       		}
-     		$page = Ccc::getBlock('Page_Edit')->addData('page',$page);
+     		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
 			$content = $this->getLayout()->getContent();
 			$content->addChild($page);
 			$this->renderLayout();
@@ -44,7 +47,7 @@ class Controller_Page extends Controller_Admin_Action
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 		
 	}
@@ -53,6 +56,7 @@ class Controller_Page extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Page Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -98,6 +102,7 @@ class Controller_Page extends Controller_Admin_Action
 	{
 		try 
 		{	
+			$this->setPageTitle('Page Delete');
 			$id=$this->getRequest()->getRequest('id');
 			if (!$id) 
 			{

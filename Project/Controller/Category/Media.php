@@ -7,14 +7,15 @@ class Controller_Category_Media extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Category Media Grid');
 			$id = (int)$this->getRequest()->getRequest('id');
 			if(!$id)
 			{
 				throw new Exception("Invalid Id.", 1);				
 			}
 
-			$product = Ccc::getModel('Category')->load($id);
-			if (!$product) 
+			$category = Ccc::getModel('Category')->load($id);
+			if (!$category) 
 			{
 				throw new Exception("Unable to load Category.", 1);
 			}
@@ -27,7 +28,7 @@ class Controller_Category_Media extends Controller_Admin_Action
 		catch(Exception $e)
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','product',null,true);
+			$this->redirect('grid','category',['id'=>null]);
 		}
 	}
 	
@@ -36,6 +37,7 @@ class Controller_Category_Media extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Category Media Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -74,7 +76,7 @@ class Controller_Category_Media extends Controller_Admin_Action
 						foreach ($rows['remove'] as $row) 
 						{
 							$mediaRow = $mediaRow->load($row);
-							$path =  Ccc::getBlock('Product_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->media;
+							$path =  Ccc::getBlock('Category_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->media;
 							unlink($path);
 						}
 						$removeId = implode(',',array_values($rows['remove']));

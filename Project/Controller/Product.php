@@ -4,6 +4,7 @@ Ccc::loadClass('Controller_Admin_Action');
 class Controller_Product extends Controller_Admin_Action{
 	public function gridAction()
 	{
+		$this->setPageTitle('Product Grid');
 		$content = $this->getLayout()->getContent();
 		$productRow = Ccc::getBlock('Product_Grid');
 		$content->addChild($productRow);
@@ -12,10 +13,11 @@ class Controller_Product extends Controller_Admin_Action{
 
 	public function addAction()
 	{
+		$this->setPageTitle('Product Add');
 		$product= Ccc::getModel('Product');
      	$productRow = Ccc::getBlock('Product_Edit');
      	$productRow->setData(['product'=>$product]);
-     	$productRow->addData('categoryProductPair',[]);
+     	$productRow->categoryProductPair =[];
      	$content = $this->getLayout()->getContent();
 		$content->addChild($productRow);
 		$this->renderLayout();
@@ -25,6 +27,7 @@ class Controller_Product extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Product Edit');
 			$id = (int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
@@ -42,7 +45,7 @@ class Controller_Product extends Controller_Admin_Action{
      						FROM `category_product` 
      				WHERE `productId` = {$id}";
      		$categoryProductPair = $this->getAdapter()->fetchPair($query);
-     		$productRow->addData('categoryProductPair',$categoryProductPair);
+     		$productRow->categoryProductPair = $categoryProductPair;
      		$content = $this->getLayout()->getContent();
 			$content->addChild($productRow);
 			$this->renderLayout();
@@ -50,7 +53,7 @@ class Controller_Product extends Controller_Admin_Action{
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -58,7 +61,7 @@ class Controller_Product extends Controller_Admin_Action{
 	{
 		try 
 		{
-
+			$this->setPageTitle('Product Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
@@ -94,13 +97,13 @@ class Controller_Product extends Controller_Admin_Action{
 
 			$product->saveCategories($request->getPost('category'));
 			$this->getMessage()->addMessage('product saved successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 			
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -108,6 +111,7 @@ class Controller_Product extends Controller_Admin_Action{
 	{
 		try 
 		{
+			$this->setPageTitle('Product Delete');
 			$id=(int)$this->getRequest()->getRequest('id');
 			if(!$id)
 			{
@@ -137,12 +141,12 @@ class Controller_Product extends Controller_Admin_Action{
 			}
 			
 			$this->getMessage()->addMessage('Product deleted successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,null,true));
+			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,['id'=>null]));
 		}
 	}
 }

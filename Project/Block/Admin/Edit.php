@@ -10,6 +10,6 @@ class Block_Admin_Edit extends Block_Core_Template
 
 	public function getAdmin()
 	{
-		return $this->getData('admin');
+		return $this->admin;
 	}
 }

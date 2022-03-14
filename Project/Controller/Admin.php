@@ -6,6 +6,7 @@ class Controller_Admin extends Controller_Admin_Action
 	
 	public function gridAction()
 	{	
+		$this->setPageTitle('Admin Grid');
 		$content = $this->getLayout()->getContent();
 		$adminRow = Ccc::getBlock('Admin_Grid');
 		$content->addChild($adminRow);
@@ -14,6 +15,7 @@ class Controller_Admin extends Controller_Admin_Action
 	
 	public function addAction()
 	{
+		$this->setPageTitle('Admin Add');
 		$admin = Ccc::getModel('Admin');
 		$content = $this->getLayout()->getContent();
 		$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
@@ -24,6 +26,7 @@ class Controller_Admin extends Controller_Admin_Action
 	public function editAction()
 	{
 		try{
+			$this->setPageTitle('Admin Edit');
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) {
       			throw new Exception("Invalid Id.", 1);
@@ -41,7 +44,7 @@ class Controller_Admin extends Controller_Admin_Action
 		} 
 		catch (Exception $e) {
 			$this->getMessage()->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 		
 	}
@@ -50,6 +53,7 @@ class Controller_Admin extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Admin Save');
 			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if(!$request->isPost() ||  !$request->getPost('admin'))
@@ -84,12 +88,12 @@ class Controller_Admin extends Controller_Admin_Action
 			}
 
 			$messages->addMessage('Admin details saved Successfully.');
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 
 		{
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -97,6 +101,7 @@ class Controller_Admin extends Controller_Admin_Action
 	{
 		try 
 		{	
+			$this->setPageTitle('Admin Delete');
 			$messages = $this->getMessage();
 			$request = $this->getRequest();
 			if (!$request->getRequest('id')) {
@@ -115,11 +120,11 @@ class Controller_Admin extends Controller_Admin_Action
 			}
 
 			$messages->addMessage('Admin detail deleted successfully.');
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		} 
 		catch (Exception $e) {
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }

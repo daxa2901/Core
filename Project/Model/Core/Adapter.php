@@ -1,12 +1,11 @@
 <?php 
-class Model_Core_Adapter{
-
-    public $config = [
-        'host' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'dbname' => 'project_daxa'
-    ];
+class Model_Core_Adapter
+{
+    public function __construct()
+    {
+        $this->setConfig(Ccc::getConfig('connection'));
+    }
+    public $config = [];
     private $connect = NULL;
     
     public function connect()
