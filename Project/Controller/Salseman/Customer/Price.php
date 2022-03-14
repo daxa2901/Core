@@ -7,6 +7,7 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Customer Price Grid');
 			$salsemanId = (int)$this->getRequest()->getRequest('id');
 			$customerId = (int)$this->getRequest()->getRequest('customerId');
 			if(!$customerId OR !$salsemanId)
@@ -34,7 +35,7 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 			$products = $products->fetchAll($query);
 			$customerPriceGrid =Ccc::getBlock('Salseman_Customer_Price_Grid');
 			$customerPriceGrid->setData(['products'=>$products]);
-			$customerPriceGrid->addData('salseman',$salseman);
+			$customerPriceGrid->salseman = $salseman;
 			$content = $this->getLayout()->getContent();
 			$content->addChild($customerPriceGrid);
 			$this->renderLayout();
@@ -52,6 +53,7 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Customer Price Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{

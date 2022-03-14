@@ -10,7 +10,7 @@ class Block_Category_Edit extends Block_Core_Template
 
 	public function getCategory()
 	{
-		return $this->getData('category');
+		return $this->category;
 	}
 
 	public function getCategoryPathPair()

@@ -28,8 +28,8 @@ class Block_Page_Grid extends Block_Core_Template
 	public function getPages()
 	{
 		$request = Ccc::getModel('Core_Request');
-		$page = $request->getRequest('p',1);
-		$pageCount = $request->getRequest('ppc',20);
+		$page = ($page = (int)$request->getRequest('p',1))? $page : 1;
+		$pageCount = ($pageCount = (int)$request->getRequest('ppc',10)) ?$pageCount : 10;
 		$query = "SELECT count(`pageId`) FROM `Page`";
 		$totalCount = $this->getAdapter()->fetchOne($query);
 		$this->getPager()->execute($totalCount,$page,$pageCount);

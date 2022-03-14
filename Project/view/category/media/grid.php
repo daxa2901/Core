@@ -3,9 +3,8 @@
 <h1> Category Media Details </h1> 
 <form action=<?php echo $this->getUrl('save');?> method="POST">
 	<button type="submit" class="Registerbtn"> Update </button>
-
-	<a href="<?php echo $this->getUrl('grid','category',null,true);?>"><button type="button" class="cancel">Cancel</button></a>
-		
+	<a href="<?php echo $this->getUrl('grid','category',['id'=>null]);?>"><button type="button" class="cancel">Cancel</button></a>
+	
 
 	<div id='info'>
 	<table border=1 width=100%>

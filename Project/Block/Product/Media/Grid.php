@@ -10,7 +10,7 @@ class Block_Product_Media_Grid extends Block_Core_Template
 
 	public function getMedias()
 	{
-		$id = $this->getData('id');
+		$id = $this->id;
 		$medias = Ccc::getModel('Product_Media');
 		$query = "SELECT pm.*,p.`base`,p.`thumb`,p.`small` 
 				FROM `product_media` pm JOIN `product` p 

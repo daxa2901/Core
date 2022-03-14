@@ -10,6 +10,6 @@ class Block_Page_Edit extends Block_Core_Template
 
 	public function getPage()
 	{
-		return $this->getData('page');
+		return $this->page;
 	}
 }

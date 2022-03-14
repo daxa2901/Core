@@ -6,6 +6,7 @@ class Controller_Admin_Login extends Controller_Admin_Action
 {
 	public function loginAction()
 	{
+		$this->setPageTitle('Admin Login');
 		$content = $this->getLayout()->getContent();
 		$adminLogin = Ccc::getBlock('Admin_Login_Grid');
 		$content->addChild($adminLogin);
@@ -16,6 +17,7 @@ class Controller_Admin_Login extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Admin Logout');
 			$login = Ccc::getModel('Admin_Login')->logout();
 			if($login)
 			{
@@ -35,6 +37,7 @@ class Controller_Admin_Login extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Admin LoginPost');
 			$request = $this->getRequest();
 			if(!$request->isPost() ||  !$request->getPost('login'))
 			{

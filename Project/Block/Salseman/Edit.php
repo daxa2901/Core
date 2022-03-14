@@ -10,6 +10,6 @@ class Block_Salseman_Edit extends Block_Core_Template
 
 	public function getSalseman()
 	{
-		return $this->getData('salseman');
+		return $this->salseman;
 	}
 }

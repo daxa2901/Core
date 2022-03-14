@@ -5,6 +5,7 @@ class Controller_Category extends Controller_Admin_Action
 
 	public function gridAction()
 	{
+		$this->setPageTitle('Category Grid');
 		$content = $this->getLayout()->getContent();
 		$categoryRow = Ccc::getBlock('Category_Grid');
 		$content->addChild($categoryRow);
@@ -13,9 +14,10 @@ class Controller_Category extends Controller_Admin_Action
 
 	public function addAction()
 	{
+		$this->setPageTitle('Category Add');
 		$category = Ccc::getModel('Category');
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Edit')->addData('category',$category);
+		$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
 		$content->addChild($categoryRow);
 		$this->renderLayout();
 		
@@ -25,6 +27,7 @@ class Controller_Category extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Category Edit');
 			$id=(int)$this->getRequest()->getRequest('id');
       		if (!$id) 
       		{
@@ -36,7 +39,7 @@ class Controller_Category extends Controller_Admin_Action
       			throw new Exception("Unable to Load Category.", 1);
       		}
       		$content = $this->getLayout()->getContent();
-			$categoryRow = Ccc::getBlock('Category_Edit')->addData('category',$category);
+			$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
 			$content->addChild($categoryRow);
 			$this->renderLayout();
 		
@@ -44,7 +47,7 @@ class Controller_Category extends Controller_Admin_Action
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		}
 	}
 
@@ -52,6 +55,7 @@ class Controller_Category extends Controller_Admin_Action
 	{
 		try 
 		{	
+			$this->setPageTitle('Category Save');
 			$request=$this->getRequest();
 			$categoryRow = Ccc::getModel('Category');
 			if(!$request->isPost() || !$request->getPost('category')) 
@@ -142,13 +146,13 @@ class Controller_Category extends Controller_Admin_Action
 				$this->getMessage()->addMessage('Category Inserted Successfully.');
 			}
 		
-			$this->redirect('grid',null,null,true);
+			$this->redirect('grid',null,['id'=>null]);
 		
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);	
+			$this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 	
@@ -156,6 +160,7 @@ class Controller_Category extends Controller_Admin_Action
 	{
 		try 
 		{
+			$this->setPageTitle('Category Delete');
 			$id=(int) $this->getRequest()->getRequest('id');
 			if(!$id)
 			{
@@ -173,12 +178,12 @@ class Controller_Category extends Controller_Admin_Action
 				throw new Exception("System is unable to  delete.", 1);
 			}
 			$this->getMessage()->addMessage('Category deleted successfully.');
-			$this->redirect('grid',null,null,true);		
+			$this->redirect('grid',null,['id'=>null]);		
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,null,true);		
+			$this->redirect('grid',null,['id'=>null]);		
 		}
 	}
 }

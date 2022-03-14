@@ -7,6 +7,7 @@ class Controller_Product_Media extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Product Media Grid');
 			$id = (int)$this->getRequest()->getRequest('id');
 			if(!$id)
 			{
@@ -37,6 +38,7 @@ class Controller_Product_Media extends Controller_Admin_Action
 	{
 		try
 		{
+			$this->setPageTitle('Product Media Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
