@@ -13,9 +13,9 @@ class COntroller_Salseman_Customer extends Controller_Admin_Action
 			{
 				throw new Exception("Invalid Id.", 1);				
 			}
-			$product = Ccc::getModel('Salseman')->load($id);
+			$salseman = Ccc::getModel('Salseman')->load($id);
 
-			if (!$product) 
+			if (!$salseman) 
 			{
 				throw new Exception("Unable to load Salseman.", 1);
 			}
@@ -68,6 +68,5 @@ class COntroller_Salseman_Customer extends Controller_Admin_Action
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect('grid');
 		}
-
 	}
 }

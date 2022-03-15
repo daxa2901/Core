@@ -2,6 +2,7 @@
 <?php
 class Model_Category_Media extends Model_Core_Row
 {
+	protected $category = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -51,5 +52,33 @@ class Model_Category_Media extends Model_Core_Row
 		}
 		return $imagename;
 	}
+
+	public function setCategory($category)
+	{
+		$this->category = $category;
+		return $this;
+	}
+	
+	public function getCategory($reload = false)
+	{
+		$categoryModel = Ccc::getModel('category');
+		if (!$this->mediaId) 
+		{
+			return $categoryModel;
+		}	
+		if ($this->category && !$reload) 
+		{
+			return $this->category;
+		}
+		$query = "SELECT * FROM {$categoryModel->getResource()->getTableName()} WHERE categoryId = {$this->categoryId}";
+		$category = $categoryModel->fetchAll($query);
+		if (!$category) 
+		{
+			return $categoryModel;
+		}
+		$this->setCategory($category);
+		return $this->category;
+	}
+
 
 }

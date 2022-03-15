@@ -15,10 +15,8 @@ class Controller_Vendor extends Controller_Admin_Action{
 	{
 		$this->setPageTitle('Vendor Address Add');
 		$vendor = Ccc::getModel('Vendor');
-		$address = Ccc::getModel('Vendor_Address');
 		$vendorRow = Ccc::getBlock('Vendor_Edit');
 		$vendorRow->setData(['vendor'=>$vendor]);
-		$vendorRow->address = $address;
 		$content = $this->getLayout()->getContent();
 		$content->addChild($vendorRow);
 		$this->renderLayout();	
@@ -40,16 +38,8 @@ class Controller_Vendor extends Controller_Admin_Action{
 			{
 				throw new Exception("Unable to load vendor.", 1);
 			}
-
-			$address = Ccc::getModel('Vendor_Address')->load($id,'vendorId');
-			if (!$address) 
-			{
-				throw new Exception("Unable to load vendor Address.", 1);
-			}
-
 			$vendorRow = Ccc::getBlock('Vendor_Edit');
 			$vendorRow->setData(['vendor'=>$vendor]);
-			$vendorRow->address = $address;	
 			$content = $this->getLayout()->getContent();
 			$content->addChild($vendorRow);
 			$this->renderLayout();
@@ -92,10 +82,10 @@ class Controller_Vendor extends Controller_Admin_Action{
 		}
 		$this->getMessage()->addMessage("Vendor details saved successfully.");
 	
-		return $vendor->vendorId;
+		return $vendor;
 	}
 
-	protected function saveAddress($vendorId)
+	protected function saveAddress($vendor)
 	{
 		$request = $this->getRequest();
 		
@@ -105,11 +95,11 @@ class Controller_Vendor extends Controller_Admin_Action{
 		}
 		
 		$row = $request->getPost('address');
-		$vendorAddress = Ccc::getModel("Vendor_Address")->load($vendorId,'vendorId');
-		if(!$vendorAddress)
+		$vendorAddress = $vendor->getAddress();
+		if(!$vendorAddress->vendorId)
 		{
 			$vendorAddress = Ccc::getModel("Vendor_Address");
-			$vendorAddress->vendorId = $vendorId;
+			$vendorAddress->vendorId = $vendor->vendorId;
 		}
 		$vendorAddress->setData($row);
 		$vendorAddress = $vendorAddress->save();
@@ -125,8 +115,8 @@ class Controller_Vendor extends Controller_Admin_Action{
 		try
 		{
 			$this->setPageTitle('Vendor Address Save');
-			$vendorId = $this->saveVendor();
-			$this->saveAddress($vendorId);
+			$vendor = $this->saveVendor();
+			$this->saveAddress($vendor);
 			$this->getMessage()->addMessage('Vendor details saved successfully.');
 			$this->redirect('grid',null,['id'=>null]);
 		} 

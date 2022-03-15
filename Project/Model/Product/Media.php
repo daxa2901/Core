@@ -2,6 +2,7 @@
 <?php
 class Model_Product_Media extends Model_Core_Row
 {
+	protected $product = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -52,5 +53,33 @@ class Model_Product_Media extends Model_Core_Row
 		
 		return $imagename;
 	}
+
+	public function setProduct($product)
+	{
+		$this->product = $product;
+		return $this;
+	}
+	
+	public function getProduct($reload = false)
+	{
+		$productModel = Ccc::getModel('Product');
+		if (!$this->mediaId) 
+		{
+			return $productModel;
+		}	
+		if ($this->product && !$reload) 
+		{
+			return $this->product;
+		}
+		$query = "SELECT * FROM {$productModel->getResource()->getTableName()} WHERE productId = {$this->productId}";
+		$product = $productModel->fetchAll($query);
+		if (!$product) 
+		{
+			return $productModel;
+		}
+		$this->setProduct($product);
+		return $this->product;
+	}
+
 
 }

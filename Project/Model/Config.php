@@ -33,5 +33,6 @@ class Model_Config extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
+	
 
 }

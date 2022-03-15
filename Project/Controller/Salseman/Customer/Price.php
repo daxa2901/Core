@@ -92,16 +92,13 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 
 				if (array_key_exists('exists',$price)) 
 				{
-					foreach ($price['exists'] as $key => $value) 
+					foreach ($customer->getPrices() as $key => $value) 
 					{
-						$customerPriceRow = Ccc::getModel('Customer_Price');
-						$customerPriceRow->entityId = $key;
-						$customerPriceRow->price = $value;
-						$update = $customerPriceRow->save();
+						$value->price = $price['exists'][$value->entityId];
+						$update = $value->save();
 						if (!$update) 
 						{
 							throw new Exception("Unable to update.", 1);
-							
 						}
 					}
 				}

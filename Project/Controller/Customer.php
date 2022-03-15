@@ -15,10 +15,8 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		$this->setPageTitle('Customer Address Add');
 		$customer = Ccc::getModel('Customer');
-		$address = Ccc::getModel('Customer_Address');
 		$customerBlock = Ccc::getBlock('Customer_Edit');
 		$customerBlock->setData(['customer'=>$customer]);
-		$customerBlock->address = $address;
 		$content = $this->getLayout()->getContent();
 		$content->addChild($customerBlock);
 		$this->renderLayout();	
@@ -40,16 +38,8 @@ class Controller_Customer extends Controller_Admin_Action{
 			{
 				throw new Exception("Unable to load Customer.", 1);
 			}
-
-			$address = Ccc::getModel('Customer_Address')->load($id,'customerId');
-			if (!$address) 
-			{
-				throw new Exception("Unable to load Customer Address.", 1);
-			}
-
 			$customerRow = Ccc::getBlock('Customer_Edit');
 			$customerRow->setData(['customer'=>$customer]);
-			$customerRow->address = $address;	
 			$content = $this->getLayout()->getContent();
 			$content->addChild($customerRow);
 			$this->renderLayout();	
@@ -95,40 +85,49 @@ class Controller_Customer extends Controller_Admin_Action{
 		}
 		$this->getMessage()->addMessage('Customer Details Inserted Successfully.');
 	
-		return $customer->customerId;
+		return $customer;
 	}
 
-	protected function saveAddress($customerId)
+	protected function saveAddress($customer)
 	{
 		$request = $this->getRequest();
 		
-		if(!$request->isPost() ||!$request->getPost('address')) 
+		if(!$request->isPost() || !$request->getPost('billingAddress')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
 		}
-		$row = $request->getPost('address');
 
-		$vendorAddress = Ccc::getModel("Customer_Address")->load($customerId,'customerId');
-		if(!$vendorAddress)
+		$customerBillingAddress = $request->getPost('billingAddress');
+		$customerShippingAddress = (array_key_exists('same',$customerBillingAddress)) ? $customerBillingAddress : $request->getPost('shippingAddress');
+
+		$billingAddress = $customer->getBillingAddress();
+		$shippingAddress = $customer->getShippingAddress();
+		if(!$billingAddress->customerId || !$shippingAddress->customerId)
 		{
-			$vendorAddress = Ccc::getModel("Customer_Address");
-			$vendorAddress->customerId = $customerId;
+			$billingAddress->customerId = $customer->customerId;
+			$shippingAddress->customerId = $customer->customerId;
+		}
+		else
+		{
+			$shippingAddressId = $request->getPost('shippingAddress');
+			$customerShippingAddress['addressId'] = $shippingAddressId['addressId'];
+		}
+		
+		$billingAddress->billing = get_class($billingAddress)::BILLING;
+		$shippingAddress->shipping = get_class($shippingAddress)::SHIPPING;
+		
+		$billingAddress->setData($customerBillingAddress);
+		$billingAddress->same = (array_key_exists('same',$customerBillingAddress)) ? 1 : 2;
+		$billingAddress = $billingAddress->save();
+		if (!$billingAddress) 
+		{
+			throw new Exception("System is unable to insert", 1);
 		}
 
-		$vendorAddress->billing = get_class($vendorAddress)::BILLING_DEFAULT;
-		$vendorAddress->shipping = get_class($vendorAddress)::SHIPPING_DEFAULT;
-		if (array_key_exists('billing', $row) && $row['billing'] == 1) 
-		{
-			$vendorAddress->billing = get_class($vendorAddress)::BILLING;
-		}
-
-		if (array_key_exists('shipping', $row) && $row['shipping'] == 1) 
-		{
-			$vendorAddress->shipping = get_class($vendorAddress)::SHIPPING;
-		}
-		$vendorAddress->setData($row);
-		$vendorAddress = $vendorAddress->save();
-		if (!$vendorAddress) 
+		$shippingAddress->setData($customerShippingAddress);
+		$shippingAddress->same = (array_key_exists('same',$customerBillingAddress)) ? 1 : 2;
+		$shippingAddress = $shippingAddress->save();
+		if (!$shippingAddress ) 
 		{
 			throw new Exception("System is unable to insert", 1);
 		}
@@ -139,8 +138,8 @@ class Controller_Customer extends Controller_Admin_Action{
 		try
 		{
 			$this->setPageTitle('Customer Address Save');
-			$customerId = $this->saveCustomer();
-			$this->saveAddress($customerId);
+			$customer = $this->saveCustomer();
+			$this->saveAddress($customer);
 			$this->getMessage()->addMessage('Customer saved successfully.');
 			$this->redirect('grid',null,['id'=>null]);
 		} 
