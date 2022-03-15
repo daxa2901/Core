@@ -14,7 +14,7 @@ class Model_Category_Product extends Model_Core_Row
 	public function setProduct($products)
 	{
 		$this->product = $product;
-		return $this
+		return $this;
 	}
 
 	public function getProduct($reload = false)
@@ -41,7 +41,7 @@ class Model_Category_Product extends Model_Core_Row
 	public function setCategory($category)
 	{
 		$this->category = $category;
-		return $this
+		return $this;
 	}
 
 	public function getCategory($reload = false)
