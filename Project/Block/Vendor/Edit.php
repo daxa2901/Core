@@ -15,6 +15,6 @@ class Block_Vendor_Edit extends Block_Core_Template
 
 	public function getAddress()
 	{
-		return $this->address;
+		return $this->vendor->getAddress();
 	}
 }

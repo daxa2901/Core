@@ -50,11 +50,9 @@ class Controller_Product_Media extends Controller_Admin_Action
 				throw new Exception("Invalid Id.", 1);				
 			}
 
-			$mediaRow = Ccc::getModel('Product_Media');
-			$productRow = Ccc::getModel('Product');
+			$mediaRow = Ccc::getModel('Product')->getMedia();
 			if ($request->getPost('media')) 
 			{
-			
 				$rows =  $request->getPost('media');
 				if(array_key_exists('mediaId',$rows))
 				{
@@ -86,56 +84,51 @@ class Controller_Product_Media extends Controller_Admin_Action
 						{
 							throw new Exception("Unable to delete product media.", 1);	
 						}
-
-
 					}
 					
 					if(array_key_exists('base',$rows))
 					{
-						$media = Ccc::getModel('Product_Media')->load($rows['base']);
-						if($media)
+						$product = Ccc::getModel('Product')->load($productId);
+						$product->base = $rows['base'];
+						$media = $product->getBase();
+						if($media->media)
 						{
-							$productRow->productId = $productId;
-							$productRow->base = $rows['base'];
-							$update = $productRow->save();
+							$update = $product->save();
 							if(!$update)
 							{
 								throw new Exception("Unable to update product.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('thumb',$rows))
 					{
-						$media = Ccc::getModel('Product_Media')->load($rows['thumb']);
-						if($media)
+						$product = Ccc::getModel('Product')->load($productId);
+						$product->thumb = $rows['thumb'];
+						$media = $product->getThumb();
+						if($media->media)
 						{
-							$productRow->productId = $productId;
-							$productRow->thumb = $rows['thumb'];
-							$update = $productRow->save();
+							$update = $product->save();
 							if(!$update)
 							{
 								throw new Exception("Unable to update product.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('small',$rows))
 					{
-						$media = Ccc::getModel('Product_Media')->load($rows['small']);
-						if($media)
+						$product = Ccc::getModel('Product')->load($productId);
+						$product->small = $rows['small'];
+						$media = $product->getSmall();
+						if($media->media)
 						{
-							$productRow->productId = $productId;
-							$productRow->small = $rows['small'];
-							$update = $productRow->save();
+							$update = $product->save();
 							if(!$update)
 							{
 								throw new Exception("Unable to update product.", 1);	
 							}
 						}
-											
 					}
 
 					if(array_key_exists('gallery',$rows))

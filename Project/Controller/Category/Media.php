@@ -49,11 +49,10 @@ class Controller_Category_Media extends Controller_Admin_Action
 				throw new Exception("Invalid Id.", 1);				
 			}
 
-			$mediaRow = Ccc::getModel('Category_Media');
 			$categoryRow = Ccc::getModel('Category');
+			$mediaRow = $categoryRow->getMedia();
 			if ($request->getPost('media')) 
 			{
-			
 				$rows =  $request->getPost('media');
 				if(array_key_exists('mediaId',$rows))
 				{
@@ -89,45 +88,46 @@ class Controller_Category_Media extends Controller_Admin_Action
 					
 					if(array_key_exists('base',$rows))
 					{
-						$media = Ccc::getModel('Category_Media')->load($rows['base']);
-						if($media)
+						$category = Ccc::getModel('Category')->load($categoryId);
+						$category->base = $rows['base'];
+						$media = $category->getBase();
+						if($media->media)
 						{
-							$categoryRow->categoryId = $categoryId;
-							$categoryRow->base = $rows['base'];
-							$update = $categoryRow->save();
+							$update = $category->save();
 							if(!$update)
 							{
-								throw new Exception("Unable to update Category.", 1);	
+								throw new Exception("Unable to update category.", 1);	
 							}
 						}
+						
 					}
 
 					if(array_key_exists('thumb',$rows))
 					{
-						$media = Ccc::getModel('Category_Media')->load($rows['thumb']);
-						if($media)
+						$category = Ccc::getModel('Category')->load($categoryId);
+						$category->thumb = $rows['thumb'];
+						$media = $category->getThumb();
+						if($media->media)
 						{
-							$categoryRow->categoryId = $categoryId;
-							$categoryRow->thumb = $rows['thumb'];
-							$update = $categoryRow->save();
+							$update = $category->save();
 							if(!$update)
 							{
-								throw new Exception("Unable to update Category.", 1);	
+								throw new Exception("Unable to update category.", 1);	
 							}
 						}
 					}
 
 					if(array_key_exists('small',$rows))
 					{
-						$media = Ccc::getModel('Category_Media')->load($rows['small']);
-						if($media)
+						$category = Ccc::getModel('Category')->load($categoryId);
+						$category->small = $rows['small'];
+						$media = $category->getSmall();
+						if($media->media)
 						{
-							$categoryRow->categoryId = $categoryId;
-							$categoryRow->small = $rows['small'];
-							$update = $categoryRow->save();
+							$update = $category->save();
 							if(!$update)
 							{
-								throw new Exception("Unable to update Category.", 1);	
+								throw new Exception("Unable to update category.", 1);	
 							}
 						}
 					}

@@ -3,6 +3,7 @@
 <?php
 class Model_Salseman extends Model_Core_Row
 {
+	protected $customers = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -32,5 +33,32 @@ class Model_Salseman extends Model_Core_Row
 			return $statuses[$key];
 		}
 		return self::STATUS_DEFAULT;
+	}
+
+	public function setCustomers($customers)
+	{
+		$this->customers = $customers;
+		return $this;
+	}
+
+	public function getCustomers($reload = false)
+	{
+		$customerModel = Ccc::getModel('Customer');
+		if (!$this->salsemanId) 
+		{
+			return $customerModel;
+		}	
+		if ($this->customers && !$reload) 
+		{
+			return  $this->customers;
+		}
+		$query = "SELECT * FROM {$customerModel->getResource()->getTableName()} WHERE salsemanId = {$this->salsemanId}";
+		$customers = $customerModel->fetchAll($query);
+		if (!$customers) 
+		{
+			return $customerModel;
+		}
+		$this->setCustomers($customers);
+		return $this->customers;
 	}
 }

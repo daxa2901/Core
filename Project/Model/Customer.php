@@ -2,6 +2,11 @@
 <?php
 class Model_Customer extends Model_Core_Row
 {
+	protected $billingAddress = null;
+	protected $shippingAddress = null;
+	protected $salseman = null;
+	protected $prices = null;
+
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -32,5 +37,114 @@ class Model_Customer extends Model_Core_Row
 		}
 		return self::STATUS_DEFAULT;
 	}
+
+	public function getBillingAddress($reload = false)
+	{
+		$addressModel = Ccc::getModel('Customer_Address');
+		if (!$this->customerId) 
+		{
+			return $addressModel;
+		}	
+		if ($this->billingAddress && !$reload) 
+		{
+			return  $this->billingAddress;
+		}
+		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND billing = ".get_class($addressModel)::BILLING;
+		$address = $addressModel->fetchRow($query);
+		if (!$address) 
+		{
+			return $addressModel;
+		}
+		$this->setBillingAddress($address);
+		return $this->billingAddress;
+	}
+
+	public function setBillingAddress($address)
+	{
+		$this->billingAddress = $address;
+		return $this;
+	}
+	
+	public function getShippingAddress($reload = false)
+	{
+		$addressModel = Ccc::getModel('Customer_Address');
+		if (!$this->customerId) 
+		{
+			return $addressModel;
+		}	
+		if ($this->shippingAddress && !$reload) 
+		{
+			return  $this->shippingAddress;
+		}
+		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND shipping = ".get_class($addressModel)::SHIPPING;
+		$address = $addressModel->fetchRow($query);
+		if (!$address) 
+		{
+			return $addressModel;
+		}
+		$this->setShippingAddress($address);
+		return $this->shippingAddress;
+	}
+
+	public function setShippingAddress($address)
+	{
+		$this->shippingAddress = $address;
+		return $this;
+	}
+
+	public function setSalseman($salseman)
+	{
+		$this->salseman = $salseman;
+		return $this;
+	}
+	
+	public function getSalseman($reload = false)
+	{
+		$salsemanModel = Ccc::getModel('Salseman');
+		if (!$this->customerId) 
+		{
+			return $salsemanModel;
+		}	
+		if ($this->salseman && !$reload) 
+		{
+			return  $this->salseman;
+		}
+		$query = "SELECT * FROM {$salsemanModel->getResource()->getTableName()} WHERE salsemanId = {$this->salsemanId}";
+		$salseman = $salsemanModel->fetchRow($query);
+		if (!$salseman) 
+		{
+			return $salsemanModel;
+		}
+		$this->setSalseman($salseman);
+		return $this->salseman;
+	}
+
+	public function setPrices($prices)
+	{
+		$this->prices = $prices;
+		return $this;
+	}
+	
+	public function getPrices($reload = false)
+	{
+		$priceModel = Ccc::getModel('Customer_Price');
+		if (!$this->customerId) 
+		{
+			return $priceModel;
+		}	
+		if ($this->prices && !$reload) 
+		{
+			return  $this->prices;
+		}
+		$query = "SELECT * FROM {$priceModel->getResource()->getTableName()} WHERE customerId = {$this->customerId}";
+		$prices = $priceModel->fetchAll($query);
+		if (!$prices) 
+		{
+			return $priceModel;
+		}
+		$this->setPrices($prices);
+		return $this->prices;
+	}
+
 
 }
