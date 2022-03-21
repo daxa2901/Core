@@ -57,7 +57,7 @@ function changeURL(val)
 			<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc'>
 					<option value="">select Per Page Count Option</option>
 				<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
-					<option value="<?php echo $value ?>"> <?php echo $value ?></option>
+					<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
 				<?php endforeach; ?>
 			</select>
 		</td>

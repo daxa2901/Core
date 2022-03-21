@@ -36,7 +36,7 @@ class Block_Salseman_Grid extends Block_Core_Template
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$model = Ccc::getModel('Salseman');
-		$query = "SELECT * FROM `salseman`LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		$query = "SELECT * FROM `salseman` order by `salsemanId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$salsemans = $model->fetchAll($query);
 		if(!$salsemans)
 		{

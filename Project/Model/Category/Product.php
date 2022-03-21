@@ -29,7 +29,7 @@ class Model_Category_Product extends Model_Core_Row
 			return $this->product;
 		}
 		$query = "SELECT * FROM {$productModel->getResource()->getTableName()} WHERE productId = {$this->productId}";
-		$product = $productModel->fetchAll($query);
+		$product = $productModel->fetchRow($query);
 		if (!$product) 
 		{
 			return $productModel;
@@ -56,7 +56,7 @@ class Model_Category_Product extends Model_Core_Row
 			return $this->category;
 		}
 		$query = "SELECT * FROM {$categoryModel->getResource()->getTableName()} WHERE categoryId = {$this->categoryId}";
-		$category = $categoryModel->fetchAll($query);
+		$category = $categoryModel->fetchRow($query);
 		if (!$category) 
 		{
 			return $categoryModel;

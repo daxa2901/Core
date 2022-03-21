@@ -5,7 +5,6 @@ class Model_Core_Row_Resource
 {
 	protected $table = null;
 	protected $primaryKey = null;
-	protected $mediaPath = null;
 	
 	public function __construct()
 	{

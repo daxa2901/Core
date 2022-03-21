@@ -113,8 +113,8 @@ class Controller_Customer extends Controller_Admin_Action{
 			$customerShippingAddress['addressId'] = $shippingAddressId['addressId'];
 		}
 		
-		$billingAddress->billing = get_class($billingAddress)::BILLING;
-		$shippingAddress->shipping = get_class($shippingAddress)::SHIPPING;
+		$billingAddress->type = get_class($billingAddress)::BILLING;
+		$shippingAddress->type = get_class($shippingAddress)::SHIPPING;
 		
 		$billingAddress->setData($customerBillingAddress);
 		$billingAddress->same = (array_key_exists('same',$customerBillingAddress)) ? 1 : 2;

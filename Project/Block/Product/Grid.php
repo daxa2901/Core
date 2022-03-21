@@ -35,14 +35,7 @@ class Block_Product_Grid extends Block_Core_Template
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$productRow = Ccc::getModel('Product');
 		$query = "SELECT 
-		 		c.*,b.`media` as baseImage, t.`media` as thumbImage,s.`media` as smallImage
-			FROM `product` c 
-			LEFT JOIN `product_media` b 
-				ON c.`productId` = b.`productId` AND (c.`base`= b.`mediaId`)
-			LEFT JOIN `product_media` t 
-				ON c.`productId` = t.`productId` AND (c.`thumb` = t.`mediaId`)
-			LEFT JOIN `product_media` s 
-				ON c.`productId` = s.`productId` AND (c.`small` = s.`mediaId`) LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		 		* FROM `product` order by `productId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 
 		$products = $productRow-> fetchAll($query);
 		if(!$products)

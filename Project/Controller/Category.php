@@ -172,6 +172,12 @@ class Controller_Category extends Controller_Admin_Action
 			{
 				throw new Exception("Record not found.", 1);
 			}
+			$media = $category->getMedia();
+			foreach ($media as $key => $value) 
+			{
+				$path = Ccc::getPath($value->getPath()).DIRECTORY_SEPARATOR.$value->media;
+				unlink($path);
+			}
 			$category = $category->delete(); 
 			if(!$category)
 			{

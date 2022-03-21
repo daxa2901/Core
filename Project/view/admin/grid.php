@@ -13,7 +13,6 @@
 				<th> First Name </th>
 				<th> Last Name </th>
 				<th> Email </th>
-				<th> Password </th>
 				<th> Mobile </th>
 				<th> Status </th>
 				<th> Create Date </th>
@@ -27,7 +26,6 @@
 			    		<td><?php echo $row->firstName ?></td>
 			    		<td><?php echo $row->lastName ?></td>
 			    		<td><?php echo $row->email ?></td>
-			    		<td><?php echo $row->password ?></td>
 			    		<td><?php echo $row->mobile ?></td>
 			    		<td><?php echo $row->getStatus($row->status) ?> </td>
 			    		<td><?php echo $row->createdDate ?></td>
@@ -57,7 +55,7 @@ function changeURL(val)
 			<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc'>
 					<option value="">select Per Page Count Option</option>
 				<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
-					<option value="<?php echo $value ?>"> <?php echo $value ?></option>
+					<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
 				<?php endforeach; ?>
 			</select>
 		</td>

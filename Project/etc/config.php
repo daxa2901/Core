@@ -6,5 +6,6 @@ return [
         'username' => 'root',
         'password' => '',
         'dbname' => 'project_daxa'
-	]
+	],
+	'baseUrl' => 'http://localhost/Cybercom/cart/Core/Project/'
 ];

@@ -35,7 +35,7 @@ class Block_Page_Grid extends Block_Core_Template
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$pageRow = Ccc::getModel('Page');
 		$startLimit = $this->getPager()->getStartLimit()-1;
-		$query = "SELECT * FROM `Page` LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		$query = "SELECT * FROM `Page` order by `pageId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$pages =$pageRow-> fetchAll($query);
 		if(!$pages)
 		{

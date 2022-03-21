@@ -125,12 +125,12 @@ class Controller_Product extends Controller_Admin_Action{
 				throw new Exception("Record not found.", 1);
 			}
 
-			$medias = Ccc::getModel('Product_Media')->fetchAll('SELECT * FROM `product_media` WHERE `productId` = '.$id);
+			$medias = $product->getMedia();
 			if ($medias) 
 			{
 				foreach ($medias as $media) 
 				{
-					$path =  $this->getLayout()->baseUrl($media->getResource()->getMediaPath()).'\\'.$media->media;
+					$path = Ccc::getPath($media->getPath()).DIRECTORY_SEPARATOR.$media->media;
 					unlink($path);
 				}
 			}

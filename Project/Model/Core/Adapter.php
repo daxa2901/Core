@@ -63,7 +63,7 @@ class Model_Core_Adapter
         $result = $this->query($query);
         if(!$result)
         {
-            echo mysqli_error($this->getConnect());
+            return false;
         }
         return $result;
     }

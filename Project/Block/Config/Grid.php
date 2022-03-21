@@ -33,7 +33,7 @@ class Block_Config_Grid extends Block_Core_Template
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$configRow = Ccc::getModel('Config');
-		$query = "SELECT * FROM `config` LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		$query = "SELECT * FROM `config` order by `configId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$configs = $configRow-> fetchAll($query);
 		if(!$configs)
 		{

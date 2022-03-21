@@ -2,8 +2,8 @@
 <?php
 class Model_Customer_Address extends Model_Core_Row
 {
-	const BILLING = 1;
-	const SHIPPING = 1;
+	const BILLING = 'billing';
+	const SHIPPING = 'shipping';
 	protected $customer= null;
 	public function __construct()
 	{

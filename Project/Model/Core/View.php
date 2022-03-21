@@ -25,7 +25,7 @@ class Model_Core_View{
 		ob_start();
 		require($this->getTemplate());
 		$html = ob_get_contents();
-		ob_clean();
+		ob_end_clean();
 		return $html;
 	}
 
