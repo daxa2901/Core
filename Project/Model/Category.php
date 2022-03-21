@@ -41,8 +41,10 @@ class Model_Category extends Model_Core_Row
         $categoryName=$this->getResource()->getAdapter()->fetchPair('SELECT categoryId,name FROM Category');
         $categoryPath=$this->getResource()->getAdapter()->fetchPair('SELECT categoryId,categoryPath FROM Category');
         $categories=[];
-        foreach ($categoryPath as $key => $value) 
+        if ($categoryPath) 
         {
+	        foreach ($categoryPath as $key => $value) 
+	        {
                 $explodeArray=explode('/', $value);
                 $tempArray = [];
 
@@ -56,6 +58,7 @@ class Model_Category extends Model_Core_Row
 
                 $implodeArray = implode('/', $tempArray);
                 $categories[$key]= $implodeArray;
+	        }
         }
         return $categories;
 	}

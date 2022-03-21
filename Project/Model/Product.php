@@ -5,6 +5,7 @@ class Model_Product extends Model_Core_Row
 	protected $media = null;
 	protected $gallery = null;
 	protected $categories = null;
+	protected $cartItems = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -203,6 +204,33 @@ class Model_Product extends Model_Core_Row
 		}
 		$this->setCategories($categories);
 		return $this->categories;
+	}
+
+	public function setCartItems($categories)
+	{
+		$this->cartItems = $cartItems;
+		return $this;
+	}
+	
+	public function getcartItems($reload = false)
+	{
+		$cartItemModel = Ccc::getModel('Cart_Item');
+		if (!$this->productId) 
+		{
+			return $cartItemModel;
+		}	
+		if ($this->cartItems && !$reload) 
+		{
+			return $this->cartItems;
+		}
+		$query = "SELECT * FROM {$cartItemModel->getResource()->getTableName()} WHERE productId = {$this->productId}";
+		$cartItems = $cartItemModel->fetchAll($query);
+		if (!$cartItems) 
+		{
+			return $cartItemModel;
+		}
+		$this->setCartItems($cartItems);
+		return $this->cartItems;
 	}
 }
 

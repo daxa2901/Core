@@ -75,7 +75,7 @@ class Controller_Category_Media extends Controller_Admin_Action
 						foreach ($rows['remove'] as $row) 
 						{
 							$mediaRow = $mediaRow->load($row);
-							$path =  Ccc::getBlock('Category_Grid')->baseUrl($mediaRow->getResource()->getMediaPath()).'/'.$mediaRow->media;
+							$path = Ccc::getPath($mediaRow->getPath()).DIRECTORY_SEPARATOR.$mediaRow->media;
 							unlink($path);
 						}
 						$removeId = implode(',',array_values($rows['remove']));

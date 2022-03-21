@@ -37,7 +37,7 @@ class Block_Customer_Grid extends Block_Core_Template
 		$query = "SELECT c.* , a.`address` 
 				FROM `Customer` c 
 				JOIN `customer_address` a
-			 ON c.`customerId` = a.`customerId` AND billing = 1 LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+			 ON c.`customerId` = a.`customerId` AND type = 'billing' order by `customerId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$customers = $customerRow-> fetchAll($query);
 		if(!$customers)
 		{

@@ -6,6 +6,7 @@ class Model_Customer extends Model_Core_Row
 	protected $shippingAddress = null;
 	protected $salseman = null;
 	protected $prices = null;
+	protected $cart = null;
 
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -49,7 +50,7 @@ class Model_Customer extends Model_Core_Row
 		{
 			return  $this->billingAddress;
 		}
-		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND billing = ".get_class($addressModel)::BILLING;
+		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND type = '".get_class($addressModel)::BILLING."'";
 		$address = $addressModel->fetchRow($query);
 		if (!$address) 
 		{
@@ -76,7 +77,7 @@ class Model_Customer extends Model_Core_Row
 		{
 			return  $this->shippingAddress;
 		}
-		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND shipping = ".get_class($addressModel)::SHIPPING;
+		$query = "SELECT * FROM {$addressModel->getResource()->getTableName()} WHERE customerId = {$this->customerId} AND type = '".get_class($addressModel)::SHIPPING."'";
 		$address = $addressModel->fetchRow($query);
 		if (!$address) 
 		{
@@ -145,6 +146,31 @@ class Model_Customer extends Model_Core_Row
 		$this->setPrices($prices);
 		return $this->prices;
 	}
-
-
+	
+	public function setCart($cart)
+	{
+		$this->cart = $cart;
+		return $this;
+	}
+	
+	public function getCart($reload = false)
+	{
+		$cartModel = Ccc::getModel('Cart');
+		if (!$this->customerId) 
+		{
+			return $cartModel;
+		}	
+		if ($this->cart && !$reload) 
+		{
+			return  $this->cart;
+		}
+		$query = "SELECT * FROM {$cartModel->getResource()->getTableName()} WHERE customerId = {$this->customerId}";
+		$cart = $cartModel->fetchRow($query);
+		if (!$cart) 
+		{
+			return $cartModel;
+		}
+		$this->setCart($cart);
+		return $this->cart;
+	}
 }

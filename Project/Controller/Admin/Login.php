@@ -45,7 +45,7 @@ class Controller_Admin_Login extends Controller_Admin_Action
 			}
 			$row = $request->getPost('login');
 			$password = md5($row['password']);
-			$query = "SELECT * FROM `admin` WHERE `password` = '{$password}' AND `email` = '{$row['email']}'";
+			$query = "SELECT * FROM `admin` WHERE `password` = '{$password}' AND `email` = '{$row['email']}' AND `status` = 1";
 			$admin = $this->getAdapter()->fetchRow($query);
 			if (!$admin) 
 			{

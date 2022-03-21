@@ -3,6 +3,7 @@
 class Model_Product_Media extends Model_Core_Row
 {
 	protected $product = null;
+	protected $path = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -12,6 +13,7 @@ class Model_Product_Media extends Model_Core_Row
 	public function __construct()
 	{
 		$this->setResourceClassName('Product_Media_Resource');
+		$this->setPath('media\product');
 		parent::__construct();
 	}
 
@@ -34,6 +36,17 @@ class Model_Product_Media extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
+	public function getPath()
+	{
+		return $this->path;
+	}
+
+	public function setPath($path)
+	{
+		$this->path = $path;
+		return $this;
+	}
+
 	public function uploadImage($file)
 	{
 		$file_name = pathinfo($file['name']['fileName'],PATHINFO_FILENAME);
@@ -45,7 +58,8 @@ class Model_Product_Media extends Model_Core_Row
 		}
 		
 		$imagename=$file_name.'_'.date("dmYhms").'.'.$ext;
-		$path =  Ccc::getBlock('Product_Media_Grid')->baseUrl($this->getResource()->getMediaPath()).'\\'.$imagename;
+		$path =  Ccc::getPath($this->getPath()).DIRECTORY_SEPARATOR.$imagename;
+		// echo $path; die();
 		if(!move_uploaded_file($temp_name,$path))
 		{
 			throw new Exception("Unable to Upload image111.", 1);
@@ -72,7 +86,7 @@ class Model_Product_Media extends Model_Core_Row
 			return $this->product;
 		}
 		$query = "SELECT * FROM {$productModel->getResource()->getTableName()} WHERE productId = {$this->productId}";
-		$product = $productModel->fetchAll($query);
+		$product = $productModel->fetchRow($query);
 		if (!$product) 
 		{
 			return $productModel;
@@ -81,5 +95,8 @@ class Model_Product_Media extends Model_Core_Row
 		return $this->product;
 	}
 
-
+	public function getImageUrl()
+	{
+		return Ccc::getBaseUrl($this->getPath().'/'.$this->media);
+	}
 }

@@ -25,19 +25,19 @@
 					<tr>
 			    		<td><?php echo $row->categoryId ?></td>
 			    		<td><?php if($row->base): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->baseImage ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo $row->getBase()->getImageUrl();?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
 				    	</td>
 			    		<td><?php if($row->thumb): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->thumbImage ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo $row->getThumb()->getImageUrl();?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
 				    	</td>
 			    		<td><?php if($row->small): ?>
-				    		<img src="<?php echo  Ccc::getModel('Category_Media')->getResource()->getMediaPath().'/'.$row->smallImage ?>" alt =  "no"  height="50px" width="50px" />
+				    		<img src="<?php echo $row->getSmall()->getImageUrl();?>" alt =  "no"  height="50px" width="50px" />
 				    	<?php else : ?>
 				    		No Image 
 				    	<?php endif; ?>
@@ -60,7 +60,7 @@
 			  	<?php endforeach; ?>
 			<?php else: ?>
 				<tr>
-					<td colspan='8'>No Record Available</td>
+					<td colspan='10'>No Record Available</td>
 				</tr>		
 			<?php endif; ?>
 		</table>
@@ -79,7 +79,7 @@ function changeURL(val)
 			<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc'>
 					<option value="">select Per Page Count Option</option>
 				<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
-					<option value="<?php echo $value ?>"> <?php echo $value ?></option>
+					<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
 				<?php endforeach; ?>
 			</select>
 		</td>

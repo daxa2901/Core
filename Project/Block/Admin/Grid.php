@@ -35,7 +35,7 @@ class Block_Admin_Grid extends Block_Core_Template
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$admins = Ccc::getModel('Admin');
-		$query = "SELECT * FROM `Admin` LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		$query = "SELECT * FROM `Admin` order by `adminId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$admins =  $admins-> fetchAll($query);
 		if(!$admins)
 		{

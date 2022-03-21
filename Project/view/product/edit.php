@@ -32,6 +32,7 @@
       </td>
     </tr>
     <tr>
+            <?php if($categories): ?>
       <td width="=10%"> Category</td>
       <td width="=10%"> 
           <table border="1">
@@ -40,20 +41,21 @@
               <th>categoryId</th>
               <th>Category</th>
             </tr>
-            <?php foreach($categories as $category): ?>
-              <tr>
-                 <td><input type="checkbox" name="category[]" value="<?php echo $category->categoryId ?>"
-                  <?php if($categoryProductPair):
-                    if(in_array($category->categoryId, $categoryProductPair)): ?> 
-                      checked 
-                    <?php endif; ?>
-                  <?php endif; ?>></td>
-                 <td><?php echo $category->categoryId ?></td>
-                 <td><?php echo $categoryPath[$category->categoryId] ?></td>
-              </tr>
-            <?php endforeach; ?>
+              <?php foreach($categories as $category): ?>
+                <tr>
+                   <td><input type="checkbox" name="category[]" value="<?php echo $category->categoryId ?>"
+                    <?php if($categoryProductPair):
+                      if(in_array($category->categoryId, $categoryProductPair)): ?> 
+                        checked 
+                      <?php endif; ?>
+                    <?php endif; ?>></td>
+                   <td><?php echo $category->categoryId ?></td>
+                   <td><?php echo $categoryPath[$category->categoryId] ?></td>
+                </tr>
+              <?php endforeach; ?>
           </table>
       </td>
+            <?php endif; ?>
     </tr>
     <?php if($product->productId): ?>
       <input type="hidden" name="product[productId]" value="<?php echo $product->productId ?>">

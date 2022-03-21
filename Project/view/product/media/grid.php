@@ -25,7 +25,7 @@
 			<?php foreach ($products as $row): ?>		
 				<tr>
 					<td><?php echo $row->mediaId ?></td>
-		    		<td><img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->media ?>" alt =  "no"  height="50px" width="50px" /></td>
+		    		<td><img src="<?php echo $row->getImageUrl();?>" alt =  "no"  height="50px" width="50px" /></td>
 		    		<input type="hidden" name="media[mediaId][]"  value ="<?php echo $row->mediaId ?>">
 		    		<td><input type="radio" name="media[base]"   value = "<?php echo $row->mediaId ?>" <?php if($row->base == $row->mediaId): ?> checked <?php endif; ?>></td>
 		    		<td><input type="radio" name="media[thumb]"  value = "<?php echo $row->mediaId ?>" <?php if($row->thumb == $row->mediaId): ?> checked <?php endif; ?>></td>

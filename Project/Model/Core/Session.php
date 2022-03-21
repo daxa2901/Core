@@ -13,6 +13,7 @@ class Model_Core_Session
 	public function setNamespace($namespace)
 	{
 		$this->namespace = $namespace;
+		return $this;
 	}
 	
 	public function getNamespace()

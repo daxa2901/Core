@@ -27,20 +27,21 @@
 		<?php foreach ($products as $row): ?>		
 			<tr>
 	    		<td><?php echo $row->productId ?></td>
-		    	<td><?php if($row->base): ?>
-		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->baseImage ?>" alt =  "no"  height="50px" width="50px" />
+		    	<td>
+		    		<?php if($row->base): ?>
+		    		<img src="<?php echo $row->getBase()->getImageUrl();?>" alt =  "No image"  height="50px" width="50px" />
 		    	<?php else : ?>
 		    		No Image 
 		    	<?php endif; ?>
 		    	</td>
 	    		<td><?php if($row->thumb): ?>
-		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->thumbImage ?>" alt =  "no"  height="50px" width="50px" />
+		    		<img src="<?php echo $row->getThumb()->getImageUrl();?>" alt =  "No image"  height="50px" width="50px" />
 		    	<?php else : ?>
 		    		No Image 
 		    	<?php endif; ?>
 		    	</td>
 	    		<td><?php if($row->small): ?>
-		    		<img src="<?php echo  Ccc::getModel('Product_Media')->getResource()->getMediaPath().'/'.$row->smallImage ?>" alt =  "no"  height="50px" width="50px" />
+		    		<img src="<?php echo $row->getSmall()->getImageUrl();?>" alt =  "No image."  height="50px" width="50px" />
 		    	<?php else : ?>
 		    		No Image 
 		    	<?php endif; ?>
@@ -78,7 +79,7 @@ function changeURL(val)
 			<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc'>
 					<option value="">select Per Page Count Option</option>
 				<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
-					<option value="<?php echo $value ?>"> <?php echo $value ?></option>
+					<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
 				<?php endforeach; ?>
 			</select>
 		</td>

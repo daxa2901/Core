@@ -7,6 +7,14 @@
 		<a href="<?php echo Ccc::getBlock('Salseman_Grid')->getUrl('grid','salseman',null,true);?>"><button type="button" class="cancel">Salseman</button></a>
 		<a href="<?php echo Ccc::getBlock('Vendor_Grid')->getUrl('grid','vendor',null,true);?>"><button type="button" class="cancel">Vendor</button></a>
 		<a href="<?php echo Ccc::getBlock('Page_Grid')->getUrl('grid','page',null,true);?>"><button type="button" class="cancel">Page</button></a>
-		<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('login','Admin_Login',null,true);?>"><button type="button" class="cancel">login</button></a>
-		<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('logout','Admin_Login',null,true);?>"><button type="button" class="cancel">Logout</button></a>
+		<a href="<?php echo Ccc::getBlock('ShippingMethod_Grid')->getUrl('grid','ShippingMethod',null,true);?>"><button type="button" class="cancel">Shipping </button></a>
+		<a href="<?php echo Ccc::getBlock('PaymentMethod_Grid')->getUrl('grid','PaymentMethod',null,true);?>"><button type="button" class="cancel">Payment </button></a>
+		<a href="<?php echo Ccc::getBlock('Order_Grid')->getUrl('grid','Order',null,true);?>"><button type="button" class="cancel">Order</button></a>
+		<?php if($this->getLogin()): ?>
+			<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('logout','Admin_Login',null,true);?>"><button type="button" class="cancel">Logout</button></a>
+		<?php else: ?>
+			<a href="<?php echo Ccc::getBlock('Admin_Login_Grid')->getUrl('login','Admin_Login',null,true);?>"><button type="button" class="cancel">login</button></a>
+
+		<?php endif; ?>
+
 </div>

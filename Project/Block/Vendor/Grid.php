@@ -35,7 +35,7 @@ class Block_Vendor_Grid extends Block_Core_Template
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$vendorRow = Ccc::getModel('Vendor');
 		$query = "SELECT v.*, a.`address` 
-		FROM `Vendor` v JOIN `vendor_address` a ON v.`vendorId` = a.`vendorId` LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		FROM `Vendor` v JOIN `vendor_address` a ON v.`vendorId` = a.`vendorId` order by v.`vendorId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$vendors = $vendorRow->fetchAll($query);
 		if(!$vendors)
 		{

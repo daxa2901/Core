@@ -43,8 +43,8 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 		}
 		catch(Exception $e)
 		{
-			$this->getRequest()->addMessage($e->getMessage(),get_class($this->getRequest())::ERROR);
-			$this->redirect('grid','Salseman',null,true);
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
+			$this->redirect('grid','salseman_customer',null,true);
 		}
 		
 	}
