@@ -18,6 +18,10 @@
       <td><input type="float" name="product[sku]" value="<?php echo $product->sku ?>"></td>
     </tr>
     <tr>
+      <td width="10%"> Tax Percentage</td>
+      <td><input type="float" name="product[tax]" value="<?php echo $product->tax ?>"></td>
+    </tr>
+    <tr>
       <td width="10%"> Quantity</td>
       <td><input type="number" name="product[quantity]" value="<?php echo $product->quantity ?>"></td>
     </tr>

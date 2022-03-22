@@ -1,12 +1,12 @@
 <?php Ccc::loadClass('Model_Core_Row'); ?>
 <?php
-class Model_Cart_Item extends Model_Core_Row
+class Model_Order_Item extends Model_Core_Row
 {
 	protected $product = null;
-	protected $cart = null;
+	protected $order = null;
 	public function __construct()
 	{
-		$this->setResourceClassName('Cart_Item_Resource');
+		$this->setResourceClassName('Order_Item_Resource');
 		parent::__construct();
 	}
 
@@ -37,31 +37,31 @@ class Model_Cart_Item extends Model_Core_Row
 		return $this->product;
 	}
 
-	public function setCart($cart)
+	public function setOrder($order)
 	{
-		$this->cart = $cart;
+		$this->order = $order;
 		return $this;
 	}
 
-	public function getcart($reload = false)
+	public function getOrder($reload = false)
 	{
-		$cartModel = Ccc::getModel('Cart');
+		$orderModel = Ccc::getModel('Order');
 		if (!$this->itemId) 
 		{
-			return $cartModel;
+			return $orderModel;
 		}	
-		if ($this->cart && !$reload) 
+		if ($this->order && !$reload) 
 		{
-			return $this->cart;
+			return $this->order;
 		}
-		$query = "SELECT * FROM {$cartModel->getResource()->getTableName()} WHERE cartId = {$this->cartId}";
-		$cart = $cartModel->fetchRow($query);
-		if (!$cart) 
+		$query = "SELECT * FROM {$orderModel->getResource()->getTableName()} WHERE orderId = {$this->orderId}";
+		$order = $orderModel->fetchRow($query);
+		if (!$order) 
 		{
-			return $cartModel;
+			return $orderModel;
 		}
-		$this->setCart($cart);
-		return $this->cart;
+		$this->setOrder($order);
+		return $this->order;
 	}
 
 

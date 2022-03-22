@@ -106,12 +106,14 @@ class Controller_Cart extends Controller_Admin_Action
 			$subtotal = 0;
 			foreach ($items['productId'] as $key => $value) 
 			{
+				$product= Ccc::getModel('Product')->load($value);
 				$itemModel = Ccc::getModel('Cart_Item');
 				$itemModel->cartId = $cartId;
 				$itemModel->productId = $value;
 				$itemModel->quantity = $quantity[$value];
+				$itemModel->taxPercentage = $product->tax;
+				$itemModel->taxAmount = ($product->price * ($product->tax/100))*$quantity[$value];
 				$itemModel->createdAt = date('Y-m-d H:i:s');
-
 				$itemModel = $itemModel->save();
 
 				if (!$itemModel) 
@@ -157,8 +159,11 @@ class Controller_Cart extends Controller_Admin_Action
 				$subtotal = null;
 				foreach ($cart['itemId'] as $itemId => $price) 
 				{
+
 					$cartItem = Ccc::getModel('Cart_Item')->load($itemId);
+					$product = $cartItem->getProduct();
 					$cartItem->quantity = $quantity[$itemId];
+					$cartItem->taxAmount = ($product->price * ($cartItem->taxPercentage /100) * $quantity[$itemId]);
 					$cartItem->updatedAt = date('Y-m-d H:i:s');
 					$cartItem = $cartItem->save();
 					if (!$cartItem) 

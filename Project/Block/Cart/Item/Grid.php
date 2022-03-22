@@ -38,4 +38,10 @@ class Block_Cart_Item_Grid extends Block_Core_Template
 		$products = $productRow->fetchAll($query);
 		return $products;
 	}
+
+	public function getCart()
+	{
+		$cartId = Ccc::getModel('Admin_Session')->cart;
+		return Ccc::getModel('Cart')->load($cartId);
+	}
 }

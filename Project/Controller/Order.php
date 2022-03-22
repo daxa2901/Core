@@ -14,121 +14,147 @@ class Controller_Order extends Controller_Admin_Action
 		$this->renderLayout();
 	}
 
-	public function addAction()
-	{
-		$this->setPageTitle('Page Add');
-		$page = Ccc::getModel('Page');
-		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
-		$content = $this->getLayout()->getContent();
-		$content->addChild($page);
-		$this->renderLayout();
-	}
-
-	public function editAction()
-	{
-		try 
-		{
-			$this->setPageTitle('Page Edit');
-			$id=(int)$this->getRequest()->getRequest('id');
-      		if (!$id) 
-      		{
-      			throw new Exception("Invalid Id.", 1);
-      		}
-			$page = Ccc::getModel('Page')->load($id);
-			if (!$page) 
-      		{
-      			throw new Exception("Unable to Load page.", 1);
-      		}
-     		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
-			$content = $this->getLayout()->getContent();
-			$content->addChild($page);
-			$this->renderLayout();
-
-		} 
-		catch (Exception $e) 
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
-		}
-		
-	}
 	
 	public function saveAction()
 	{
 		try
 		{
-			$this->setPageTitle('Page Save');
-			$request = $this->getRequest();
-			if(!$request->isPost())
+			$this->setPageTitle('Order Save');
+			if (!$this->getRequest()->isPost() || ! $this->getRequest()->getRequest('grandTotal')) 
 			{
-				throw new Exception("Invalid Request.", 1);				
+				throw new Exception("Invalid request.", 1);
 			}
-			if (!$request->getPost('page')) 
+			$cartId = Ccc::getModel('Admin_Session')->cart;
+			$cart = Ccc::getModel('Cart')->load($cartId);
+			if (!$cart->cartId) 
 			{
-				throw new Exception("Invalid Request.", 1);				
-			}			
-
-			$row = $request->getPost('page');
-			if (array_key_exists('pageId', $row))
-			{
-				if(!(int)$row['pageId'])
-				{
-					throw new Exception("Invalid Request.", 1);
-				}
-				$page = Ccc::getModel('Page')->load($row['pageId']);
-			}
-			else
-			{
-				$page = Ccc::getModel('Page');
-				$page->createdAt = date('Y-m-d H:i:s');
+				throw new Exception("record not found.", 1);
 			}
 			
-			$page->setData($row);
-			$page = $page->save();
-			if(!$page)
-			{	
+			$items = $cart->getItems();
+			$shippingMethod = $cart->getShippingMethod();
+			$paymentMethod = $cart->getPaymentMethod();
+			$billingAddress = $cart->getBillingAddress();
+			$shippingAddress = $cart->getShippingAddress();
+			$customer = $cart->getCustomer();
+			if (!$shippingMethod->methodId || !$paymentMethod->methodId || !$billingAddress->addressId || !$shippingAddress->addressId || !$customer->customerId || !array_key_exists('0',$items)) 
+			{
+				throw new Exception("Enter full details.", 1);
+			}
+
+			$order = Ccc::getModel('Order');
+			$order->customerId = $customer->customerId;
+			$order->firstName = $customer->firstName;
+			$order->lastName = $customer->lastName;
+			$order->email = $customer->email;
+			$order->mobile = $customer->mobile;
+			$order->shippingMethodId = $cart->shippingMethodId;
+			$order->paymentMethodId = $cart->paymentMethodId;
+			$order->shippingCost = $cart->shippingCost;
+			$order->createdAt = date('Y-m-d H:i:s');
+			$order->grandTotal = $this->getRequest()->getPost()['grandTotal'];
+			$order = $order->save();
+			if (!$order) 
+			{
 				throw new Exception("System is unable to insert.", 1);
 			}
-			$this->getMessage()->addMessage('Page saved successfully.');
-			$this->redirect('grid',null,['id'=>null]);
+			$tax = 0;
+			foreach ($items as $key => $value) 
+			{
+				$product = $value->getProduct();
+				$item = Ccc::getModel('Order_Item');
+				$item->setData($value->getData());
+				unset($item->itemId);
+				unset($item->cartId);
+				$item->orderId = $order->orderId;
+				$item->name =$product->name; 
+				$item->sku =$product->sku; 
+				$item->price =$product->price; 
+				$item->createdAt = date('Y-m-d H:i:s'); 
+				unset($item->updatedAt);
+				$item = $item->save();
+				if (!$item) 
+				{
+					throw new Exception("System is unable to insert.", 1);
+				}
+				$tax = $tax + $value->taxAmount;
+				$value = $value->delete();
+				if (!$value) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+					
+				}
+			}
+			$order->taxAmount = $tax;
+			$order = $order->save();
+			if (!$order) 
+			{
+				throw new Exception("System is unable to insert.", 1);
+			}
+			
+
+			$orderBilling = $order->getBillingAddress();
+			$orderBilling->setData($billingAddress->getData());
+			$orderBilling->createdAt = date('Y-m-d H:i:s');
+			$orderBilling->orderId = $order->orderId;
+			unset($orderBilling->addressId);
+			unset($orderBilling->cartId);
+			unset($orderBilling->same);
+			unset($orderBilling->updatedAt);
+			$orderBilling = $orderBilling->save();
+			if (!$orderBilling) 
+			{
+				throw new Exception("System is unable to insert.", 1);
+			}
+
+			$orderShipping = $order->getShippingAddress();
+			$orderShipping->setData($shippingAddress->getData());
+			$orderShipping->createdAt = date('Y-m-d H:i:s');
+			$orderShipping->orderId = $order->orderId;
+			unset($orderShipping->addressId);
+			unset($orderShipping->same);
+			unset($orderShipping->cartId);
+			unset($orderShipping->updatedAt);
+			$orderShipping = $orderShipping->save();
+			if (!$orderShipping) 
+			{
+				throw new Exception("System is unable to insert.", 1);
+			}
+			
+			$cart->subTotal = 0;
+			$cart = $cart->save();
+			if (!$cart) 
+			{
+				throw new Exception("System is unable to update.", 1);
+			}
+			
+			$this->getMessage()->addMessage('Order placed successfully.');
+			$this->redirect('grid');
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->redirect('grid');
 		}
 	}
 
-	public function deleteAction()
+	public function editAction()
 	{
-		try 
-		{	
-			$this->setPageTitle('Page Delete');
-			$id=$this->getRequest()->getRequest('id');
-			if (!$id) 
-			{
-				throw new Exception("Invalid Request.", 1);
-			}
-			
-			$page = Ccc::getModel('Page')->load($id);
-			if(!$page)
-			{
-				throw new Exception("Record not found.", 1);
-			}
-
-			$page = $page->delete(); 
-			if(!$page)
-			{
-				throw new Exception("System is unable to delete record.", 1);
-			}
-			$this->getMessage()->addMessage('Page Info Deleted Successfully.');
-			echo $this->redirect('grid',null,['id'=>null]);	
-				
-		} 
-		catch (Exception $e) 
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
-		}
+		$this->setPageTitle('View Orders');
+		$id=(int)$this->getRequest()->getRequest('id');
+  		if (!$id) 
+  		{
+  			throw new Exception("Invalid Id.", 1);
+  		}
+		$order = Ccc::getModel('Order')->load($id);
+		if (!$order) 
+  		{
+  			throw new Exception("Unable to Load Config.", 1);
+  		}
+  		$content = $this->getLayout()->getContent();
+		$order = Ccc::getBlock('Order_Edit')->setdata(['order'=>$order]);
+		$content->addChild($order);
+		$this->renderLayout();
+  		
 	}
 }
