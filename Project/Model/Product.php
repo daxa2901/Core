@@ -6,18 +6,42 @@ class Model_Product extends Model_Core_Row
 	protected $gallery = null;
 	protected $categories = null;
 	protected $cartItems = null;
-	const DISCOUNT_PERCENTAGE = 1;
-	const DISCOUNT_AMOUNT = 2;
+	protected $orderItems = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
 	const STATUS_ENABLED_LBL = 'Enabled';
 	const STATUS_DISABLED_LBL = 'Disabled';
 	
+	const DISCOUNT_FIXED = 2;
+	const DISCOUNT_PERCENTAGE = 1;
+	const DISCOUNT_DEFAULT = 1;
+	const DISCOUNT_PERCENTAGE_LBL = 'Percentage';
+	const DISCOUNT_FIXED_LBL = 'Fixed';
+	
 	public function __construct()
 	{
 		$this->setResourceClassName('Product_Resource');
 		parent::__construct();
+	}
+
+	public function getDiscountMode($key = null)
+	{
+		$discountModes = [
+			self::DISCOUNT_FIXED => self::DISCOUNT_FIXED_LBL,
+			self::DISCOUNT_PERCENTAGE => self::DISCOUNT_PERCENTAGE_LBL,
+		];
+
+		if(!$key)
+		{
+			return $discountModes;
+		}
+
+		if (array_key_exists($key,$discountModes)) 
+		{	
+			return $discountModes[$key];
+		}
+		return self::DISCOUNT_DEFAULT;
 	}
 
 	public function getStatus($key = null)
@@ -228,7 +252,7 @@ class Model_Product extends Model_Core_Row
 		return $this->categories;
 	}
 
-	public function setCartItems($categories)
+	public function setCartItems($cartItems)
 	{
 		$this->cartItems = $cartItems;
 		return $this;
@@ -253,6 +277,33 @@ class Model_Product extends Model_Core_Row
 		}
 		$this->setCartItems($cartItems);
 		return $this->cartItems;
+	}
+	
+	public function setOrderItems($categories)
+	{
+		$this->cartItems = $cartItems;
+		return $this;
+	}
+	
+	public function getOrderItems($reload = false)
+	{
+		$orderItemModel = Ccc::getModel('Order_Item');
+		if (!$this->productId) 
+		{
+			return $orderItemModel;
+		}	
+		if ($this->orderItems && !$reload) 
+		{
+			return $this->orderItems;
+		}
+		$query = "SELECT * FROM {$orderItemModel->getResource()->getTableName()} WHERE productId = {$this->productId}";
+		$orderItems = $orderItemModel->fetchAll($query);
+		if (!$orderItems) 
+		{
+			return $orderItemModel;
+		}
+		$this->setOrderItems($orderItems);
+		return $this->orderItems;
 	}
 }
 

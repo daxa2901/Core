@@ -102,12 +102,12 @@ class Controller_Cart extends Controller_Admin_Action
 			{
 				throw new Exception("Invalid Request", 1);
 			}
-			echo "<pre>";
 			$cart = $request->getPost('cart');
 			$quantity = $cart['quantity'];
-			$discount = $cart['discount'];
 			if (array_key_exists('itemId',$cart)) 
 			{
+				$discount = $cart['discount'];
+				$discountMode = $cart['discountMode'];
 				$subtotal = 0;
 				foreach ($cart['itemId'] as $itemId => $price) 
 				{
@@ -116,13 +116,13 @@ class Controller_Cart extends Controller_Admin_Action
 					$product = $cartItem->getProduct();
 					$cartItem->quantity = $quantity[$itemId];
 					$cartItem->discount = $discount[$itemId];
-					
+					$cartItem->discountMode = $discountMode[$itemId];
 					$cartItem->taxAmount = ($product->price * ($cartItem->taxPercentage /100) * $quantity[$itemId]);
 					$cartItem->updatedAt = date('Y-m-d H:i:s');
 					$finalPrice = $cartItem->getFinalPrice();
-					if ($finalPrice < $cartItem->cost ) 
+					if (!$finalPrice) 
 					{
-						throw new Exception("Discount must be between price and cost....", 1);
+						throw new Exception("Invalid discount.", 1);
 					}
 					$cartItem = $cartItem->save();
 					if (!$cartItem) 
@@ -152,6 +152,7 @@ class Controller_Cart extends Controller_Admin_Action
 					$itemModel->cost = $product->cost;
 					$itemModel->quantity = $quantity[$value];
 					$itemModel->discount = $product->discount;
+					$itemModel->discountMode = $product->discountMode;
 					$itemModel->taxPercentage = $product->tax;
 					$itemModel->taxAmount = ($product->price * ($product->tax/100))*$quantity[$value];
 					$itemModel->createdAt = date('Y-m-d H:i:s');

@@ -8,6 +8,7 @@ class Model_Order extends Model_Core_Row
 	protected $billingAddress = null;
 	protected $shippingMethod = null;
 	protected $paymentMethod = null;
+	
 	const STATUS_PENDING = 1;
 	const STATUS_PACKAGING = 2;
 	const STATUS_SHIPPED = 3;

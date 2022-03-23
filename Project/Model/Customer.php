@@ -7,6 +7,7 @@ class Model_Customer extends Model_Core_Row
 	protected $salseman = null;
 	protected $prices = null;
 	protected $cart = null;
+	protected $orders = null;
 
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
@@ -172,5 +173,32 @@ class Model_Customer extends Model_Core_Row
 		}
 		$this->setCart($cart);
 		return $this->cart;
+	}
+	
+	public function setOrders($orders)
+	{
+		$this->orders = $orders;
+		return $this;
+	}
+	
+	public function getOrders($reload = false)
+	{
+		$orderModel = Ccc::getModel('Order');
+		if (!$this->customerId) 
+		{
+			return $orderModel;
+		}	
+		if ($this->orders && !$reload) 
+		{
+			return  $this->orders;
+		}
+		$query = "SELECT * FROM {$orderModel->getResource()->getTableName()} WHERE customerId = {$this->customerId}";
+		$orders = $orderModel->fetchAll($query);
+		if (!$orders) 
+		{
+			return $orderModel;
+		}
+		$this->setOrders($orders);
+		return $this->orders;
 	}
 }

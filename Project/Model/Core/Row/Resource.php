@@ -55,7 +55,6 @@ class Model_Core_Row_Resource
 		$escapedValue = array_map(array($this->getAdapter(),'escapString'),array_values($data));
 		$values = '\''.implode("','", array_values($escapedValue)).'\'';
 		$query = "INSERT INTO ".$this->getTableName()." (".$keys.") VALUES (".$values.")";
-		echo $query;
 		return $this->getAdapter()->insert($query);
 	}
 

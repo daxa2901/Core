@@ -27,9 +27,16 @@
     </tr>
     <tr>
       <td> Discount </td>
-      <td><input type="float" name="product[discount]" value="<?php echo $product->discount ?>"><br>
-        <input type="radio" <?php if($product->discountMode == get_class($product)::DISCOUNT_PERCENTAGE): ?> checked <?php endif ?> required name="product[discountMode]" value="1"> Percentage &nbsp;&nbsp;&nbsp; 
-        <input type="radio" <?php if($product->discountMode == get_class($product)::DISCOUNT_AMOUNT): ?> checked <?php endif ?> required name="product[discountMode]" value="2"> Amount</td>
+      <td><input type="float" name="product[discount]" value="<?php echo $product->discount ?>"></td>
+    </tr>
+    <tr>
+      <td> Discount Mode</td>
+      <td><select name="product[discountMode]">
+          <?php foreach ($product->getDiscountMode() as $key => $val): ?>
+            <option <?php if($product->discountMode == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
+          <?php endforeach; ?>          
+        </select>
+      </td>
     </tr>
     <tr>
       <td> Quantity</td>

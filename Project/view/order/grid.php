@@ -15,9 +15,11 @@
 				<th> Last Name</th>
 				<th> Email</th>
 				<th> Mobile </th>
+				<th> Shipping Cost </th>
+				<th> Tax Amount </th>
+				<th> Grand Total </th>
 				<th> State </th>
 				<th> Status </th>
-				<th> Grand Total </th>
 				<th> Action </th>
 			</tr>
 		</thead>
@@ -30,10 +32,14 @@
 						<td> <?php echo $order->lastName; ?></td>
 						<td> <?php echo $order->email; ?></td>
 						<td> <?php echo $order->mobile; ?></td>
+						<td> <?php echo $order->shippingCost; ?></td>
+						<td> <?php echo $order->taxAmount; ?></td>
+						<td> <?php echo $order->grandTotal; ?></td>
 						<td> <?php echo $order->getState($order->state); ?></td>
 						<td> <?php echo $order->getStatus($order->status); ?></td>
-						<td> <?php echo $order->grandTotal; ?></td>
-						<td> <a href="<?php echo $this->getUrl('edit',null,['id'=>$order->orderId]);?>">View</a></td>
+						<td> <a href="<?php echo $this->getUrl('view',null,['id'=>$order->orderId]);?>">View</a>
+							<a href="<?php echo $this->getUrl('edit',null,['id'=>$order->orderId]);?>">Edit</a>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			<?php else: ?>
