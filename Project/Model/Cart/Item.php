@@ -10,6 +10,18 @@ class Model_Cart_Item extends Model_Core_Row
 		parent::__construct();
 	}
 
+	public function getFinalPrice()
+	{
+		$product = $this->getProduct();
+		$discount = $this->discount;
+		if ($product->discountMode == get_class($product)::DISCOUNT_PERCENTAGE) 
+		{
+			$discount = ($product->price * ($this->discount/100));
+		}
+		
+		return $product->price - $discount;
+	}
+
 	public function setProduct($product)
 	{
 		$this->product = $product;

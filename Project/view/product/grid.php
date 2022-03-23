@@ -14,9 +14,11 @@
 		<th> Small </th>
 		<th> Name </th>
 		<th> Price </th>
+		<th> Cost </th>
 		<th> Quantity </th>
 		<th> Sku </th>
 		<th> Tax Percentage </th>
+		<th> Discount </th>
 		<th> Created_At </th>
 		<th> Updated_At </th>
 		<th> Status </th>
@@ -49,9 +51,11 @@
 		    	</td>
 	    		<td><?php echo $row->name ?></td>
 	    		<td><?php echo $row->price ?></td>
+	    		<td><?php echo $row->cost ?></td>
 	    		<td><?php echo $row->quantity ?></td>
 	    		<td><?php echo $row->sku ?></td>
 	    		<td><?php echo $row->tax ?></td>
+	    		<td><?php echo $row->discount ?></td>
 	    		<td><?php echo $row->createdAt ?></td>
 	    		<td><?php echo $row->updatedAt ?></td>
 	    		<td><?php echo  $row->getStatus($row->status) ?> </td>

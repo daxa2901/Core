@@ -6,6 +6,8 @@ class Model_Product extends Model_Core_Row
 	protected $gallery = null;
 	protected $categories = null;
 	protected $cartItems = null;
+	const DISCOUNT_PERCENTAGE = 1;
+	const DISCOUNT_AMOUNT = 2;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -35,6 +37,26 @@ class Model_Product extends Model_Core_Row
 			return $statuses[$key];
 		}
 		return self::STATUS_DEFAULT;
+	}
+
+	public function getFinalPrice()
+	{
+		$discount = $this->discount;
+		if ($this->discountMode == self::DISCOUNT_PERCENTAGE) 
+		{
+			$discount = ($this->price * ($this->discount/100));
+		}
+		$discountPrice = $this->price - $this->cost;
+		if ($discountPrice < 1) 
+		{
+			throw new Exception("Cost must be less than price.", 1);
+		}
+		if ($discount > $discountPrice || $discount < 1) 
+		{
+			throw new Exception("Discount must be between price and cost.", 1);
+		}
+
+		return $this->price - $discount;
 	}
 
 	public function saveCategories($categoryIds)

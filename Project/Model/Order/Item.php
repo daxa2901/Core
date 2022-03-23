@@ -16,6 +16,18 @@ class Model_Order_Item extends Model_Core_Row
 		return $this;
 	}
 
+	public function getFinalPrice()
+	{
+		$product = $this->getProduct();
+		$discount = $this->discount;
+		if ($product->discountMode == get_class($product)::DISCOUNT_PERCENTAGE) 
+		{
+			$discount = ($this->price * ($this->discount/100));
+		}
+		
+		return $this->price - $discount;
+	}
+
 	public function getProduct($reload = false)
 	{
 		$productModel = Ccc::getModel('Product');

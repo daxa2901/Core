@@ -3,30 +3,40 @@
 <?php $categoryPath = $this->getCategoryToPath(); ?>
 <?php $categoryProductPair = $this->getCategoryProductPair(); ?>
 
-<form action=<?php echo  $this->getUrl('save');?>  method='post'>
-<table border="1" width="100%" cellspacing="4">
+<form action="<?php echo  $this->getUrl('save');?>"  method='post'>
+<table class="form-group w-100 border" cellspacing="4">
     <tr>
-      <td width="10%"> Name</td>
+      <td> Name</td>
       <td><input type="text" name="product[name]" value="<?php echo $product->name ?>"></td>
     </tr>
     <tr>
-      <td width="10%"> Price</td>
+      <td> Price</td>
       <td><input type="float" name="product[price]" value="<?php echo $product->price ?>"></td>
     </tr>
     <tr>
-      <td width="10%"> Sku</td>
+      <td> Cost</td>
+      <td><input type="float" name="product[cost]" value="<?php echo $product->cost ?>"></td>
+    </tr>
+    <tr>
+      <td> Sku</td>
       <td><input type="float" name="product[sku]" value="<?php echo $product->sku ?>"></td>
     </tr>
     <tr>
-      <td width="10%"> Tax Percentage</td>
+      <td> Tax Percentage</td>
       <td><input type="float" name="product[tax]" value="<?php echo $product->tax ?>"></td>
     </tr>
     <tr>
-      <td width="10%"> Quantity</td>
+      <td> Discount </td>
+      <td><input type="float" name="product[discount]" value="<?php echo $product->discount ?>"><br>
+        <input type="radio" <?php if($product->discountMode == get_class($product)::DISCOUNT_PERCENTAGE): ?> checked <?php endif ?> required name="product[discountMode]" value="1"> Percentage &nbsp;&nbsp;&nbsp; 
+        <input type="radio" <?php if($product->discountMode == get_class($product)::DISCOUNT_AMOUNT): ?> checked <?php endif ?> required name="product[discountMode]" value="2"> Amount</td>
+    </tr>
+    <tr>
+      <td> Quantity</td>
       <td><input type="number" name="product[quantity]" value="<?php echo $product->quantity ?>"></td>
     </tr>
     <tr>
-      <td width="10%">Status</td>
+      <td>Status</td>
       <td>
         <select name="product[status]">
           <?php foreach ($product->getStatus() as $key => $val): ?>

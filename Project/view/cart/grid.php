@@ -22,7 +22,7 @@
 	{
 		let rowTotal = quantity * price;
 		let total = document.getElementById(productId).textContent;
-		document.getElementById(productId).innerHTML = rowTotal;
+		document.getElementById(productId).innerHTML = rowTotal.toFixed(2);
 		var sign = '+';
 		if (total > rowTotal) 
 		{
@@ -33,9 +33,10 @@
 
 function rowTotal(quantity,price,productId) 
 	{
+		console.log(price);
 		let rowTotal = quantity * price;
 		let total = document.getElementById(productId).textContent;
-		document.getElementById(productId).innerHTML = rowTotal;
+		document.getElementById(productId).innerHTML = rowTotal.toFixed(2);
 	}
 
 	function getSubtTotal(price,sign,taxPercentage) 
@@ -55,10 +56,10 @@ function rowTotal(quantity,price,productId)
 			subtotal -=  price;
 			tax = tax - (price * (taxPercentage/100)); 
 		}
-		document.getElementById('subTotal').innerHTML = subtotal;
-		document.getElementById('subtotal').innerHTML = subtotal;
+		document.getElementById('subTotal').innerHTML = subtotal.toFixed(2);
+		document.getElementById('subtotal').innerHTML = subtotal.toFixed((2));
 		document.getElementById('tax').innerHTML = tax.toFixed(2);
-		document.getElementById('grandTotal').innerHTML = subtotal + shippingCost + tax - discount;
+		document.getElementById('grandTotal').innerHTML = (subtotal + shippingCost + tax - discount).toFixed(2);
 	}
 
 	function hideShipping() {

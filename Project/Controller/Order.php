@@ -152,7 +152,8 @@ class Controller_Order extends Controller_Admin_Action
   			throw new Exception("Unable to Load Config.", 1);
   		}
   		$content = $this->getLayout()->getContent();
-		$order = Ccc::getBlock('Order_Edit')->setdata(['order'=>$order]);
+  		Ccc::register('order',$order);
+		$order = Ccc::getBlock('Order_View')->setdata(['order'=>$order]);
 		$content->addChild($order);
 		$this->renderLayout();
   		

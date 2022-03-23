@@ -91,55 +91,6 @@ class Controller_Cart extends Controller_Admin_Action
 		}
 	}
 
-	public function addAction()
-	{
-		try 
-		{
-			$request = $this->getRequest();
-			$cartId = Ccc::getModel('Admin_Session')->cart;
-			if(!$request->isPost())
-			{
-				throw new Exception("Invalid Request.", 1);				
-			}
-			$items = $request->getPost('item');
-			$quantity = $items['quantity'];
-			$subtotal = 0;
-			foreach ($items['productId'] as $key => $value) 
-			{
-				$product= Ccc::getModel('Product')->load($value);
-				$itemModel = Ccc::getModel('Cart_Item');
-				$itemModel->cartId = $cartId;
-				$itemModel->productId = $value;
-				$itemModel->quantity = $quantity[$value];
-				$itemModel->taxPercentage = $product->tax;
-				$itemModel->taxAmount = ($product->price * ($product->tax/100))*$quantity[$value];
-				$itemModel->createdAt = date('Y-m-d H:i:s');
-				$itemModel = $itemModel->save();
-
-				if (!$itemModel) 
-				{
-					throw new Exception("System is unable to insert.", 1);
-				}
-				$subtotal = $subtotal + ($itemModel->quantity * $itemModel->getProduct()->price);
-			}
-			$cartRow = Ccc::getModel('Cart')->load($cartId);
-			$cartRow->updatedAt = date('Y-m-d H:i:s');
-			$cartRow->subTotal = $cartRow->subTotal + $subtotal;
-			$cartRow = $cartRow->save();
-			if (!$cartRow) 
-			{
-				throw new Exception("System is unable to update.", 1);
-			}
-
-			$this->redirect('grid');	
-		} 
-		catch (Exception $e) 
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');	
-		}
-	}
-
 	public function saveAction()
 	{
 		try 
@@ -151,20 +102,28 @@ class Controller_Cart extends Controller_Admin_Action
 			{
 				throw new Exception("Invalid Request", 1);
 			}
-			
+			echo "<pre>";
 			$cart = $request->getPost('cart');
+			$quantity = $cart['quantity'];
+			$discount = $cart['discount'];
 			if (array_key_exists('itemId',$cart)) 
 			{
-				$quantity = $cart['quantity'];
-				$subtotal = null;
+				$subtotal = 0;
 				foreach ($cart['itemId'] as $itemId => $price) 
 				{
 
 					$cartItem = Ccc::getModel('Cart_Item')->load($itemId);
 					$product = $cartItem->getProduct();
 					$cartItem->quantity = $quantity[$itemId];
+					$cartItem->discount = $discount[$itemId];
+					
 					$cartItem->taxAmount = ($product->price * ($cartItem->taxPercentage /100) * $quantity[$itemId]);
 					$cartItem->updatedAt = date('Y-m-d H:i:s');
+					$finalPrice = $cartItem->getFinalPrice();
+					if ($finalPrice < $cartItem->cost ) 
+					{
+						throw new Exception("Discount must be between price and cost....", 1);
+					}
 					$cartItem = $cartItem->save();
 					if (!$cartItem) 
 					{
@@ -175,6 +134,38 @@ class Controller_Cart extends Controller_Admin_Action
 				$cartRow = Ccc::getModel('Cart')->load($cartId);
 				$cartRow->updatedAt = date('Y-m-d H:i:s');
 				$cartRow->subTotal =  $subtotal;
+				$cartRow = $cartRow->save();
+				if (!$cartRow) 
+				{
+					throw new Exception("System is unable to update.", 1);
+				}
+			}
+			elseif (array_key_exists('productId',$cart)) 
+			{
+				$subtotal = 0;
+				foreach ($cart['productId'] as $key => $value) 
+				{
+					$product= Ccc::getModel('Product')->load($value);
+					$itemModel = Ccc::getModel('Cart_Item');
+					$itemModel->cartId = $cartId;
+					$itemModel->productId = $value;
+					$itemModel->cost = $product->cost;
+					$itemModel->quantity = $quantity[$value];
+					$itemModel->discount = $product->discount;
+					$itemModel->taxPercentage = $product->tax;
+					$itemModel->taxAmount = ($product->price * ($product->tax/100))*$quantity[$value];
+					$itemModel->createdAt = date('Y-m-d H:i:s');
+					$itemModel = $itemModel->save();
+
+					if (!$itemModel) 
+					{
+						throw new Exception("System is unable to insert.", 1);
+					}
+					$subtotal = $subtotal + ($itemModel->quantity * $itemModel->getProduct()->price);
+				}
+				$cartRow = Ccc::getModel('Cart')->load($cartId);
+				$cartRow->updatedAt = date('Y-m-d H:i:s');
+				$cartRow->subTotal = $cartRow->subTotal + $subtotal;
 				$cartRow = $cartRow->save();
 				if (!$cartRow) 
 				{
@@ -306,7 +297,7 @@ class Controller_Cart extends Controller_Admin_Action
 				}
 			}
 
-			$this->getMessage()->addMessage("Cart items updated successfully.",1);
+			$this->getMessage()->addMessage("Cart items Saved successfully.",1);
 			$this->redirect('grid');		
 		} 
 		catch (Exception $e) 
