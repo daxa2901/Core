@@ -1,9 +1,11 @@
 <?php $order = $this->getOrder(); ?>
 
-<div class="d-block mx-auto border" id='cart'> 
-
-	<div class="container w-100 my-2" id='order'>
-		<table class="w-100 border text-center">
+<div class="d-block mx-auto border " id='cart'> 
+	<div class="container text-center w-25">
+		<a href=<?php echo  $this->getUrl('grid',null,['id'=>null]);?>><button type="button" class="btn btn-primary w-50 my-2">Go Back</button></a>
+	</div>
+	<div class="container w-100 my-2 " id='order'>
+		<table class="w-100 border text-center shadow-sm">
 			<thead >
 				<th colspan="4"><h3> <b>Customer Details</b></h3></th>
 			</thead>
@@ -45,7 +47,7 @@
     	</div>
 	</div>
 	<br>
-	<div class="container w-100 border p-2">
+	<div class="container w-100 border p-2 shadow-sm">
 		<?php echo $this->getItems()->toHtml(); ?>
 	</div>
 </div>

@@ -1,7 +1,6 @@
 <div>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
-  <div class="container ">
-    <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
+	<nav class="navbar navbar-expand-lg navbar-light bg-secondory" style="background-color: #e3f2fd;">
+  <div class="container w-100">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="<?php echo Ccc::getBlock('Category_Grid')->getUrl('grid','category',null,true);?>">Category</a>
@@ -47,7 +46,6 @@
         	 </li>
 		<?php endif; ?>
       </ul>
-    </div>
   </div>
 </nav>
 </div>

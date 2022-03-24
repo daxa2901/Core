@@ -1,6 +1,6 @@
 <?php $shippingMethod = $this->getShippingMethod() ?>
 <form class="mx-auto" action="<?php echo  $this->getUrl('save');?>" method="POST">
-	<table class="w-100 border text-center">
+	<table class=" table w-100 border text-center shadow-sm ">
 		<thead>
 			<th colspan="3"><h3> <b>Shipping Method</b></h3></th>
 		</thead>

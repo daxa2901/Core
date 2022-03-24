@@ -1,7 +1,7 @@
 <?php $items = $this->getItems(); ?>
 <?php $order = $this->getOrder(); ?>
 
-<div class="container w-100">
+<div class="container w-100 ">
 		<table class="w-100 border mt-5">
 			<thead class="border">
 				<th> Image </th>
@@ -47,7 +47,7 @@
 		</table>
 </div>
 	<div class="container w-100 float-center ">
-		<div class="w-25 my-5 border float-end">
+		<div class="w-25 my-5 border float-end p-3 shadow-sm">
 			<table class="w-100 ">
 				<tbody>
 					<tr>

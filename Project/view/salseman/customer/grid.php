@@ -1,15 +1,15 @@
 <?php $customers = $this->getCustomers(); ?>
 
-<div class='container' style="text-align: center; ">
+<div class='container text-center'>
 <h1> Salseman Customer Details </h1> 
-<form action=<?php echo $this->getUrl('save');?> method="POST">
-	<button type="submit" class="Registerbtn"> Update </button>
+<form action="<?php echo $this->getUrl('save');?>"" method="POST">
+	<button type="submit" class="btn btn-primary"> Update </button>
 
-	<a href="<?php echo $this->getUrl('grid','salseman',['id'=>null]);?>"><button type="button" class="cancel">Cancel</button></a>
+	<a href="<?php echo $this->getUrl('grid','salseman',['id'=>null]);?>"><button type="button" class="btn btn-danger">Cancel</button></a>
 		
 
-	<div id='info'>
-	<table border=1 width=100%>
+	<div class="container w-100 my-2">
+	<table class="table table-light shadow-sm">
 		<tr>
 			<th> Select Customers </th>
 			<th> Id </th>

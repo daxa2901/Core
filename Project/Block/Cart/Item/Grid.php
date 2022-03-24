@@ -33,7 +33,7 @@ class Block_Cart_Item_Grid extends Block_Core_Template
 		else
 		{
 			$productIds = implode(',', $productIds);
-			$query = "SELECT * FROM `product` WHERE `productId` NOT IN ({$productIds})";  
+			$query = "SELECT * FROM `product` WHERE `productId` NOT IN ({$productIds}) AND status = 1";  
 		}
 		$products = $productRow->fetchAll($query);
 		return $products;

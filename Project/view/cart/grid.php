@@ -79,8 +79,8 @@ function rowTotal(quantity,price,productId)
 
 </script>
 <?php if(array_key_exists('customers', $carts)):?>
-<div class="d-block container d-flex mt-5 my-5 align-items-center justify-content-center" id='customer'> 
-	<select onchange="createCart(this.value)">
+<div class="container mt-5 my-5 w-25" id='customer'> 
+	<select onchange="createCart(this.value)" class="form-select ">
 		<option>Select Customer</option>
 		<?php foreach ($carts['customers'] as $key => $value):?>
 			<option value="<?php echo $value->customerId ?>"><?php echo $value->firstName . ' ' . $value->email; ?></option>

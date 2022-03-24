@@ -1,6 +1,6 @@
 <?php $paymentMethod  = $this->getPaymentMethod()?>
 
-<table class="w-100 border text-center">
+<table class="w-100 border text-center shadow-sm table">
 	<thead >
 		<th colspan="2"><h3> <b>Payment Method</b></h3></th>
 	</thead>
