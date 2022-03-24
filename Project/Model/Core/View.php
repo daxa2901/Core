@@ -93,13 +93,4 @@ class Model_Core_View{
 		return 'index.php?'.http_build_query($temp);
 	}
 
-	public function baseUrl($suburl = null)
-	{
-		$url = getcwd();
-		if($suburl)
-		{
-			$url = $url.'\\'.$suburl;
-		}
-		return $url;
-	}
 }
