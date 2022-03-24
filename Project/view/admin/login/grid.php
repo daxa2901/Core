@@ -1,19 +1,21 @@
-
-<form action="<?php echo  $this->getUrl('loginPost');?>" method="POST">
-    <table border="1" width="100%" cellspacing="4">
+<div class="container w-50 my-3 shadow-lg bg-light">
+  <h1 class="text-center">Login</h1>
+<form action="<?php echo  $this->getUrl('loginPost');?>" method="POST" class="p-2">
+    <table class="form-group w-100" cellspacing="4">
     <tr>
-      <td width="10%">Email Id :</td>
-      <td><input type="email" name="login[email]" ></td>
+      <td >Email Id :</td>
+      <td><input type="email" name="login[email]" class="form-control"></td>
     </tr>
     <tr>
-      <td width="10%">Password</td>
-      <td><input type="Password" name="login[password]" ></td>
+      <td >Password :</td>
+      <td><input type="Password" name="login[password]" class="form-control "></td>
     </tr>
     <tr>
-      <td width="25%">&nbsp;</td>
+      <td>&nbsp;</td>
       <td>
-        <button type="submit" name="submit" class="Registerbtn">Login </button>
+        <button type="submit" name="submit" class="btn btn-primary my-2">Login </button>
       </td>
     </tr>    
   </table>  
 </form>
+</div>

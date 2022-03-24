@@ -3,7 +3,8 @@
 <?php
 class Model_PaymentMethod extends Model_Core_Row
 {
-	protected $cart = null;
+	protected $carts = null;
+	protected $orders = null;
 	const STATUS_ENABLED = 1;
 	const STATUS_DISABLED = 2;
 	const STATUS_DEFAULT = 1;
@@ -35,30 +36,57 @@ class Model_PaymentMethod extends Model_Core_Row
 		return self::STATUS_DEFAULT;
 	}
 
-	public function setCart($cart)
+	public function setCarts($carts)
 	{
-		$this->cart = $cart;
+		$this->carts = $carts;
 		return $this;
 	}
 
-	public function getcart($reload = false)
+	public function getcarts($reload = false)
 	{
-		$cartModel = Ccc::getModel('Cart');
+		$cartModel = Ccc::getModel('Carts');
 		if (!$this->methodId) 
 		{
 			return $cartModel;
 		}	
-		if ($this->cart && !$reload) 
+		if ($this->carts && !$reload) 
 		{
-			return $this->cart;
+			return $this->carts;
 		}
 		$query = "SELECT * FROM {$cartModel->getResource()->getTableName()} WHERE methodId = {$this->methodId}";
-		$cart = $cartModel->fetchAll($query);
-		if (!$cart) 
+		$carts = $cartModel->fetchAll($query);
+		if (!$carts) 
 		{
 			return $cartModel;
 		}
-		$this->setCart($cart);
-		return $this->cart;
+		$this->setCarts($carts);
+		return $this->carts;
+	}
+
+	public function setOrders($orders)
+	{
+		$this->orders = $orders;
+		return $this;
+	}
+	
+	public function getOrders($reload = false)
+	{
+		$orderModel = Ccc::getModel('Order');
+		if (!$this->methodId) 
+		{
+			return $orderModel;
+		}	
+		if ($this->orders && !$reload) 
+		{
+			return  $this->orders;
+		}
+		$query = "SELECT * FROM {$orderModel->getResource()->getTableName()} WHERE methodId = {$this->methodId}";
+		$orders = $orderModel->fetchAll($query);
+		if (!$orders) 
+		{
+			return $orderModel;
+		}
+		$this->setOrders($orders);
+		return $this->orders;
 	}
 }

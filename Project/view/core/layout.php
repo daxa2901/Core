@@ -2,7 +2,7 @@
 <html>
 	<?php echo $this->getHead()->toHtml(); ?>
 <body>
-	<table border="1" width="100%">
+	<table  class="w-100">
 		<tr>
 			<td> <?php echo $this->getHeader()->toHtml(); ?></td>
 		</tr>	
@@ -15,5 +15,4 @@
 		</tr>	
 	</table>
 </body>
-
 </html>

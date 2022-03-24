@@ -13,7 +13,7 @@
 		<?php if ($paymentMethods):?>
 
 	        	<?php foreach ($paymentMethods as $key => $value):?>
-	        		<tr class="border">
+	        		<tr>
 	        			<td><?php echo $value->name ?></td>
 	        			<td><input type="radio" name="cart[paymentMethod]" value = "<?php echo $value->methodId ?>" <?php if ($cart->paymentMethodId == $value->methodId): ?>
 	        				checked

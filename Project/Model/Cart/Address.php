@@ -21,7 +21,7 @@ class Model_Cart_Address extends Model_Core_Row
 	public function getcart($reload = false)
 	{
 		$cartModel = Ccc::getModel('Cart');
-		if (!$this->cartId) 
+		if (!$this->addressId) 
 		{
 			return $cartModel;
 		}	

@@ -1,23 +1,6 @@
 <?php $carts = $this->getCarts(); ?>
 <script type="text/javascript">
 	
-	window.onload = function() 
-	{
-  		showBlock();
-	}
-	function showBlock() 
-	{
-		<?php if(array_key_exists('customers', $carts)):?>
-			let element = document.getElementById('customer');
-			element.classList.remove('d-none');
-			element.classList.add('d-block');
-		<?php else: ?>
-			let cart = document.getElementById('cart');
-			cart.classList.remove('d-none');
-			cart.classList.add('d-block');
-		<?php endif;?>
-	}
-
 	function createCart(val) 
 	{
 		window.location = "<?php echo $this->getUrl('createCart');?>&id="+val;
@@ -35,31 +18,48 @@
     	$('#newItem').show(200);
 	}
 
-	function getRowTotal(quantity,price,productId) 
+	function getRowTotal(quantity,price,productId,tax) 
 	{
 		let rowTotal = quantity * price;
 		let total = document.getElementById(productId).textContent;
-		document.getElementById(productId).innerHTML = rowTotal;
+		document.getElementById(productId).innerHTML = rowTotal.toFixed(2);
 		var sign = '+';
 		if (total > rowTotal) 
 		{
 			sign = '-';
 		}
-		getSubtTotal(price,sign);
+		getSubtTotal(price,sign,tax);
 	}
 
-	function getSubtTotal(price,sign) 
+function rowTotal(quantity,price,productId) 
 	{
-		let subtotal = parseInt(document.getElementById('subTotal').textContent);
+		console.log(price);
+		let rowTotal = quantity * price;
+		let total = document.getElementById(productId).textContent;
+		document.getElementById(productId).innerHTML = rowTotal.toFixed(2);
+	}
+
+	function getSubtTotal(price,sign,taxPercentage) 
+	{
+		let subtotal = parseFloat(document.getElementById('subTotal').textContent);
+		let shippingCost = parseFloat(document.getElementById('shippingCost').textContent);
+		let tax = parseFloat(document.getElementById('tax').textContent);
+		let discount = parseFloat(document.getElementById('discount').textContent);
 		if(sign == '+')
 		{
 			subtotal +=  price;
+			tax = tax + (price * (taxPercentage/100)); 
+
 		}
 		else
 		{
 			subtotal -=  price;
+			tax = tax - (price * (taxPercentage/100)); 
 		}
-		document.getElementById('subTotal').innerHTML = subtotal;
+		document.getElementById('subTotal').innerHTML = subtotal.toFixed(2);
+		document.getElementById('subtotal').innerHTML = subtotal.toFixed((2));
+		document.getElementById('tax').innerHTML = tax.toFixed(2);
+		document.getElementById('grandTotal').innerHTML = (subtotal + shippingCost + tax - discount).toFixed(2);
 	}
 
 	function hideShipping() {
@@ -78,28 +78,29 @@
 	}
 
 </script>
-
-<div class="d-none container d-flex mt-5 my-5 align-items-center justify-content-center" id='customer'> 
-	<select onchange="createCart(this.value)">
+<?php if(array_key_exists('customers', $carts)):?>
+<div class="container mt-5 my-5 w-25" id='customer'> 
+	<select onchange="createCart(this.value)" class="form-select ">
 		<option>Select Customer</option>
 		<?php foreach ($carts['customers'] as $key => $value):?>
 			<option value="<?php echo $value->customerId ?>"><?php echo $value->firstName . ' ' . $value->email; ?></option>
 		<?php endforeach; ?>
 	</select>
 </div>
+<?php else: ?>
 
-<div class="d-none mx-auto border" id='cart'> 
+<div class="d-block mx-auto border" id='cart'> 
 
-	<div class="container w-100 my-5 " id='customer'>
+	<div class="container w-100 my-2" id='customer'>
 		<?php echo $this->getCustomer()->toHtml(); ?>
 	</div>
 
-	<hr>
+	<br>
 	<div class="container w-100 mx-auto">
 		<?php echo $this->getAddress()->toHtml(); ?>
 	</div>
 	
-	<hr>
+	<br>
 	<div class="container w-100 " id='paymentMethod'>
 		<div class="row ">
         	<div class="col-sm-6 ">
@@ -110,40 +111,9 @@
 	        </div>
     	</div>
 	</div>
-
-	<hr>
-	<div class="container w-100">
+	<br>
+	<div class="container w-100 border p-2">
 		<?php echo $this->getItems()->toHtml(); ?>
-	</div>
-	<div class="container w-100 float-center ">
-		<div class="w-25 my-5 border float-end">
-			<table class="w-100 ">
-				<tbody>
-					<tr>
-						<td> SUB TOTAL : </td>
-						<td> <?php echo $subtotal = $carts['cart']->subTotal ?> </td>
-					</tr>
-					<tr>
-						<td> SHIPPING : </td>
-						<td> <?php echo $shippingCost = $carts['cart']->shippingCost ?> </td>
-					</tr>
-					<tr>
-						<td> TAX : </td>
-						<td> 150 </td>
-					</tr>
-					<tr>
-						<td> DISCOUNT : </td>
-						<td> 150 </td>
-					</tr>
-					<tr>
-						<td> <b> GRAND TOTAL :</b> </td>
-						<td> <b> <?php echo $subtotal + $shippingCost + 150 ?></b></td>
-					</tr>
-					<tr>
-						<td colspan="2" class="float-end"><button type="submit" class="btn btn-primary w-100 my-3 "> Place Order </button></td>
-	        		</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+	
 </div>
+<?php endif; ?>

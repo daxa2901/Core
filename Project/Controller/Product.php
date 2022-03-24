@@ -89,6 +89,7 @@ class Controller_Product extends Controller_Admin_Action{
 			}
 			
 			$product->setData($row);
+			$product->getFinalPrice();
 			$product = $product->save();
 			if(!$product)
 			{

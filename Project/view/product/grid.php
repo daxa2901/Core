@@ -1,12 +1,12 @@
 <?php $products = $this->getProducts(); ?>
-<div class='container' style="text-align: center; ">
+<div class='container text-center'>
 <h1> Product Details </h1> 
-<form action=<?php echo $this->getUrl('add');?> method="POST">
-	<button type="submit" name="Add" class="Registerbtn"> Add New </button>
+<form action="<?php echo $this->getUrl('add');?>" method="POST">
+	<button type="submit" name="Add" class="btn btn-primary"> Add New </button>
 </form>
 
-<div id='info'>
-<table border=1 width=100%>
+<div class="container w-100 my-2">
+<table class= "table table-light shadow-sm border">
 	<tr>
 		<th> Id </th>
 		<th> Base </th>
@@ -14,8 +14,11 @@
 		<th> Small </th>
 		<th> Name </th>
 		<th> Price </th>
+		<th> Cost </th>
 		<th> Quantity </th>
 		<th> Sku </th>
+		<th> Tax Percentage </th>
+		<th> Discount </th>
 		<th> Created_At </th>
 		<th> Updated_At </th>
 		<th> Status </th>
@@ -48,8 +51,11 @@
 		    	</td>
 	    		<td><?php echo $row->name ?></td>
 	    		<td><?php echo $row->price ?></td>
+	    		<td><?php echo $row->cost ?></td>
 	    		<td><?php echo $row->quantity ?></td>
 	    		<td><?php echo $row->sku ?></td>
+	    		<td><?php echo $row->tax ?></td>
+	    		<td><?php echo $row->discount ?></td>
 	    		<td><?php echo $row->createdAt ?></td>
 	    		<td><?php echo $row->updatedAt ?></td>
 	    		<td><?php echo  $row->getStatus($row->status) ?> </td>
@@ -73,21 +79,23 @@ function changeURL(val)
 }
 
 </script>
-<table  align="center" cellspacing="20">
-	<tr>
-		<td> 
-			<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc'>
-					<option value="">select Per Page Count Option</option>
-				<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
-					<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
-				<?php endforeach; ?>
-			</select>
-		</td>
-		<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getStart()]) ?>" <?php if(!$this->getPager()->getStart()): ?> style = "pointer-events : none;" <?php endif; ?>>Start</a></td>
-		<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getPrev()]) ?>"<?php if(!$this->getPager()->getPrev()): ?> style = "pointer-events : none;"<?php endif; ?>>Previous</a></td>
-		<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getCurrent()]) ?>">Current</a></td>
-		<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getNext()]) ?>" <?php if(!$this->getPager()->getNext()): ?> style = "pointer-events : none;" <?php endif; ?>>Next</a></td>
-		<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getEnd()]) ?>" <?php if(!$this->getPager()->getEnd()): ?> style = "pointer-events : none;" <?php endif; ?>>End</a></td>
-	</tr>
-</table>	
 
+<div class="container">
+	<table align = "center"  class="pagination w-50 border-none">
+		<tr>
+			<td> 
+				<select name="perPageCountOption" onchange="changeURL(this.value)" id='ppc' class="form-select">
+						<option value="">select Per Page Count Option</option>
+					<?php foreach ($this->getPager()->getPerPageCountOption() as $key => $value) : ?>
+						<option value="<?php echo $value ?>" <?php if($this->getPager()->getPerPageCount() == $value):  ?> selected <?php endif; ?>> <?php echo $value ?></option>
+					<?php endforeach; ?>
+				</select>
+			</td>
+			<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getStart()]) ?>" <?php if(!$this->getPager()->getStart()): ?> style = "pointer-events : none;" <?php endif; ?> class = "btn btn-default">Start</a></td>
+			<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getPrev()]) ?>"<?php if(!$this->getPager()->getPrev()): ?> style = "pointer-events : none;"<?php endif; ?> class = "btn btn-default">Previous</a></td>
+			<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getCurrent()]) ?>" class = "btn btn-default" > Current</a></td>
+			<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getNext()]) ?>" <?php if(!$this->getPager()->getNext()): ?> style = "pointer-events : none;" <?php endif; ?> class = "btn btn-default">Next</a></td>
+			<td><a href="<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getEnd()]) ?>" <?php if(!$this->getPager()->getEnd()): ?> style = "pointer-events : none;" <?php endif; ?> class = "btn btn-default">End</a></td>
+		</tr>
+	</table>	
+</div>

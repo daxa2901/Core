@@ -68,13 +68,13 @@ class Model_Cart extends Model_Core_Row
 		return $this->customer;
 	}
 
-	public function setShippingMethods($shippingMethod)
+	public function setShippingMethod($shippingMethod)
 	{
 		$this->shippingMethod = $shippingMethod;
 		return $this;
 	}
 	
-	public function getShippingMethods($reload = false)
+	public function getShippingMethod($reload = false)
 	{
 		$shippingMethodModel = Ccc::getModel('ShippingMethod');
 		if (!$this->cartId || !$this->shippingMethodId) 
@@ -86,7 +86,7 @@ class Model_Cart extends Model_Core_Row
 			return $this->shippingMethod;
 		}
 		$query = "SELECT * FROM {$shippingMethodModel->getResource()->getTableName()} WHERE methodId = {$this->shippingMethodId}";
-		$shippingMethod = $shippingMethodModel->fetchAll($query);
+		$shippingMethod = $shippingMethodModel->fetchRow($query);
 		if (!$shippingMethod) 
 		{
 			return $shippingMethodModel;
@@ -95,13 +95,13 @@ class Model_Cart extends Model_Core_Row
 		return $this->shippingMethod;
 	}
 	
-	public function setPaymentMethods($paymentMethod)
+	public function setPaymentMethod($paymentMethod)
 	{
 		$this->paymentMethod = $paymentMethod;
 		return $this;
 	}
 	
-	public function getPaymentMethods($reload = false)
+	public function getPaymentMethod($reload = false)
 	{
 		$paymentMethodModel = Ccc::getModel('PaymentMethod');
 		if (!$this->cartId || !$this->paymentMethodId) 
@@ -113,7 +113,7 @@ class Model_Cart extends Model_Core_Row
 			return $this->paymentMethod;
 		}
 		$query = "SELECT * FROM {$paymentMethodModel->getResource()->getTableName()} WHERE methodId = {$this->paymentMethodId}";
-		$paymentMethod = $paymentMethodModel->fetchAll($query);
+		$paymentMethod = $paymentMethodModel->fetchRow($query);
 		if (!$paymentMethod) 
 		{
 			return $paymentMethodModel;
