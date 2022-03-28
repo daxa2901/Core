@@ -1,7 +1,7 @@
-<?php Ccc::loadClass('Block_Core_Grid_Collection'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Customer_Grid extends Block_Core_Grid_Collection
+class Block_Customer_Grid extends Block_Core_Grid
 {
 	public function __construct()
 	{
@@ -21,24 +21,65 @@ class Block_Customer_Grid extends Block_Core_Grid_Collection
 	public function prepareActions()
 	{
 		$this->addAction([
-			['title'=>'Edit','method'=>'getEditUrl'],
-			['title'=>'Delete','method'=>'getDeleteUrl']
-			],'actions');
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
 		return $this;
 	}
 
 	public function prepareCollections()
 	{
-		$this->addCollection([
-			$this->getCustomers()
-		],'collection');
+		$this->setCollections($this->getCustomers());
+		return $this;
 	}
 
 	public function prepareColumns()
 	{
-		$this->addColumn([
-			'AdminId','First Name', 'Last Name','Address'
-		],'columns');
+		parent::prepareColumns();
+		$this->addColumn('customerId',[
+			'title'=>'customerId',
+			'type'=>'int'
+		]);
+		
+		$this->addColumn('firstName',[
+			'title'=>'firstName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('lastName',[
+			'title'=>'lastName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('address',[
+			'title'=>'Address',
+			'type'=>'varchar'
+		]);
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('mobile',[
+			'title'=>'Mobile',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdDate',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedDate',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
 	}
 
 	public function getCustomers()
@@ -51,7 +92,7 @@ class Block_Customer_Grid extends Block_Core_Grid_Collection
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$startLimit = $this->getPager()->getStartLimit()-1;	
 		$customerRow = Ccc::getModel('Customer');
-		$query = "SELECT c.`customerId`,c.`firstName`,c.`lastName` , a.`address` 
+		$query = "SELECT c.* , a.`address` 
 				FROM `Customer` c 
 				LEFT JOIN `customer_address` a
 			 ON c.`customerId` = a.`customerId` AND type = 'billing' order by `customerId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";

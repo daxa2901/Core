@@ -1,13 +1,29 @@
 <?php Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php 
-class Block_Core_Grid_Collection extends Block_Core_Template
+class Block_Core_Grid extends Block_Core_Template
 {
 	protected $pager = null;
-	protected $collections = [];
+	protected $collections = null;
 	protected $columns = [];
 	protected $actions= [];
 
+	public function __construct()
+	{
+		$this->setTemplate('view/core/grid.php');
+		$this->prepareCollections();
+		$this->prepareColumns();
+		$this->prepareActions();
+	}
+	
+	public function getColumnValue($row,$key,$column)
+	{
+		if ($key == 'status') 
+		{
+			return $row->getStatus($row->$key);
+		}
+		return $row->$key;
+	}
 	public function setTitle($title)
 	{
 		$this->pageTitle = $title;
@@ -17,14 +33,6 @@ class Block_Core_Grid_Collection extends Block_Core_Template
 	public function getTitle()
 	{
 		return $this->pageTitle;	
-	}
-	
-	public function __construct()
-	{
-		$this->setTemplate('view/core/grid/collection.php');
-		$this->prepareCollections();
-		$this->prepareColumns();
-		$this->prepareActions();
 	}
 
 	public function setPager($pager)
@@ -68,9 +76,9 @@ class Block_Core_Grid_Collection extends Block_Core_Template
 		return $this->columns;
 	}
 
-	public function addColumn($columns,$key)
+	public function addColumn($key,$column)
 	{
-		$this->columns[$key] = $columns;
+		$this->columns[$key] = $column;
 		return $this;
 	}
 
@@ -140,9 +148,8 @@ class Block_Core_Grid_Collection extends Block_Core_Template
 		$this->actions = [];
 		return $this;
 	}
-
 	
-	public function setColections(array $collections)
+	public function setCollections(array $collections)
 	{
 		$this->collections = $collections;
 		return $this;
@@ -151,37 +158,6 @@ class Block_Core_Grid_Collection extends Block_Core_Template
 	public function getCollections()
 	{
 		return $this->collections;
-	}
-
-	public function addCollection($collection,$key)
-	{
-		$this->collections[$key] = $collection;
-		return $this;
-	}
-
-	public function getCollection($key)
-	{
-		if (!array_key_exists($key,$this->collections)) 
-		{
-			return null;
-		}
-		return $this->collections[$key];
-	}
-
-	public function removeCollection($key)
-	{
-		
-		if (array_key_exists($key,$this->collections)) 
-		{
-			unset($key,$this->collections);
-		}
-		return $this;
-	}
-	
-	public function resetCollections()
-	{
-		$this->collections = [];
-		return $this;
 	}
 
 }

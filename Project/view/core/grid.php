@@ -1,7 +1,7 @@
 <?php 
-$collection = $this->getCollection('collection');
-$actions = $this->getAction('actions');
-$columns = $this->getColumn('columns');
+$collection = $this->getCollections();
+$actions = $this->getActions();
+$columns = $this->getColumns();
 ?>
 
 <div class='container text-center'>
@@ -14,16 +14,16 @@ $columns = $this->getColumn('columns');
 		<table class="table table-light shadow-sm">
 			<tr>
 				<?php foreach($columns as $column): ?>
-					<th><?php echo $column ?></th>
+					<th><?php echo $column['title'] ?></th>
 				<?php endforeach; ?>
 				<th>Action</th>
 
 			</tr>
-			<?php if($collection['0']): ?>
-				<?php foreach ($collection['0'] as $row): ?>
+			<?php if($collection): ?>
+				<?php foreach ($collection as $row): ?>
 					<tr>
-						<?php foreach($row->getData() as $value):?>
-							<td><?php echo $value ?></td>
+						<?php foreach($columns as $key => $column):?>
+							<td><?php echo $this->getColumnValue($row,$key,$column);?></td>
 						<?php endforeach; ?> 
 						<td>
 						<?php foreach($actions as $action): ?>

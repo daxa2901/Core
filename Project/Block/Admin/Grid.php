@@ -1,7 +1,7 @@
-<?php Ccc::loadClass('Block_Core_Grid_Collection'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Admin_Grid extends Block_Core_Grid_Collection
+class Block_Admin_Grid extends Block_Core_Grid
 {
 	public function __construct()
 	{
@@ -21,24 +21,66 @@ class Block_Admin_Grid extends Block_Core_Grid_Collection
 	public function prepareActions()
 	{
 		$this->addAction([
-			['title'=>'Edit','method'=>'getEditUrl'],
-			['title'=>'Delete','method'=>'getDeleteUrl']
-			],'actions');
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
 		return $this;
 	}
 
 	public function prepareCollections()
 	{
-		$this->addCollection([
-			$this->getAdmins()
-		],'collection');
+		$this->setCollections($this->getAdmins());
 	}
 
 	public function prepareColumns()
 	{
-		$this->addColumn([
-			'AdminId','First Name', 'Last Name'
-		],'columns');
+		parent::prepareColumns();
+		$this->addColumn('adminId',[
+			'title'=>'Admin Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('firstName',[
+			'title'=>'First Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('lastName',[
+			'title'=>'Last Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('email',[
+			'title'=>'Email',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('mobile',[
+			'title'=>'Mobile',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdDate',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedDate',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
 	}
 	
 	public function getAdmins()
@@ -51,7 +93,7 @@ class Block_Admin_Grid extends Block_Core_Grid_Collection
 		$this->getPager()->execute($totalCount,$page,$pageCount);
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$admins = Ccc::getModel('Admin');
-		$query = "SELECT `adminId` ,`firstName`, `lastName`  FROM `Admin` order by `adminId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		$query = "SELECT * FROM `Admin` order by `adminId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$admins =  $admins->fetchAll($query);
 		if(!$admins)
 		{
