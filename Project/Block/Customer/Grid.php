@@ -1,27 +1,85 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Customer_Grid extends Block_Core_Template
+class Block_Customer_Grid extends Block_Core_Grid
 {
-	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/customer/grid.php');
+		parent::__construct();
+		$this->setTitle('Customer Details');
 	}
 
-	public function setPager($pager)
+	public function getEditUrl($customer)
 	{
-		$this->pager = $pager;
+		return $this->getUrl('edit',null,['id'=>$customer->customerId]);
+	}
+	
+	public function getDeleteUrl($customer)
+	{
+		return $this->getUrl('delete',null,['id'=>$customer->customerId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
 		return $this;
 	}
 
-	public function getPager()
+	public function prepareCollections()
 	{
-		if(!$this->pager)
-		{
-			$this->setPager(Ccc::getModel('Core_Pager'));
-		}
-		return $this->pager;
+		$this->setCollections($this->getCustomers());
+		return $this;
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('customerId',[
+			'title'=>'customerId',
+			'type'=>'int'
+		]);
+		
+		$this->addColumn('firstName',[
+			'title'=>'firstName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('lastName',[
+			'title'=>'lastName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('address',[
+			'title'=>'Address',
+			'type'=>'varchar'
+		]);
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('mobile',[
+			'title'=>'Mobile',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdDate',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedDate',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
 	}
 
 	public function getCustomers()
@@ -32,11 +90,11 @@ class Block_Customer_Grid extends Block_Core_Template
 		$query = "SELECT count(`customerId`) FROM `customer`";
 		$totalCount = $this->getAdapter()->fetchOne($query);
 		$this->getPager()->execute($totalCount,$page,$pageCount);
-		$startLimit = $this->getPager()->getStartLimit()-1;
+		$startLimit = $this->getPager()->getStartLimit()-1;	
 		$customerRow = Ccc::getModel('Customer');
 		$query = "SELECT c.* , a.`address` 
 				FROM `Customer` c 
-				JOIN `customer_address` a
+				LEFT JOIN `customer_address` a
 			 ON c.`customerId` = a.`customerId` AND type = 'billing' order by `customerId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$customers = $customerRow-> fetchAll($query);
 		if(!$customers)

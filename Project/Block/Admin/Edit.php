@@ -1,15 +1,10 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
 
 <?php 
-class Block_Admin_Edit extends Block_Core_Template
+class Block_Admin_Edit extends Block_Core_Edit
 {
 	public function __construct()
 	{
-		$this->setTemplate('view/admin/edit.php');
-	}
-
-	public function getAdmin()
-	{
-		return $this->admin;
+		parent::__construct();
 	}
 }

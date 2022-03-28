@@ -17,8 +17,9 @@ class Controller_Config extends Controller_Admin_Action
 	{
 		$this->setPageTitle('Config Add');
 		$config = Ccc::getModel('Config');
+		Ccc::register('config',$config);
 		$content = $this->getLayout()->getContent();
-		$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+		$config = Ccc::getBlock('Config_Edit');
 		$content->addChild($config);
 		$this->renderLayout();
 		
@@ -39,6 +40,7 @@ class Controller_Config extends Controller_Admin_Action
       		{
       			throw new Exception("Unable to Load Config.", 1);
       		}
+			Ccc::register('config',$config);
 			$content = $this->getLayout()->getContent();
 			$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
 			$content->addChild($config);
