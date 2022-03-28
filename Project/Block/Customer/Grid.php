@@ -1,27 +1,44 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid_Collection'); ?>
 
 <?php 
-class Block_Customer_Grid extends Block_Core_Template
+class Block_Customer_Grid extends Block_Core_Grid_Collection
 {
-	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/customer/grid.php');
+		parent::__construct();
+		$this->setTitle('Customer Details');
 	}
 
-	public function setPager($pager)
+	public function getEditUrl($customer)
 	{
-		$this->pager = $pager;
+		return $this->getUrl('edit',null,['id'=>$customer->customerId]);
+	}
+	
+	public function getDeleteUrl($customer)
+	{
+		return $this->getUrl('delete',null,['id'=>$customer->customerId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			['title'=>'Edit','method'=>'getEditUrl'],
+			['title'=>'Delete','method'=>'getDeleteUrl']
+			],'actions');
 		return $this;
 	}
 
-	public function getPager()
+	public function prepareCollections()
 	{
-		if(!$this->pager)
-		{
-			$this->setPager(Ccc::getModel('Core_Pager'));
-		}
-		return $this->pager;
+		$this->addCollection([
+			$this->getCustomers()
+		],'collection');
+	}
+
+	public function prepareColumns()
+	{
+		$this->addColumn([
+			'AdminId','First Name', 'Last Name','Address'
+		],'columns');
 	}
 
 	public function getCustomers()
@@ -32,11 +49,11 @@ class Block_Customer_Grid extends Block_Core_Template
 		$query = "SELECT count(`customerId`) FROM `customer`";
 		$totalCount = $this->getAdapter()->fetchOne($query);
 		$this->getPager()->execute($totalCount,$page,$pageCount);
-		$startLimit = $this->getPager()->getStartLimit()-1;
+		$startLimit = $this->getPager()->getStartLimit()-1;	
 		$customerRow = Ccc::getModel('Customer');
-		$query = "SELECT c.* , a.`address` 
+		$query = "SELECT c.`customerId`,c.`firstName`,c.`lastName` , a.`address` 
 				FROM `Customer` c 
-				JOIN `customer_address` a
+				LEFT JOIN `customer_address` a
 			 ON c.`customerId` = a.`customerId` AND type = 'billing' order by `customerId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$customers = $customerRow-> fetchAll($query);
 		if(!$customers)

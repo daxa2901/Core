@@ -3,6 +3,24 @@
 class Block_Core_Template extends Model_Core_View
 {
 	protected $children = [];
+	protected $layout =null;
+
+	public function __construct()
+	{
+
+	}
+
+	public function setLayout($layout)
+	{
+		$this->layout = $layout;
+		return $this;
+	}
+
+	public function getLayout()
+	{
+		return $this->layout;
+	}
+
 	public function setChildren(array $children)
 	{
 		$this->children = $children;
@@ -19,7 +37,8 @@ class Block_Core_Template extends Model_Core_View
 		if(!$key)
 		{
 			$key = get_class($object);
-		}	
+		}
+		$object->setLayout($this->getLayout());	
 		$this->children[$key] = $object;
 		return $this;
 	}
@@ -38,7 +57,7 @@ class Block_Core_Template extends Model_Core_View
 		
 		if (array_key_exists($key,$this->children)) 
 		{
-			unset($ket,$this->children);
+			unset($key,$this->children);
 		}
 		return $this;
 	}

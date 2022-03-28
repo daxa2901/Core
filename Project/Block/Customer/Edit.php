@@ -1,25 +1,12 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
 
 <?php 
-class Block_Customer_Edit extends Block_Core_Template
+class Block_Customer_Edit extends Block_Core_Edit
 {
 	public function __construct()
 	{
-		$this->setTemplate('view/customer/edit.php');
+		parent::__construct();
 	}
 
-	public function getCustomer()
-	{
-		return $this->customer;
-	}
-
-	public function getBillingAddress()
-	{
-		return $this->customer->getBillingAddress();
-	}
 	
-	public function getShippingAddress()
-	{
-		return $this->customer->getShippingAddress();
-	}
 }

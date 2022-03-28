@@ -17,8 +17,9 @@ class Controller_Admin extends Controller_Admin_Action
 	{
 		$this->setPageTitle('Admin Add');
 		$admin = Ccc::getModel('Admin');
+		Ccc::register('admin',$admin);
 		$content = $this->getLayout()->getContent();
-		$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
+		$adminRow = Ccc::getBlock('Admin_Edit');
 		$content->addChild($adminRow);
 		$this->renderLayout();
 	}
@@ -36,9 +37,9 @@ class Controller_Admin extends Controller_Admin_Action
       		if (!$admin){
       			throw new Exception("Unable to Load Admin.", 1);
       		}
-
+      		Ccc::register('admin',$admin);
       		$content = $this->getLayout()->getContent();
-			$adminRow = Ccc::getBlock('Admin_Edit')->setData(['admin'=>$admin]);
+			$adminRow = Ccc::getBlock('Admin_Edit');
 			$content->addChild($adminRow);
 			$this->renderLayout();
 		} 

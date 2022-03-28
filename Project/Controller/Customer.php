@@ -15,6 +15,7 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		$this->setPageTitle('Customer Address Add');
 		$customer = Ccc::getModel('Customer');
+		Ccc::register('customer',$customer);
 		$customerBlock = Ccc::getBlock('Customer_Edit');
 		$customerBlock->setData(['customer'=>$customer]);
 		$content = $this->getLayout()->getContent();
@@ -38,6 +39,7 @@ class Controller_Customer extends Controller_Admin_Action{
 			{
 				throw new Exception("Unable to load Customer.", 1);
 			}
+			Ccc::register('customer',$customer);
 			$customerRow = Ccc::getBlock('Customer_Edit');
 			$customerRow->setData(['customer'=>$customer]);
 			$content = $this->getLayout()->getContent();
@@ -83,54 +85,90 @@ class Controller_Customer extends Controller_Admin_Action{
 		{	
 				throw new Exception("System is unable to insert.", 1);
 		}
-		$this->getMessage()->addMessage('Customer Details Inserted Successfully.');
-	
+		$billingAddress = $customer->getBillingAddress();
+		$shippingAddress = $customer->getShippingAddress();
+		$billingAddress->customerId = $customer->customerId;
+		$billingAddress->type = get_class($billingAddress)::BILLING;
+		$shippingAddress->type = get_class($shippingAddress)::SHIPPING;
+		$shippingAddress->customerId = $customer->customerId;
+		$billingAddress->save();
+		$shippingAddress->save();
 		return $customer;
 	}
 
-	protected function saveAddress($customer)
+	protected function saveAddress($type = 'billing')
 	{
+
 		$request = $this->getRequest();
-		
-		if(!$request->isPost() || !$request->getPost('billingAddress')) 
+		$id =(int) $request->getRequest('id');
+		if (!$id) 
+		{
+			throw new Exception("Invalid id.", 1);
+		}
+
+		$customer = Ccc::getModel('Customer')->load($id);
+		if (!$customer) 
+		{
+			throw new Exception("No record found.", 1);
+		}
+
+		if(!$request->isPost() || !$request->getPost($type.'Address')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
 		}
-
-		$customerBillingAddress = $request->getPost('billingAddress');
-		$customerShippingAddress = (array_key_exists('same',$customerBillingAddress)) ? $customerBillingAddress : $request->getPost('shippingAddress');
-
-		$billingAddress = $customer->getBillingAddress();
-		$shippingAddress = $customer->getShippingAddress();
-		if(!$billingAddress->customerId || !$shippingAddress->customerId)
+		$customerAddress = $request->getPost($type.'Address');
+		if ($type == 'billing') 
 		{
-			$billingAddress->customerId = $customer->customerId;
-			$shippingAddress->customerId = $customer->customerId;
+			$address = $customer->getBillingAddress();
+			if (array_key_exists('same',$customerAddress)) 
+			 {
+				$shippingAddress = $customer->getShippingAddress();
+				$addressId = $shippingAddress->addressId;
+				$shippingAddress->setData($customerAddress);
+				
+				if (!$shippingAddress->addressId) 
+				{
+					$shippingAddress->customerId = $customer->customerId;
+				}
+				else
+				{
+					$shippingAddress->addressId = $addressId;
+				}
+
+				$shippingAddress = $shippingAddress->save();
+				if (!$shippingAddress) 
+				{
+					throw new Exception("System is unable to save address.", 1);
+				}
+			}
+			else
+			{
+				$address->same = 2;
+			}
 		}
 		else
 		{
-			$shippingAddressId = $request->getPost('shippingAddress');
-			$customerShippingAddress['addressId'] = $shippingAddressId['addressId'];
+			$address = $customer->getShippingAddress();
+			if ($address->same == 1) 
+			{
+				$billingAddress = $customer->getBillingAddress();
+				$billingAddress->same = 2;
+				$billingAddress->save();
+				$address->same = 2;
+			}
 		}
-		
-		$billingAddress->type = get_class($billingAddress)::BILLING;
-		$shippingAddress->type = get_class($shippingAddress)::SHIPPING;
-		
-		$billingAddress->setData($customerBillingAddress);
-		$billingAddress->same = (array_key_exists('same',$customerBillingAddress)) ? 1 : 2;
-		$billingAddress = $billingAddress->save();
-		if (!$billingAddress) 
+		if (!$address->addressId) 
 		{
-			throw new Exception("System is unable to insert", 1);
+			$address->customerId = $customer->customerId;
 		}
-
-		$shippingAddress->setData($customerShippingAddress);
-		$shippingAddress->same = (array_key_exists('same',$customerBillingAddress)) ? 1 : 2;
-		$shippingAddress = $shippingAddress->save();
-		if (!$shippingAddress ) 
+		$address->setData($customerAddress);
+		$address = $address->save();
+		if (!$address) 
 		{
-			throw new Exception("System is unable to insert", 1);
+			throw new Exception("System is unable to save address.", 1);
 		}
+		return $customer;
+		
 	}
 
 	public function saveAction()
@@ -138,9 +176,25 @@ class Controller_Customer extends Controller_Admin_Action{
 		try
 		{
 			$this->setPageTitle('Customer Address Save');
-			$customer = $this->saveCustomer();
-			$this->saveAddress($customer);
+			if ($this->getRequest()->getPost('customer')) 
+			{
+				$customer = $this->saveCustomer();
+				Ccc::register('customer',$customer);
+			}
+			if ($this->getRequest()->getPost('billingAddress')) 
+			{
+				$customer = $this->saveAddress();
+			}
+			if ($this->getRequest()->getPost('shippingAddress')) 
+			{
+				$customer = $this->saveAddress('shipping');
+			}
+		
 			$this->getMessage()->addMessage('Customer saved successfully.');
+			if ($this->getRequest()->getPost('submit')) 
+			{
+				$this->redirect('edit',null,['id'=>$customer->customerId]);
+			}
 			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 

@@ -1,6 +1,6 @@
 <?php  $row = $this->getAdmin(); ?>
 <div class="container w-50 my-3 shadow-lg bg-light">
-  <form action="<?php echo  $this->getUrl('save');?>" method="POST" class="p-2">
+  
     <table class="form-group w-100" cellspacing="4">
       <tr>
         <td>First Name :</td>
@@ -50,5 +50,4 @@
         </td>
       </tr>    
     </table>  
-  </form>
 </div>
