@@ -1,11 +1,12 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
 
 <?php 
-class Block_Product_Edit extends Block_Core_Template
+class Block_Product_Edit extends Block_Core_Edit
 {
 	public function __construct()
 	{
-		$this->setTemplate('view/product/edit.php');
+		parent::__construct();
+		// $this->setTemplate('view/product/edit.php');
 	}
 
 	public function getProduct()
@@ -28,9 +29,9 @@ class Block_Product_Edit extends Block_Core_Template
 		return Ccc::getModel('Category')->getCategoryToPath();
 	}
 
-	public function getCategoryProductPair()
-	{
-		return $this->categoryProductPair;
+	// public function getCategoryProductPair()
+	// {
+	// 	return $this->categoryProductPair;
 					
-	}
+	// }
 }

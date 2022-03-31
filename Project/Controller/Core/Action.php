@@ -82,6 +82,13 @@ class Controller_Core_Action
 		->setHeader('content-type','text/html')
 		->render($this->getLayout()->toHtml());
 	}
+	
+	public function renderJson($data)
+	{
+		$this->getResponse()
+		->setHeader('content-type','json/application')
+		->render(json_encode($data));
+	}
 
 	public function setMessage($message)
 	{

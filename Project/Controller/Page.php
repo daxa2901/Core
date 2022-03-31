@@ -17,7 +17,8 @@ class Controller_Page extends Controller_Admin_Action
 	{
 		$this->setPageTitle('Page Add');
 		$page = Ccc::getModel('Page');
-		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
+      	Ccc::register('page',$page);
+		$page = Ccc::getBlock('Page_Edit');
 		$content = $this->getLayout()->getContent();
 		$content->addChild($page);
 		$this->renderLayout();
@@ -38,7 +39,8 @@ class Controller_Page extends Controller_Admin_Action
       		{
       			throw new Exception("Unable to Load page.", 1);
       		}
-     		$page = Ccc::getBlock('Page_Edit')->setData(['page'=>$page]);
+      		Ccc::register('page',$page);
+     		$page = Ccc::getBlock('Page_Edit');
 			$content = $this->getLayout()->getContent();
 			$content->addChild($page);
 			$this->renderLayout();

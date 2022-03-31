@@ -6,6 +6,7 @@ class Block_Config_Grid extends Block_Core_Template
 	protected $pager = null;
 	public function __construct()
 	{
+		parent::__construct();
 		$this->setTemplate('view/config/grid.php');
 	}
 	public function setPager($pager)
@@ -23,6 +24,71 @@ class Block_Config_Grid extends Block_Core_Template
 		return $this->pager;
 	}
 
+	public function getEditUrl($config)
+	{
+		return $this->getUrl('edit',null,['id'=>$config->configId]);
+	}
+	
+	public function getDeleteUrl($config)
+	{
+		return $this->getUrl('delete',null,['id'=>$config->configId]);
+	}
+	
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getConfigs());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('configId',[
+			'title'=>'config Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('name',[
+			'title'=>'Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('code',[
+			'title'=>'Code',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('value',[
+			'title'=>'value',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
+	}
+	
 	public function getConfigs()
 	{
 		$request = Ccc::getModel('Core_Request');
@@ -39,6 +105,7 @@ class Block_Config_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
 		return $configs;
 	}

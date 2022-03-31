@@ -136,7 +136,7 @@ class Model_Core_Pager
 	
 	public function execute($totalCount,$current,$perPageCount)
 	{
-		$this->setPerPageCount((!in_array($perPageCount,$this->getPerPageCountOption())) ? 10 : $perPageCount );
+		$this->setPerPageCount((!in_array($perPageCount,$this->getPerPageCountOption())) ? 1 : $perPageCount );
 		$this->setTotalCount($totalCount);
 		$this->setPageCount(ceil($this->getTotalCount()/$this->getPerPageCount()));
 		if ($current > $this->getPageCount()+1) 

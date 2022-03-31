@@ -58,9 +58,8 @@ class Controller_Config extends Controller_Admin_Action
 	{
 		try
 		{
-			$this->setPageTitle('Config Save');
 			$request = $this->getRequest();
-			if(!$request->isPost() || !$request->getPost('config')) 
+			if(!$request->isPost()) 
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}			
@@ -88,12 +87,12 @@ class Controller_Config extends Controller_Admin_Action
 			}
 
 			$this->getMessage()->addMessage('Config saved Successfully.');
-			$this->redirect('grid',null,['id'=>null]);
+   			$this->renderJson($config);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+   			$this->renderJson($e->getMessage());
 		}
 	}
 
@@ -118,15 +117,14 @@ class Controller_Config extends Controller_Admin_Action
 			{
 				throw new Exception("System is unable to delete record.", 1);
 			}
-
 			$this->getMessage()->addMessage('Config Deleted Successfully.');
-			$this->redirect('grid',null,['id'=>null]);	
-				
+   			$this->renderJson($delete);
+					
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+   			$this->renderJson($e->getMessage());
 		}
 	}
 }

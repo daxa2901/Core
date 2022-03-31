@@ -17,7 +17,8 @@ class Controller_ShippingMethod extends Controller_Admin_Action
 	{
 		$this->setPageTitle('Shipping Method Add');
 		$shippingMethod = Ccc::getModel('ShippingMethod');
-		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit')->setdata(['shippingMethod'=>$shippingMethod]);
+		Ccc::register('shippingMethod',$shippingMethod);
+		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit');
 		$content = $this->getLayout()->getContent();
 		$content->addChild($shippingMethodRow);
 		$this->renderLayout();
@@ -40,7 +41,8 @@ class Controller_ShippingMethod extends Controller_Admin_Action
       			throw new Exception("Unable to Load Shipping Method.", 1);
       		}
 
-      		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit')->setdata(['shippingMethod'=>$shippingMethod]);
+			Ccc::register('shippingMethod',$shippingMethod);
+      		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit');
 			$content = $this->getLayout()->getContent();
 			$content->addChild($shippingMethodRow);
 			$this->renderLayout();

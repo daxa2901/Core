@@ -19,14 +19,9 @@ class Block_Customer_Edit_Tab extends Block_Core_Edit_Tab
 		],'personal' );
 		$this->addTab([
 			'title'=>'Billing Address Information',
-			'block'=>'Customer_Edit_Tabs_Billing',
-			'url'=>$this->getUrl(null,null,['tab'=>'billing'])
-		],'billing' );
-		$this->addTab([
-			'title'=>'Shipping Address Information',
-			'block'=>'Customer_Edit_Tabs_Shipping',
-			'url'=>$this->getUrl(null,null,['tab'=>'shipping'])
-		],'shipping' );
+			'block'=>'Customer_Edit_Tabs_Address',
+			'url'=>$this->getUrl(null,null,['tab'=>'address'])
+		],'address' );
 		return $this;
 	}
 

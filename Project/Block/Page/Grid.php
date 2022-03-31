@@ -1,13 +1,12 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
-<?php Ccc::loadClass('Controller_Core_Action'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Page_Grid extends Block_Core_Template
+class Block_Page_Grid extends Block_Core_Grid
 {
 	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/page/grid.php');
+		parent::__construct();
 	}
 
 	public function setPager($pager)
@@ -25,6 +24,69 @@ class Block_Page_Grid extends Block_Core_Template
 		return $this->pager;
 	}
 
+	public function getEditUrl($page)
+	{
+		return $this->getUrl('edit',null,['id'=>$page->pageId]);
+	}
+	
+	public function getDeleteUrl($page)
+	{
+		return $this->getUrl('delete',null,['id'=>$page->pageId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getPages());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('pageId',[
+			'title'=>'Page Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('name',[
+			'title'=>'Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('content',[
+			'title'=>'Content',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('code',[
+			'title'=>'Code',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
+	}
 	public function getPages()
 	{
 		$request = Ccc::getModel('Core_Request');
@@ -41,7 +103,9 @@ class Block_Page_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			$pages = [];
 		}
 		return $pages;
+		
 	}
 }

@@ -1,14 +1,14 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
 
-class Block_Order_Grid extends Block_Core_Template
+class Block_Order_Grid extends Block_Core_Grid
 {
-	protected $pager = null;	
 
+	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/order/grid.php');
+		parent::__construct();
 	}
 
 	public function setPager($pager)
@@ -25,6 +25,96 @@ class Block_Order_Grid extends Block_Core_Template
 		}
 		return $this->pager;
 	}
+	
+	public function getEditUrl($order)
+	{
+		return $this->getUrl('edit',null,['id'=>$order->orderId]);
+	}
+	
+	public function getDeleteUrl($order)
+	{
+		return $this->getUrl('delete',null,['id'=>$order->orderId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'View',
+			'method'=>'getViewUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getOrders());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('orderId',[
+			'title'=>'Order Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('firstName',[
+			'title'=>'First Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('lastName',[
+			'title'=>'Last Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('email',[
+			'title'=>'Email',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('grandTotal',[
+			'title'=>'Grand Total',
+			'type'=>'float'
+		]);
+	
+		$this->addColumn('mobile',[
+			'title'=>'Mobile',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('shippingCost',[
+			'title'=>'Shipping Cost',
+			'type'=>'float'
+		]);
+	
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('state',[
+			'title'=>'State',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedAt',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
+	}
+	
 
 	public function getOrders()
 	{
@@ -42,6 +132,7 @@ class Block_Order_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
 		return $orders;
 		
