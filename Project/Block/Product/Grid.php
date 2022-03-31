@@ -1,12 +1,12 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Product_Grid extends Block_Core_Template
+class Block_Product_Grid extends Block_Core_Grid
 {
 	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/product/grid.php');
+		parent::__construct();
 	}
 
 	public function setPager($pager)
@@ -24,6 +24,119 @@ class Block_Product_Grid extends Block_Core_Template
 		return $this->pager;
 	}
 
+	public function getEditUrl($product)
+	{
+		return $this->getUrl('edit',null,['id'=>$product->productId]);
+	}
+	
+	public function getDeleteUrl($product)
+	{
+		return $this->getUrl('delete',null,['id'=>$product->productId]);
+	}
+	
+	public function getMediaUrl($product)
+	{
+		return $this->getUrl('grid','product_media',['id'=>$product->productId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		$this->addAction([
+			'title'=>'Media',
+			'method'=>'getMediaUrl',
+			],'media');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getProducts());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('productId',[
+			'title'=>'product Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('name',[
+			'title'=>'Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('Sku',[
+			'title'=>'sku',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('base',[
+			'title'=>'Base Image',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('thumb',[
+			'title'=>'Thumb Image',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('small',[
+			'title'=>'Small image',
+			'type'=>'varchar'
+		]);
+	
+		$this->addColumn('price',[
+			'title'=>'Price',
+			'type'=>'float'
+		]);
+		
+		$this->addColumn('cost',[
+			'title'=>'Cost',
+			'type'=>'float'
+		]);
+		
+		$this->addColumn('discount',[
+			'title'=>'Discount',
+			'type'=>'float'
+		]);
+		
+		$this->addColumn('tax',[
+			'title'=>'tax Percentage',
+			'type'=>'float'
+		]);
+		
+		$this->addColumn('quantity',[
+			'title'=>'Quantity',
+			'type'=>'int'
+		]);
+		
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedAt',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
+	}
+	
 	public function getProducts()
 	{
 		$request = Ccc::getModel('Core_Request');
@@ -42,6 +155,7 @@ class Block_Product_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
 		return $products;
 	}

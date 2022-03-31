@@ -15,6 +15,7 @@ class Controller_Product extends Controller_Admin_Action{
 	{
 		$this->setPageTitle('Product Add');
 		$product= Ccc::getModel('Product');
+		Ccc::register('Product',$product);
      	$productRow = Ccc::getBlock('Product_Edit');
      	$productRow->setData(['product'=>$product]);
      	$productRow->categoryProductPair =[];
@@ -38,9 +39,8 @@ class Controller_Product extends Controller_Admin_Action{
      		{
      			throw new Exception("Unable to load product.", 1);    			
      		}
-
+			Ccc::register('Product',$product);
      		$productRow = Ccc::getBlock('Product_Edit');
-     		$productRow->setData(['product'=>$product]);
      		$query = "SELECT `entityId`,`categoryId` 
      						FROM `category_product` 
      				WHERE `productId` = {$id}";
@@ -57,6 +57,36 @@ class Controller_Product extends Controller_Admin_Action{
 		}
 	}
 
+	public function saveCategoryAction()
+	{
+		try 
+		{
+			$request = $this->getRequest();
+			if (!$request->isPost()) 
+			{
+				throw new Exception("Invalid request.", 1);
+			}
+
+			if (!$request->getPost('product'))
+			{
+				throw new Exception("First enter details of product.", 1);
+			}
+			$product = $request->getPost('product');
+			$product = Ccc::getModel('Product')->load($product['productId']);
+			if (!$product) 
+			{
+				throw new Exception("No record found.", 1);
+			}
+			$product->saveCategories($request->getPost('category'));
+			
+		} 
+		catch (Exception $e) 
+		{
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
+			$this->redirect('grid',null,['id'=>null]);
+		}
+		
+	}
 	public function saveAction()
 	{
 		try 
@@ -87,10 +117,12 @@ class Controller_Product extends Controller_Admin_Action{
 				$product = Ccc::getModel('Product');
 				$product->createdAt = date('Y-m-d H:i:s');
 			}
-			
+			echo "<pre>";
 			$product->setData($row);
 			$product->getFinalPrice();
 			$product = $product->save();
+			// print_r($product);
+			// die();
 			if(!$product)
 			{
 				throw new Exception("System is unable to update.", 1);					

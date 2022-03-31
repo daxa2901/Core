@@ -3,10 +3,25 @@
 <?php 
 class Block_Customer_Grid extends Block_Core_Grid
 {
+	protected $pager = null;
 	public function __construct()
 	{
 		parent::__construct();
 		$this->setTitle('Customer Details');
+	}
+	public function setPager($pager)
+	{
+		$this->pager = $pager;
+		return $this;
+	}
+
+	public function getPager()
+	{
+		if(!$this->pager)
+		{
+			$this->setPager(Ccc::getModel('Core_Pager'));
+		}
+		return $this->pager;
 	}
 
 	public function getEditUrl($customer)

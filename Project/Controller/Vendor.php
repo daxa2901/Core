@@ -15,8 +15,8 @@ class Controller_Vendor extends Controller_Admin_Action{
 	{
 		$this->setPageTitle('Vendor Address Add');
 		$vendor = Ccc::getModel('Vendor');
+		Ccc::register('vendor',$vendor);
 		$vendorRow = Ccc::getBlock('Vendor_Edit');
-		$vendorRow->setData(['vendor'=>$vendor]);
 		$content = $this->getLayout()->getContent();
 		$content->addChild($vendorRow);
 		$this->renderLayout();	
@@ -38,8 +38,8 @@ class Controller_Vendor extends Controller_Admin_Action{
 			{
 				throw new Exception("Unable to load vendor.", 1);
 			}
+			Ccc::register('vendor',$vendor);
 			$vendorRow = Ccc::getBlock('Vendor_Edit');
-			$vendorRow->setData(['vendor'=>$vendor]);
 			$content = $this->getLayout()->getContent();
 			$content->addChild($vendorRow);
 			$this->renderLayout();
@@ -85,10 +85,21 @@ class Controller_Vendor extends Controller_Admin_Action{
 		return $vendor;
 	}
 
-	protected function saveAddress($vendor)
+	protected function saveAddress()
 	{
 		$request = $this->getRequest();
-		
+		$id =(int) $request->getRequest('id');
+		if (!$id) 
+		{
+			throw new Exception("Invalid id.", 1);
+		}
+
+		$vendor = Ccc::getModel('Vendor')->load($id);
+		if (!$vendor) 
+		{
+			throw new Exception("No record found.", 1);
+		}
+
 		if(!$request->isPost() || !$request->getPost('address')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
@@ -107,6 +118,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 		{
 			throw new Exception("System is unable to insert", 1);
 		}
+		return $vendor;
 			
 	}
 
@@ -115,9 +127,20 @@ class Controller_Vendor extends Controller_Admin_Action{
 		try
 		{
 			$this->setPageTitle('Vendor Address Save');
-			$vendor = $this->saveVendor();
-			$this->saveAddress($vendor);
+			if ($this->getRequest()->getPost('vendor')) 
+			{
+				$vendor = $this->saveVendor();
+			}
+			if ($this->getRequest()->getPost('address')) 
+			{
+				$vendor = $this->saveAddress();
+			}
+			
 			$this->getMessage()->addMessage('Vendor details saved successfully.');
+			if ($this->getRequest()->getPost('submit')) 
+			{
+				$this->redirect('edit',null,['id'=>$vendor->vendorId]);
+			}
 			$this->redirect('grid',null,['id'=>null]);
 		} 
 		catch (Exception $e) 

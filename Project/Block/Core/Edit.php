@@ -2,6 +2,11 @@
 <?php Ccc::loadClass('Block_Admin_Edit_Tab'); ?>
 <?php Ccc::loadClass('Block_Customer_Edit_Tab'); ?>
 <?php Ccc::loadClass('Block_Config_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_Page_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_PaymentMethod_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_ShippingMethod_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_Vendor_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_Product_Edit_Tab'); ?>
 
 <?php 
 class Block_Core_Edit extends Block_Core_Template
@@ -41,6 +46,7 @@ class Block_Core_Edit extends Block_Core_Template
 	{
 		$tabs = $this->getTab()->getSelectedTab();
 		$object = Ccc::getBlock($tabs['block']);
+		$object->setEdit($this);
 		return $object;
 	}
 }

@@ -7,5 +7,5 @@ return [
         'password' => '',
         'dbname' => 'project_daxa'
 	],
-	'baseUrl' => 'http://localhost/Cybercom/cart-order/Core/Project/'
+	'baseUrl' => 'http://localhost/Cybercom/jQuery/Core/Project/'
 ];

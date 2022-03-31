@@ -33,10 +33,26 @@
         </td>
         <td>
           <button type="submit" name="submit" class="btn btn-primary my-2">Save </button>
-          <a href=<?php echo  $this->getUrl('grid',null,['id'=>null]);?>><button type="button" class="btn btn-danger my-2">Cancel</button></a>
+          <a href="<?php echo  $this->getUrl('grid',null,['id'=>null]);?>" id="cancel">Cancel</a>
         </td>
       </tr>    
     </div>
     </table>  
   </form>
 </div>
+
+<script type="text/javascript">
+  $(document).on('click','#cancel',function () {
+  event.preventDefault();
+  $.ajax({
+        type: 'GET',
+        url: jQuery(this).attr('href'),
+        success: function(data) {
+          $('#layout').html(data);
+      },
+      dataType : 'html'
+      });
+
+});
+
+</script>

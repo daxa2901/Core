@@ -1,14 +1,14 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
 
-class Block_paymentMethod_Grid extends Block_Core_Template
+class Block_paymentMethod_Grid extends Block_Core_Grid
 {
-	protected $pager = null;	
 
+	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/paymentMethod/grid.php');
+		parent::__construct();
 	}
 
 	public function setPager($pager)
@@ -25,7 +25,65 @@ class Block_paymentMethod_Grid extends Block_Core_Template
 		}
 		return $this->pager;
 	}
+
+	public function getEditUrl($shipping)
+	{
+		return $this->getUrl('edit',null,['id'=>$shipping->methodId]);
+	}
 	
+	public function getDeleteUrl($shipping)
+	{
+		return $this->getUrl('delete',null,['id'=>$shipping->methodId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getPaymentMethods());
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('methodId',[
+			'title'=>'Method Id',
+			'type'=>'int'
+		]);
+
+		$this->addColumn('name',[
+			'title'=>'Name',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('note',[
+			'title'=>'Note',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
+	}
 	public function getPaymentMethods()
 	{
 		$request = Ccc::getModel('Core_Request');
@@ -42,6 +100,7 @@ class Block_paymentMethod_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
 		return $paymentMethods;
 		

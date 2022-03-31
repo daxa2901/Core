@@ -17,6 +17,7 @@ class Controller_PaymentMethod extends Controller_Admin_Action
 	{
 		$this->setPageTitle('Payment Method Add');
 		$paymentMethod = Ccc::getModel('PaymentMethod');
+      	Ccc::register('paymentMethod',$paymentMethod);
 		$paymentMethodRow = Ccc::getBlock('PaymentMethod_Edit')->setdata(['paymentMethod'=>$paymentMethod]);
 		$content = $this->getLayout()->getContent();
 		$content->addChild($paymentMethodRow);
@@ -39,8 +40,8 @@ class Controller_PaymentMethod extends Controller_Admin_Action
       		{
       			throw new Exception("Unable to Load Payment Method.", 1);
       		}
-
-      		$paymentMethodRow = Ccc::getBlock('PaymentMethod_Edit')->setdata(['paymentMethod'=>$paymentMethod]);
+      		Ccc::register('paymentMethod',$paymentMethod);
+      		$paymentMethodRow = Ccc::getBlock('PaymentMethod_Edit');
 			$content = $this->getLayout()->getContent();
 			$content->addChild($paymentMethodRow);
 			$this->renderLayout();

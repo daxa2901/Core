@@ -3,7 +3,6 @@
 <?php 
 class Block_Core_Grid extends Block_Core_Template
 {
-	protected $pager = null;
 	protected $collections = null;
 	protected $columns = [];
 	protected $actions= [];
@@ -22,6 +21,18 @@ class Block_Core_Grid extends Block_Core_Template
 		{
 			return $row->getStatus($row->$key);
 		}
+		if ($key == 'base') 
+		{
+			return ($row->base) ?  "<img src=".$row->getBase()->getImageUrl()." alt =  'no'  height='50px' width='50px' />" : 'No Image';
+		}
+		if ($key == 'thumb') 
+		{
+			return ($row->thumb) ?  "<img src=".$row->getThumb()->getImageUrl()." alt =  'no'  height='50px' width='50px' />" : 'No Image';
+		}
+		if ($key == 'small') 
+		{
+			return ($row->small) ?  "<img src=".$row->getSmall()->getImageUrl()." alt =  'no'  height='50px' width='50px' />" : 'No Image';
+		}
 		return $row->$key;
 	}
 	public function setTitle($title)
@@ -33,21 +44,6 @@ class Block_Core_Grid extends Block_Core_Template
 	public function getTitle()
 	{
 		return $this->pageTitle;	
-	}
-
-	public function setPager($pager)
-	{
-		$this->pager = $pager;
-		return $this;
-	}
-
-	public function getPager()
-	{
-		if(!$this->pager)
-		{
-			$this->setPager(Ccc::getModel('Core_Pager'));
-		}
-		return $this->pager;
 	}
 
 	public function prepareCollections()

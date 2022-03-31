@@ -3,53 +3,29 @@ Ccc::loadClass('Controller_Admin_Action');
 
 class Controller_Product_Media extends Controller_Admin_Action
 {
-	public function gridAction()
-	{
-		try
-		{
-			$this->setPageTitle('Product Media Grid');
-			$id = (int)$this->getRequest()->getRequest('id');
-			if(!$id)
-			{
-				throw new Exception("Invalid Id.", 1);				
-			}
-
-			$product = Ccc::getModel('Product')->load($id);
-			if (!$product) 
-			{
-				throw new Exception("Unable to load Product.", 1);
-			}
-
-			$productMediaRow =Ccc::getBlock('Product_Media_Grid')->setData(['id'=>$id]);
-			$content = $this->getLayout()->getContent();
-			$content->addChild($productMediaRow);
-			$this->renderLayout();
-
-		}
-		catch(Exception $e)
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','Product',null,true);
-		}
-		
-	}
-						
+					
 	public function saveAction()
 	{
 		try
 		{
+
 			$this->setPageTitle('Product Media Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			$productId = (int) $request->getRequest('id');
-			if(!$productId)
+			if (!$request->getPost('product'))
 			{
-				throw new Exception("Invalid Id.", 1);				
+				throw new Exception("First enter details of product.", 1);
 			}
-
+			$product = $request->getPost('product');
+			$productId = $product['productId'];
+			$product = Ccc::getModel('Product')->load($product['productId']);
+			if (!$product) 
+			{
+				throw new Exception("No record found.", 1);
+			}
 			$mediaRow = Ccc::getModel('Product')->getMedia();
 			if ($request->getPost('media')) 
 			{
@@ -175,12 +151,12 @@ class Controller_Product_Media extends Controller_Admin_Action
 				$this->getMessage()->addMessage('Product Media Uploaded Successfully.');
 			}
 
-			$this->redirect('grid');
+			$this->redirect('grid','product');
 		}
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');
+			$this->redirect('grid','product');
 		}
 	}
 }

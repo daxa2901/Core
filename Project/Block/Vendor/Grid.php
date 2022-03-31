@@ -1,12 +1,12 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php 
-class Block_Vendor_Grid extends Block_Core_Template
+class Block_Vendor_Grid extends Block_Core_Grid
 {
 	protected $pager = null;
 	public function __construct()
 	{
-		$this->setTemplate('view/vendor/grid.php');
+		parent::__construct();
 	}
 
 	public function setPager($pager)
@@ -22,6 +22,84 @@ class Block_Vendor_Grid extends Block_Core_Template
 			$this->setPager(Ccc::getModel('Core_Pager'));
 		}
 		return $this->pager;
+	}
+
+	public function getEditUrl($vendor)
+	{
+		return $this->getUrl('edit',null,['id'=>$vendor->vendorId]);
+	}
+	
+	public function getDeleteUrl($vendor)
+	{
+		return $this->getUrl('delete',null,['id'=>$vendor->vendorId]);
+	}
+	public function prepareActions()
+	{
+		$this->addAction([
+			'title'=>'Edit',
+			'method'=>'getEditUrl',
+			],'edit');
+		$this->addAction([
+			'title'=>'Delete',
+			'method'=>'getDeleteUrl',
+			],'delete');
+		return $this;
+	}
+
+	public function prepareCollections()
+	{
+		$this->setCollections($this->getVendors());
+		return $this;
+	}
+
+	public function prepareColumns()
+	{
+		parent::prepareColumns();
+		$this->addColumn('vendorId',[
+			'title'=>'vendorId',
+			'type'=>'int'
+		]);
+		
+		$this->addColumn('firstName',[
+			'title'=>'firstName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('lastName',[
+			'title'=>'lastName',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('address',[
+			'title'=>'Address',
+			'type'=>'varchar'
+		]);
+		$this->addColumn('email',[
+			'title'=>'Email',
+			'type'=>'varchar'
+		]);
+		
+		$this->addColumn('mobile',[
+				'title'=>'Mobile',
+				'type'=>'int'
+			]);
+		
+		$this->addColumn('status',[
+			'title'=>'Status',
+			'type'=>'int'
+		]);
+	
+		$this->addColumn('createdAt',[
+			'title'=>'Created Date',
+			'type'=>'datetime'
+		]);
+	
+		$this->addColumn('updatedAt',[
+			'title'=>'Updated Date',
+			'type'=>'datetime'
+		]);
+	
+		return $this;
 	}
 
 	public function getVendors()
@@ -41,6 +119,7 @@ class Block_Vendor_Grid extends Block_Core_Template
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
 		return $vendors;
 	}

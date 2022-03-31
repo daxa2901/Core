@@ -38,10 +38,24 @@
          <?php endif ?>
         </td>
         <td colspan="2">
-          <button type="submit" name="submit" class="btn btn-primary my-2">Save </button>
-          <button type="submit" name="submit" class="btn btn-primary my-2" name = 'save&next' value="save&next">Save & Next</button>
-          <a href="<?php echo  $this->getUrl('grid',null,['id'=>null]);?>"><button type="button" class="btn btn-danger my-2">Cancel</button></a>
+          <button type="button" name="submit" class="btn btn-primary my-2" id="customerSaveBtn">Save </button>
+          <button type="button" name="submit" class="btn btn-primary my-2" id = "customerSaveNext" value="saveAndNext">Save & Next</button>
+          <button type="button" class="btn btn-danger my-2" id = "customerCancelBtn">Cancel</button>
         </td>
       </tr>    
   </table>  
 </div>
+
+<script type="text/javascript">
+  jQuery("#customerSaveBtn").click(function () {
+  admin.setForm(jQuery("#indexForm"));
+  admin.setUrl("<?php echo $this->getEdit()->getEditUrl()?>");
+  admin.load();
+});
+
+ jQuery("#customerCancelBtn").click(function () {
+  admin.setUrl("<?php echo $this->getUrl('grid',null,['id'=>null])?>");
+  admin.load();
+});
+
+</script>

@@ -1,15 +1,15 @@
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
 
 <?php 
-class Block_ShippingMethod_Edit extends Block_Core_Template
+class Block_ShippingMethod_Edit extends Block_Core_Edit
 {
 	public function __construct()
 	{
-		$this->setTemplate('view/shippingMethod/edit.php');
+		parent::__construct();
 	}
 
-	public function getShippingMethod()
-	{
-		return $this->shippingMethod;
-	}
+	// public function getShippingMethod()
+	// {
+	// 	return $this->p;
+	// }
 }

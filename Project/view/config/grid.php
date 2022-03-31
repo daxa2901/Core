@@ -1,12 +1,14 @@
+
 <?php $configs = $this->getConfigs(); ?>
 <div class='container text-center'>
 <h1> Config Details </h1> 
-<form action="<?php echo $this->getUrl('add');?>" method="POST">
-	<button type="submit" name="Add" class="btn btn-primary"> Add New </button>
+<form action="<?php echo $this->getUrl('add');?>" method="POST" id='addNew'>
+	<button type="button" name="Add" class="btn btn-primary" onclick="core.config.addNew()"> Add New </button>
 </form>
 
 <div class="container w-100 my-2">
-<table class="table table-light shadow-sm">
+<table class="table table-light shadow-sm" id="configTable2">
+
 	<tr>
 		<th> Id </th>
 		<th> Name </th>
@@ -16,6 +18,7 @@
 		<th> Created_At </th>
 		<th> Action </th>
 	</tr>
+		
 	<?php if($configs): ?>
 	
 		<?php foreach ($configs as $config): ?>		
@@ -27,8 +30,9 @@
 	    		<td><?php echo $config->getStatus($config->status); ?></td>
 	    		<td><?php echo $config->createdAt ?></td>
 	    		<td>
-	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$config->configId]);?>">Delete</a> 
-	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$config->configId]);?>">Update</a>
+	    			<a href="<?php echo $this->getUrl('delete',null,['id'=>$config->configId]);?>" id='delete'>Delete</a>
+	    			<a href="<?php echo $this->getUrl('edit',null,['id'=>$config->configId]);?>" id= 'update'>Update</a>
+	    			</form>
 	    		</td>
 	    	</tr>
 	  	<?php endforeach; ?>
@@ -43,6 +47,33 @@ function changeURL(val)
 {
 	window.location = "<?php echo $this->getUrl(null,null,['p'=>$this->getPager()->getStart(),'ppc'=>null]);?>&ppc="+val; 
 }
+
+$(document).on('click','#delete',function () {
+	event.preventDefault();
+	$.ajax({
+		  type: 'GET',
+		  url: jQuery(this).attr('href'),
+		  success: function(data) {
+		  	$('#layout').load("<?php echo $this->getUrl('grid');?>");
+		},
+		dataType : 'json'
+		});
+
+});
+
+$(document).on('click','#update',function () {
+	event.preventDefault();
+	$.ajax({
+			  type: 'GET',
+			  url: jQuery(this).attr('href'),
+			  success: function(data) {
+			  	$('#layout').html(data);
+			},
+			dataType : 'html'
+			});
+
+});
+
 </script>
 <div class="container">
 	<table align = "center"  class="pagination w-50 border-none">

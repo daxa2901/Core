@@ -7,9 +7,23 @@ class Block_Core_Template extends Model_Core_View
 
 	public function __construct()
 	{
-
 	}
 
+	public function getBlock($key)
+	{
+		$block = $this->getChild($key);
+		if ($block) 
+		{
+			return $block;
+		}
+		$block = Ccc::getBlock($key);
+		if ($block) 
+		{
+			$block->setLayout($this->getLayout());
+			return $block;
+		}
+		return null;
+	}
 	public function setLayout($layout)
 	{
 		$this->layout = $layout;

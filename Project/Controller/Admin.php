@@ -4,6 +4,19 @@
 class Controller_Admin extends Controller_Admin_Action
 {
 	
+	public function grid1Action()
+	{	
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
+		$this->renderLayout();
+	}
+
+	public function grid2Action()
+	{
+		$this->renderJson(['status'=>'success']);
+	}
+	
 	public function gridAction()
 	{	
 		$this->setPageTitle('Admin Grid');

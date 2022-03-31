@@ -3,10 +3,26 @@
 <?php 
 class Block_Admin_Grid extends Block_Core_Grid
 {
+	protected $pager = null;
 	public function __construct()
 	{
 		parent::__construct();
 		$this->setTitle('Admin Details');
+	}
+
+	public function setPager($pager)
+	{
+		$this->pager = $pager;
+		return $this;
+	}
+
+	public function getPager()
+	{
+		if(!$this->pager)
+		{
+			$this->setPager(Ccc::getModel('Core_Pager'));
+		}
+		return $this->pager;
 	}
 
 	public function getEditUrl($admin)
@@ -99,8 +115,8 @@ class Block_Admin_Grid extends Block_Core_Grid
 		{
 			$action = new Controller_Core_Action();
 			$this->getPager()->setCurrent(($this->getPager()->getCurrent() == 1) ? 1 :$action->redirect(null,null,['p'=>$this->getPager()->getCurrent()-1]));
+			return [];
 		}
-		// print_r($admins);die()
 		return $admins;
 	}
 }
