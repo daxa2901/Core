@@ -18,7 +18,7 @@ class Block_Customer_Edit_Tab extends Block_Core_Edit_Tab
 			'url'=>$this->getUrl(null,null,['tab'=>'personal'])
 		],'personal' );
 		$this->addTab([
-			'title'=>'Billing Address Information',
+			'title'=>'Address Information',
 			'block'=>'Customer_Edit_Tabs_Address',
 			'url'=>$this->getUrl(null,null,['tab'=>'address'])
 		],'address' );

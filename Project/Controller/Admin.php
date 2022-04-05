@@ -4,26 +4,35 @@
 class Controller_Admin extends Controller_Admin_Action
 {
 	
-	public function grid1Action()
-	{	
+	public function indexAction()
+	{
+		$this->setPageTitle('Admin Page');
 		$content = $this->getLayout()->getContent();
 		$adminRow = Ccc::getBlock('Admin_Index');
 		$content->addChild($adminRow);
 		$this->renderLayout();
 	}
 
-	public function grid2Action()
-	{
-		$this->renderJson(['status'=>'success']);
-	}
-	
 	public function gridAction()
 	{	
-		$this->setPageTitle('Admin Grid');
-		$content = $this->getLayout()->getContent();
-		$adminRow = Ccc::getBlock('Admin_Grid');
-		$content->addChild($adminRow);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$adminBlock = Ccc::getBlock('Admin_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $adminBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 	
 	public function addAction()
@@ -31,10 +40,24 @@ class Controller_Admin extends Controller_Admin_Action
 		$this->setPageTitle('Admin Add');
 		$admin = Ccc::getModel('Admin');
 		Ccc::register('admin',$admin);
-		$content = $this->getLayout()->getContent();
-		$adminRow = Ccc::getBlock('Admin_Edit');
-		$content->addChild($adminRow);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$adminBlock = Ccc::getBlock('Admin_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $adminBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function editAction()
@@ -51,14 +74,30 @@ class Controller_Admin extends Controller_Admin_Action
       			throw new Exception("Unable to Load Admin.", 1);
       		}
       		Ccc::register('admin',$admin);
-      		$content = $this->getLayout()->getContent();
-			$adminRow = Ccc::getBlock('Admin_Edit');
-			$content->addChild($adminRow);
-			$this->renderLayout();
+      		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$adminBlock = Ccc::getBlock('Admin_Edit')->toHtml();
+			$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $adminBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+		
 		} 
 		catch (Exception $e) {
 			$this->getMessage()->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$this->gridAction();
 		}
 		
 	}
@@ -102,12 +141,12 @@ class Controller_Admin extends Controller_Admin_Action
 			}
 
 			$messages->addMessage('Admin details saved Successfully.');
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		} 
 		catch (Exception $e) 
 		{
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 	}
 
@@ -129,16 +168,58 @@ class Controller_Admin extends Controller_Admin_Action
 			}
 
 			$delete = $admin->delete(); 
-			if(!$delete){
+			if(!$delete)
+			{
 				throw new Exception("System is unable to delete record.", 1);
 			}
 
 			$messages->addMessage('Admin detail deleted successfully.');
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
 		} 
 		catch (Exception $e) {
 			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
+		}
+	}
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `admin`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `admin` WHERE `adminId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Admin detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

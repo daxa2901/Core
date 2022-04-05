@@ -24,7 +24,7 @@ class Controller_Core_Action
 			if ($login) 
 			{
 				$this->getMessage()->addMessage('You are already logged in.',get_class($this->getMessage())::ERROR);
-				$this->redirect('grid','product');
+				$this->redirect('index','product');
 			}
 		}
 		else

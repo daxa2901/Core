@@ -13,7 +13,7 @@ class Model_Admin_Login extends Model_Core_Row
 		$adminSession = Ccc::getModel('Admin_Session');
 		if($adminSession->login)
 		{
-			return true;
+			return $adminSession->login;
 		}
 		return false;
 	}

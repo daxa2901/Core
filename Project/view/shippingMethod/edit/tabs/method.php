@@ -1,40 +1,55 @@
 <?php $shippingMethod = $this->getShippingMethod(); ?>
-<div class="container w-50 my-3 shadow-lg bg-light">
-  <table class="w-100 form-group" cellspacing="4">
-      <tr>
-        <td> Name :</td>
-        <td><input type="text" name="shipping[name]" value="<?php echo $shippingMethod->name ?>" class="form-control"></td>
-      </tr>
-      <tr>
-        <td> Note :</td>
-        <td><input type="text" name="shipping[note]" value="<?php echo $shippingMethod->note ?>" class="form-control"></td>
-      </tr>
-      <tr>
-        <td> Amount :</td>
-        <td><input type="float" name="shipping[amount]" value="<?php echo $shippingMethod->amount ?>" class="form-control"></td>
-      </tr>
-      <tr>
-        <td>Status :</td>
-        <td>
-          <select name="shipping[status]" class="form-select">
-            <?php foreach ($shippingMethod->getStatus() as $key => $val): ?>
-              <option <?php if($shippingMethod->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
-            <?php endforeach; ?>          
-          </select>
-        </td>
-      
-  	    <?php if($shippingMethod->methodId): ?>
-  	    <td>  <input type="hidden" name="shipping[methodId]" value="<?php echo $shippingMethod->methodId ?>" class="form-control"></td>
-  	    <?php endif; ?>
-      </tr>
-  	
-      <tr>
-        <td width="25%">&nbsp;</td>
-        <td>
-          <button type="submit" name="submit" class="btn btn-primary my-2">Save </button>
-          <a href=<?php echo  $this->getUrl('grid',null,['id'=> null]);?>><button type="button" class="btn btn-danger my-2">Cancel</button></a>
-        </td>
-      </tr>    
+
+  <div class="row">
+    <div class="col-md-11">
+      <div class="card card-primary">
+        <div class="card-header">
+        </div>
+          <div class="card-body">
+            <div>
+            </div>
+            <div class="form-group">
+              <label >Name :</label>
+              <input type="text" class="form-control"  name="shipping[name]" value="<?php echo $shippingMethod->name; ?>">
+            </div>
+            <div class="form-group">
+              <label >Note :</label>
+              <input type="text" class="form-control"  name="shipping[note]" value="<?php echo $shippingMethod->note; ?>">
+            </div>
+            <div class="form-group">
+              <label >Amount :</label>
+              <input type="text" class="form-control"  name="shipping[amount]" value="<?php echo $shippingMethod->amount; ?>">
+            </div>
+            <div class="form-group">
+              <label >Status :</label>
+              <select name="payment[status]" class="form-control">
+                <?php foreach ($shippingMethod->getStatus() as $key => $val): ?>
+                  <option <?php if($shippingMethod->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
+                <?php endforeach; ?>          
+              </select>
+            </div>
+            <?php if($shippingMethod->methodId): ?>
+                <input type="hidden" name="shipping[methodId]" value="<?php echo $shippingMethod->methodId ?>" class="form-control">
+            <?php endif; ?>
+            <div class="card-footer">
+             <button type="button" name="submit" class="btn btn-primary my-2" id="shippingSaveBtn">Save </button>
+              <button type="button" class="btn btn-danger my-2" id="shippingCancelBtn">Cancel</button></a>
+          </div>
+          </div>
+        </div>
+      </div>
     </div>
-    </table>  
-</div>
+<script type="text/javascript">
+jQuery("#shippingSaveBtn").click(function () {
+  admin.setForm(jQuery("#indexForm"));
+  // alert("<?php echo $this->getEdit()->getEditUrl()?>");
+  admin.setUrl("<?php echo $this->getEdit()->getEditUrl()?>");
+  admin.load();
+});
+
+ jQuery("#shippingCancelBtn").click(function () {
+  admin.setUrl("<?php echo $this->getUrl('grid',null,['id'=>null])?>");
+  admin.load();
+});
+
+</script>

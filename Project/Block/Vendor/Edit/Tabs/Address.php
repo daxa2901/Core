@@ -8,6 +8,11 @@ class Block_Vendor_Edit_Tabs_Address extends Block_Core_Edit_Tabs_Content
 		$this->setTemplate('view/vendor/edit/tabs/address.php');
 	}
 
+	public function getVendor()
+	{
+		return Ccc::getRegistry('vendor');
+	}
+	
 	public function getAddress()
 	{
 		$vendor =  Ccc::getRegistry('vendor');

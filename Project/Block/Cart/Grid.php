@@ -42,7 +42,8 @@ class Block_Cart_Grid extends Block_Core_Template
 
 	public function getCarts()
 	{
-		if ($this->cart) 
+		$cart = Ccc::getRegistry('cart');
+		if ($cart) 
 		{
 			$cartId = Ccc::getModel('Admin_Session')->cart;
 			return  Ccc::getModel('Cart')->load($cartId);

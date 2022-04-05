@@ -1,12 +1,35 @@
 <?php $items = $this->getItems(); ?>
 <?php $products = $this->getProducts(); ?>
 <?php $carts = $this->getCart(); ?>
+<script type="text/javascript">
+jQuery("#addItem").click(function () {
+	admin.setForm(jQuery("#indexForm"));
+	admin.setUrl("<?php echo $this->getUrl('save','cart')?>");
+	admin.load();
+});
+jQuery("#itemSaveBtn").click(function () {
+	admin.setForm(jQuery("#indexForm"));
+	admin.setUrl("<?php echo $this->getUrl('save','cart')?>");
+	admin.load();
+});
 
+jQuery("#orderSaveBtn").click(function () {
+	admin.setForm(jQuery("#indexForm"));
+	admin.setUrl("<?php echo $this->getUrl('save','order')?>");
+	admin.load();
+});
+
+jQuery('a').click(function (event) {
+	event.preventDefault();
+	admin.setUrl(jQuery(this).attr('href'));
+	admin.load();
+
+})
+</script>
 <div class="container w-100 d-none" id="newItem">
-	<form action="<?php echo  $this->getUrl('save');?>" method="POST" class="w-100 mx-auto">
-		<button type="submit" class="btn btn-outline-primary float-end my-3 w-25"> Add Selected Items </button>
+		<button type="button" class="btn btn-outline-primary float-end my-3 w-25" id='addItem' > Add Selected Items </button>
 		<button type="button" onclick= "hideItems()" id = "cancel" class="btn btn-outline-primary float-end my-3 mx-2 w-25"> Cancel</button>
-		<table class="w-100 border mt-5">
+		<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 			<thead class="border">
 				<th> Image </th>
 				<th> Name </th>
@@ -34,13 +57,11 @@
 		<?php endforeach ?>
 			</tbody>
 		</table>
-	</form>	
 </div>
 <div class="container w-100">
-	<form action="<?php echo  $this->getUrl('save');?>" method="POST" class="w-100 mx-auto">
 		<button type="button" class="btn btn-outline-primary float-end my-3 mx-2 w-25" onclick="showItem()"> New Item</button>
-		<button type="submit" class="btn btn-outline-primary float-end my-3 w-25"> Update </button>
-		<table class="w-100 border mt-5">
+		<button type="button" class="btn btn-outline-primary float-end my-3 w-25" id="itemSaveBtn"> Update </button>
+		<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 			<thead class="border">
 				<th> Image </th>
 				<th> Name </th>
@@ -88,19 +109,17 @@
 				</tr>	
 		<?php endforeach ?>
 				<tr>
-					<td colspan="6"><button type="button" class="btn btn-outline-primary float-end my-3 mx-2 w-25 disabled"> Sub Total :- <label id = 'subTotal'> <?php echo $subtotal ?> </label>  </button>
+					<td colspan="10"><button type="button" class="btn btn-outline-primary float-end my-3 mx-2 w-25 disabled"> Sub Total :- <label id = 'subTotal'> <?php echo $subtotal ?> </label>  </button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-	</form>
-</div>
+	</div>
 </div>
 	<div class="container w-100 float-center ">
 		<div class="w-25 my-5 border float-end">
 			<table class="w-100 ">
 				<tbody>
-							<form action="<?php echo  $this->getUrl('save','order');?>" method = "POST">
 					<tr>
 						<td> SUB TOTAL : </td>
 						<td> <label id="subtotal"><?php echo $subtotal?> </label></td>
@@ -124,7 +143,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" class="float-end"><button type="submit" class="btn btn-primary w-100 my-3 "> Place Order </button></a></td>
+						<td colspan="2" class="float-end"><button type="button" class="btn btn-primary w-100 my-3 " id="orderSaveBtn"> Place Order </button></a></td>
 	        		</tr>
 	        		</form>
 				</tbody>

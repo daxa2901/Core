@@ -8,6 +8,7 @@ class Model_Order extends Model_Core_Row
 	protected $billingAddress = null;
 	protected $shippingMethod = null;
 	protected $paymentMethod = null;
+	protected $comments = null;
 	
 	const STATUS_PENDING = 1;
 	const STATUS_PACKAGING = 2;
@@ -107,6 +108,33 @@ class Model_Order extends Model_Core_Row
 		}
 		$this->setItems($items);
 		return $this->items;
+	}
+
+	public function setComments($comments)
+	{
+		$this->comments = $comments;
+		return $this;
+	}
+	
+	public function getComments($reload = false)
+	{
+		$itemModel = Ccc::getModel('Order_Comment');
+		if (!$this->orderId) 
+		{
+			return $itemModel;
+		}	
+		if ($this->comments && !$reload) 
+		{
+			return $this->comments;
+		}
+		$query = "SELECT * FROM {$itemModel->getResource()->getTableName()} WHERE orderId = {$this->orderId} order by `commentId` desc";
+		$comments = $itemModel->fetchAll($query);
+		if (!$comments) 
+		{
+			return $itemModel;
+		}
+		$this->setComments($comments);
+		return $this->comments;
 	}
 
 	public function setCustomer($customer)

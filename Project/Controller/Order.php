@@ -3,17 +3,62 @@
 <?php
 class Controller_Order extends Controller_Admin_Action
 {
+
+	public function indexAction()
+	{
+		$this->setPageTitle('Order Page');
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
+		$this->renderLayout();
+	}
 	
 	public function gridAction()
 	{	
 		unset(Ccc::getModel('Admin_Session')->cart);
-		$this->setPageTitle('Order Grid');
-		$content = $this->getLayout()->getContent();
-		$order = Ccc::getBlock('Order_Grid');
-		$content->addChild($order);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$pageBlock = Ccc::getBlock('Order_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $pageBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
+	public function addAction()
+	{
+
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		Ccc::register('cart',$this->getMessage()->getSession()->cart);
+		$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $cartBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+	}
 	
 	public function saveAction()
 	{
@@ -76,6 +121,18 @@ class Controller_Order extends Controller_Admin_Action
 				{
 					throw new Exception("System is unable to insert.", 1);
 				}
+
+				$comment = Ccc::getModel('Order_Comment');
+		  		$comment->orderId = $order->orderId;
+		  		$comment->createdAt = date('Y-m-d H:i:s');
+		  		$comment->status =1;
+		  		$comment->note ='Your order is placed and status is pendding.';
+		  		$comment = $comment->save();
+		  		if (!$comment) 
+		  		{
+		  			throw new Exception("System is unable to insert.", 1);
+		  		}
+
 				$tax = 0;
 				foreach ($items as $key => $value) 
 				{
@@ -148,12 +205,12 @@ class Controller_Order extends Controller_Admin_Action
 				
 			}
 			$this->getMessage()->addMessage('Order placed successfully.');
-			$this->redirect('grid');
+			$this->gridAction();
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');
+			$this->gridAction();
 		}
 	}
 
@@ -172,27 +229,104 @@ class Controller_Order extends Controller_Admin_Action
   		}
   		$content = $this->getLayout()->getContent();
   		Ccc::register('order',$order);
-		$order = Ccc::getBlock('Order_View');
-		$content->addChild($order);
-		$this->renderLayout();
+  		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$orderBlock = Ccc::getBlock('Order_View')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $orderBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
-	public function editAction()
+	
+	public function multipleDeleteAction()
 	{
-		$this->setPageTitle('View Orders');
-		$id=(int)$this->getRequest()->getRequest('id');
-  		if (!$id) 
-  		{
-  			throw new Exception("Invalid Id.", 1);
-  		}
-		$order = Ccc::getModel('Order')->load($id);
-		if (!$order) 
-  		{
-  			throw new Exception("Unable to load order.", 1);
-  		}
-  		$content = $this->getLayout()->getContent();
-		$order = Ccc::getBlock('Order_Edit')->setdata(['order'=>$order]);
-		$content->addChild($order);
-		$this->renderLayout();
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `orders`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `orders` WHERE `orderId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('orders detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
+		}
+	}
+
+	public function saveCommentAction()
+	{
+		try 
+		{
+			$request = $this->getRequest();
+			if (!$request->isPost() || ! $request->getPost('comment')) 
+			{
+				throw new Exception("Invalid request.", 1);
+			}
+			$id=(int)$request->getRequest('id');
+	  		if (!$id) 
+	  		{
+	  			throw new Exception("Invalid Id.", 1);
+	  		}
+			$order = Ccc::getModel('Order')->load($id);
+			if (!$order) 
+	  		{
+	  			throw new Exception("Unable to load order.", 1);
+	  		}
+	  		$row = $request->getPost('comment');
+	  		$comment = Ccc::getModel('Order_Comment');
+	  		$comment->setData($row);
+	  		$comment->orderId = $order->orderId;
+	  		$comment->createdAt = date('Y-m-d H:i:s');
+	  		$comment = $comment->save();
+	  		if (!$comment) 
+	  		{
+	  			throw new Exception("System is unable to insert.", 1);
+	  		}
+			$this->gridAction();			
+		} 
+		catch (Exception $e) 
+		{
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
+			$this->gridAction();
+		}
 	}
 }

@@ -6,6 +6,7 @@ class Block_Product_Grid extends Block_Core_Grid
 	protected $pager = null;
 	public function __construct()
 	{
+		$this->setTitle('Product Details');
 		parent::__construct();
 	}
 
@@ -26,12 +27,12 @@ class Block_Product_Grid extends Block_Core_Grid
 
 	public function getEditUrl($product)
 	{
-		return $this->getUrl('edit',null,['id'=>$product->productId]);
+		return $this->getUrl('edit','product',['id'=>$product->productId]);
 	}
 	
 	public function getDeleteUrl($product)
 	{
-		return $this->getUrl('delete',null,['id'=>$product->productId]);
+		return $this->getUrl('delete','product',['id'=>$product->productId]);
 	}
 	
 	public function getMediaUrl($product)

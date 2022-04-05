@@ -8,20 +8,24 @@ class Controller_Product_Media extends Controller_Admin_Action
 	{
 		try
 		{
-
 			$this->setPageTitle('Product Media Save');
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
 				throw new Exception("Invalid Request.", 1);				
 			}
-			if (!$request->getPost('product'))
+			// if (!$request->getPost('product'))
+			// {
+			// 	throw new Exception("First enter details of product.", 1);
+			// }
+			// $product = $request->getPost('product');
+			// $productId = $product['productId'];
+			$productId = (int) $request->getRequest('id');
+			if(!$productId)
 			{
-				throw new Exception("First enter details of product.", 1);
+				throw new Exception("Invalid Id.", 1);				
 			}
-			$product = $request->getPost('product');
-			$productId = $product['productId'];
-			$product = Ccc::getModel('Product')->load($product['productId']);
+			$product = Ccc::getModel('Product')->load($productId);
 			if (!$product) 
 			{
 				throw new Exception("No record found.", 1);
@@ -135,11 +139,11 @@ class Controller_Product_Media extends Controller_Admin_Action
 			else
 			{
 				
-				if (empty($_FILES['media']['name']['fileName'])) 
+				if (empty($_FILES['file']['name'])) 
 				{
 					throw new Exception("No image selected.", 1);				
 				}
-				$imagename = Ccc::getModel('Product_Media')->uploadImage($_FILES['media']);
+				$imagename = Ccc::getModel('Product_Media')->uploadImage($_FILES['file']);
 				$mediaRow->setData(['productId'=>$productId]);
 				$mediaRow->media = $imagename;
 				$insert = $mediaRow->save();
@@ -150,13 +154,46 @@ class Controller_Product_Media extends Controller_Admin_Action
 				
 				$this->getMessage()->addMessage('Product Media Uploaded Successfully.');
 			}
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$productBlock = Ccc::getBlock('Product_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $productBlock
+						],
 
-			$this->redirect('grid','product');
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		}
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','product');
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$productBlock = Ccc::getBlock('Product_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $productBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		}
 	}
 }

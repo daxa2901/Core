@@ -1,9 +1,14 @@
 <?php $items = $this->getItems(); ?>
 <?php $order = $this->getOrder(); ?>
+<?php $comment = $this->getComments(); ?>
 
 <div class="container w-100 ">
-		<table class="w-100 border mt-5">
+		<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 			<thead class="border">
+				<tr>
+				<th colspan="10"><h3> <b>Order Items</b></h3></th>
+				</tr>
+				<tr>
 				<th> Image </th>
 				<th> Name </th>
 				<th> Quantity </th>
@@ -11,6 +16,7 @@
 				<th> Cost </th>
 				<th> Discount </th>
 				<th> Row Total </th>
+				</tr>
 			</thead>
 			<tbody>
 			<?php $subtotal = 0 ?> 
@@ -39,16 +45,63 @@
 				</tr>	
 		<?php endforeach ?>
 				<tr>
-					<td colspan="6">
-						<button type="button" class="btn btn-outline-primary float-end my-3 mx-2 w-25 disabled"> Sub Total :- <?php echo $subtotal ?> </button>
+					<td colspan="7">
+						<button type="button" class="btn btn-outline-default float-end my-3 mx-2 w-25 disabled"> Sub Total :- <?php echo $subtotal ?> </button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-</div>
+	</div>
 	<div class="container w-100 float-center ">
-		<div class="w-25 my-5 border float-end p-3 shadow-sm">
-			<table class="w-100 ">
+		<div class="row">
+			<div class="col-sm-7 border shadow-sm mx-3">
+					
+					<div class="form-group">
+		              <label >Status :</label>
+		              <select name="comment[status]" class="form-control">
+		                <?php foreach (Ccc::getModel('Order_Comment')->getStatus() as $key => $val): ?>
+		                  <option value="<?php echo $key ?>"><?php echo $val ?></option>
+		                <?php endforeach; ?>
+		              </select>
+		              <!-- <input type="text" class="form-control"  name="comment[name]" value="<?php echo 11 ; ?>"> -->
+		            </div>
+            
+					<div class="form-group">
+		              <label >Note :</label>
+		              <textarea class="form-control" name="comment[note]"></textarea>
+		            </div>
+            		<div class="form-group">
+           			  <input type="checkbox" name="comment[notify]" id="same" value="1" > Notify To Customer
+           			</div>
+           
+            		<div class="card-footer">
+             			<button type="button" name="submit" class="btn btn-primary my-2" id="orderCommentSaveBtn">Save </button>
+        			</div>
+        			<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
+        				<thead>
+        					<th>CommentId</th>
+        					<th>Status</th>
+        					<th>Note</th>
+        					<th>Created At</th>
+        				</thead>
+        				<tbody>
+        					<?php if($comment):?>
+        						<?php foreach($comment as $key=>$value):?>
+		        					<tr>
+		        						<td><?php echo $value->commentId ?></td>
+		        						<td><?php echo $value->getStatus($value->status) ?></td>
+		        						<td><?php echo $value->note ?></td>
+		        						<td><?php echo $value->createdAt ?></td>
+		        					</tr>
+        						<?php endforeach; ?>
+        					<?php else:?>
+        						<tr><td colspan="4">No record found</td></tr>
+        				<?php endif ?>
+        				</tbody>
+        			</table>
+			</div>
+			<div class="col-sm-4 border shadow-sm">
+				<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 				<tbody>
 					<tr>
 						<td> SUB TOTAL : </td>
@@ -72,6 +125,15 @@
 						</td>
 					</tr>
 				</tbody>
-			</table>
+				</table>
+			</div>
 		</div>
+		
 	</div>
+<script type="text/javascript">
+	jQuery('#orderCommentSaveBtn').click(function () {
+		admin.setForm(jQuery("#indexForm"));
+	  	admin.setUrl("<?php echo $this->getUrl('saveComment','order',['id'=>$order->orderId])?>");
+  		admin.load();
+	})
+</script>

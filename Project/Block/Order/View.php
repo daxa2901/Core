@@ -25,7 +25,6 @@ class Block_Order_View extends Block_Core_Template
 	{
 		$this->addChild(Ccc::getBlock('Order_Item_Grid'),'itema');
 		return $this->getChild('itema');
-		return Ccc::getBlock('Order_Item_Grid')->getItems();	
 	}
 
 	public function getShippingMethod()
@@ -38,6 +37,10 @@ class Block_Order_View extends Block_Core_Template
 	{
 		$this->addChild(Ccc::getBlock('Order_PaymentMethod_Grid'),'paymentMethod');
 		return $this->getChild('paymentMethod');
-		return Ccc::getBlock('Order_PaymentMethod_Grid')->getPaymentMethod();	
+	}
+
+	public function getComments()
+	{
+		return Ccc::getRegistry('order')->getComments();
 	}
 }

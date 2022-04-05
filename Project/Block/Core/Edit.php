@@ -7,6 +7,8 @@
 <?php Ccc::loadClass('Block_ShippingMethod_Edit_Tab'); ?>
 <?php Ccc::loadClass('Block_Vendor_Edit_Tab'); ?>
 <?php Ccc::loadClass('Block_Product_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_Category_Edit_Tab'); ?>
+<?php Ccc::loadClass('Block_Salseman_Edit_Tab'); ?>
 
 <?php 
 class Block_Core_Edit extends Block_Core_Template
@@ -46,7 +48,7 @@ class Block_Core_Edit extends Block_Core_Template
 	{
 		$tabs = $this->getTab()->getSelectedTab();
 		$object = Ccc::getBlock($tabs['block']);
-		$object->setEdit($this);
+			$object->setEdit($this);
 		return $object;
 	}
 }

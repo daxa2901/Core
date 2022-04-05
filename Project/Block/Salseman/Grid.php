@@ -8,6 +8,7 @@ class Block_Salseman_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Salseman Details');
 	}
 
 	public function setPager($pager)
@@ -35,11 +36,6 @@ class Block_Salseman_Grid extends Block_Core_Grid
 		return $this->getUrl('delete',null,['id'=>$salseman->salsemanId]);
 	}
 	
-	public function getcustomerUrl($salseman)
-	{
-		return $this->getUrl('grid','salseman_customer',['id'=>$salseman->salsemanId,'p'=>1]);
-	}
-
 	public function prepareActions()
 	{
 		$this->addAction([
@@ -52,10 +48,6 @@ class Block_Salseman_Grid extends Block_Core_Grid
 			'method'=>'getDeleteUrl',
 			],'delete');
 		
-		$this->addAction([
-			'title'=>'Manage Customer',
-			'method'=>'getCustomerUrl',
-			],'customer');
 		return $this;
 	}
 

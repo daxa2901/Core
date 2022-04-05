@@ -3,35 +3,6 @@ Ccc::loadClass('Controller_Admin_Action');
 
 class Controller_Category_Media extends Controller_Admin_Action
 {
-	public function gridAction()
-	{
-		try
-		{
-			$this->setPageTitle('Category Media Grid');
-			$id = (int)$this->getRequest()->getRequest('id');
-			if(!$id)
-			{
-				throw new Exception("Invalid Id.", 1);				
-			}
-
-			$category = Ccc::getModel('Category')->load($id);
-			if (!$category) 
-			{
-				throw new Exception("Unable to load Category.", 1);
-			}
-			$categoryMedia =Ccc::getBlock('Category_Media_Grid')->setData(['id'=>$id]);
-		 	$content = $this->getLayout()->getContent();
-			$content->addChild($categoryMedia);
-			$this->renderLayout();
-
-		}
-		catch(Exception $e)
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','category',['id'=>null]);
-		}
-	}
-	
 						
 	public function saveAction()
 	{
@@ -41,12 +12,17 @@ class Controller_Category_Media extends Controller_Admin_Action
 			$request = $this->getRequest();
 			if(!$request->isPost())
 			{
-				throw new Exception("Invalid Request.", 1);				
+				throw new Exception("Invalid Request1.", 1);				
 			}
 			$categoryId = (int) $request->getRequest('id');
 			if(!$categoryId)
 			{
 				throw new Exception("Invalid Id.", 1);				
+			}
+			$category = Ccc::getModel('category')->load($categoryId);
+			if (!$category) 
+			{
+				throw new Exception("No record found.", 1);
 			}
 
 			$categoryRow = Ccc::getModel('Category');
@@ -157,13 +133,13 @@ class Controller_Category_Media extends Controller_Admin_Action
 			
 			else
 			{
+				if (empty($_FILES['file']['name'])) 
 				
-				if (empty($_FILES['media']['name']['fileName'])) 
 				{
 					throw new Exception("No image selected.", 1);				
 				}
 
-				$imagename = Ccc::getModel('Category_Media')->uploadImage($_FILES['media']);
+				$imagename = Ccc::getModel('Category_Media')->uploadImage($_FILES['file']);
 				$mediaRow->setData(['categoryId'=>$categoryId]);
 				$mediaRow->media = $imagename;
 				$insert = $mediaRow->save();
@@ -174,14 +150,47 @@ class Controller_Category_Media extends Controller_Admin_Action
 				
 				$this->getMessage()->addMessage('Category Media Uploaded Successfully.');
 			}
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$categoryBlock = Ccc::getBlock('Category_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $categoryBlock
+						],
 
-			$this->redirect('grid');
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 			
 		}
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$categoryBlock = Ccc::getBlock('Category_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $categoryBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		}
 	}
 }

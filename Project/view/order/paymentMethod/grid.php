@@ -1,6 +1,6 @@
 <?php $paymentMethod  = $this->getPaymentMethod()?>
 
-<table class="w-100 border text-center shadow-sm table">
+<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 	<thead >
 		<th colspan="2"><h3> <b>Payment Method</b></h3></th>
 	</thead>

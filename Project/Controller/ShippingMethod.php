@@ -4,24 +4,62 @@
 
 class Controller_ShippingMethod extends Controller_Admin_Action
 {
-	public function gridAction()
+	public function indexAction()
 	{
-		$this->setPageTitle('Shipping Method Grid');
+		$this->setPageTitle('Shipping Method Page ');
 		$content = $this->getLayout()->getContent();
-		$shippingMethod = Ccc::getBlock('ShippingMethod_Grid');
-		$content->addChild($shippingMethod);
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
 		$this->renderLayout();
 	}
+
+	public function gridAction()
+	{
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$methodBlock = Ccc::getBlock('ShippingMethod_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $methodBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+		
+	}
+	
 
 	public function addAction()
 	{
 		$this->setPageTitle('Shipping Method Add');
 		$shippingMethod = Ccc::getModel('ShippingMethod');
 		Ccc::register('shippingMethod',$shippingMethod);
-		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit');
-		$content = $this->getLayout()->getContent();
-		$content->addChild($shippingMethodRow);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$methodBlock = Ccc::getBlock('ShippingMethod_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $methodBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function editAction()
@@ -42,16 +80,29 @@ class Controller_ShippingMethod extends Controller_Admin_Action
       		}
 
 			Ccc::register('shippingMethod',$shippingMethod);
-      		$shippingMethodRow = Ccc::getBlock('ShippingMethod_Edit');
-			$content = $this->getLayout()->getContent();
-			$content->addChild($shippingMethodRow);
-			$this->renderLayout();
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$methodBlock = Ccc::getBlock('ShippingMethod_Edit')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $methodBlock
+						],
 
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 	}
 
@@ -88,12 +139,12 @@ class Controller_ShippingMethod extends Controller_Admin_Action
 				throw new Exception("System is unable to Insert.", 1);
 			}
 			$this->getMessage()->addMessage('Shipping method saved successfully.');
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		} 	
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 			
 		}
 	}
@@ -122,13 +173,56 @@ class Controller_ShippingMethod extends Controller_Admin_Action
 										
 			}
 			$this->getMessage()->addMessage('Shipping method deleted successfully.');
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
+		}
+	}
+
+
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `shippingMethod`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `shippingMethod` WHERE `methodId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('shippingMethod detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

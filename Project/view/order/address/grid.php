@@ -2,7 +2,7 @@
 <?php $shippingAddress = $this->getShippingAddress()  ?>
 <div class="row mx-auto">
 	<div class="<?php if($billingAddress->same == 1):?> col-sm-12 <?php else: ?> col-sm-6 <?php endif; ?>" id="billingAddress">
-		<table class="w-100 border text-center shadow-sm">
+		<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 			<thead >
 				<th colspan="2"><h3> <b>Billing Address</b></h3></th>
 			</thead>
@@ -52,7 +52,7 @@
 		</table>
 	</div>
 	<div class="col-sm-6">
-		<table class="w-100 border text-center shadow-sm">
+		<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 			<thead>
 				<th colspan="3"><h3> <b>Shipping Address</b></h3></th>
 			</thead>

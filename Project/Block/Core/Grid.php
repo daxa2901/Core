@@ -14,6 +14,10 @@ class Block_Core_Grid extends Block_Core_Template
 		$this->prepareColumns();
 		$this->prepareActions();
 	}
+	public function getLogin()
+	{
+		return Ccc::getModel('Admin_Login')->isLoggedIn();
+	}
 	
 	public function getColumnValue($row,$key,$column)
 	{

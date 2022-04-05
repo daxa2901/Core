@@ -1,27 +1,62 @@
 <?php
 Ccc::loadClass('Controller_Admin_Action');
 
-class Controller_Product extends Controller_Admin_Action{
-	public function gridAction()
+class Controller_Product extends Controller_Admin_Action
+{
+	public function indexAction()
 	{
-		$this->setPageTitle('Product Grid');
+		$this->setPageTitle('Product Page');
 		$content = $this->getLayout()->getContent();
-		$productRow = Ccc::getBlock('Product_Grid');
-		$content->addChild($productRow);
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
 		$this->renderLayout();
 	}
 
+	public function gridAction()
+	{	
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$productBlock = Ccc::getBlock('Product_grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $productBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+	}
+	
 	public function addAction()
 	{
 		$this->setPageTitle('Product Add');
 		$product= Ccc::getModel('Product');
 		Ccc::register('Product',$product);
-     	$productRow = Ccc::getBlock('Product_Edit');
-     	$productRow->setData(['product'=>$product]);
-     	$productRow->categoryProductPair =[];
-     	$content = $this->getLayout()->getContent();
-		$content->addChild($productRow);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$productBlock = Ccc::getBlock('Product_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $productBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function editAction()
@@ -40,16 +75,26 @@ class Controller_Product extends Controller_Admin_Action{
      			throw new Exception("Unable to load product.", 1);    			
      		}
 			Ccc::register('Product',$product);
-     		$productRow = Ccc::getBlock('Product_Edit');
-     		$query = "SELECT `entityId`,`categoryId` 
-     						FROM `category_product` 
-     				WHERE `productId` = {$id}";
-     		$categoryProductPair = $this->getAdapter()->fetchPair($query);
-     		$productRow->categoryProductPair = $categoryProductPair;
-     		$content = $this->getLayout()->getContent();
-			$content->addChild($productRow);
-			$this->renderLayout();
-		} 
+
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$productBlock = Ccc::getBlock('Product_Edit')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $productBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+    	} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
@@ -66,7 +111,6 @@ class Controller_Product extends Controller_Admin_Action{
 			{
 				throw new Exception("Invalid request.", 1);
 			}
-
 			if (!$request->getPost('product'))
 			{
 				throw new Exception("First enter details of product.", 1);
@@ -78,12 +122,39 @@ class Controller_Product extends Controller_Admin_Action{
 				throw new Exception("No record found.", 1);
 			}
 			$product->saveCategories($request->getPost('category'));
+			Ccc::register('Product',$product);
+			$this->getMessage()->addMessage('product category saved successfully.');
+			if($this->getRequest()->getRequest('tab')=='media')
+				{
+					$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+					$productBlock = Ccc::getBlock('Product_Edit')->toHtml();
+					$response = [
+						'status' => 'success',
+						'elements' =>[
+								[
+									'element' => '#indexContent',
+									'content' => $productBlock
+								],
+
+								[
+									'element' => '#indexMessage',
+									'content' => $messageBlock
+								]
+
+							]
+						];
+					$this->renderJson($response);
+				}
+				else
+				{
+					$this->gridAction();
+				}
 			
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 		
 	}
@@ -117,21 +188,40 @@ class Controller_Product extends Controller_Admin_Action{
 				$product = Ccc::getModel('Product');
 				$product->createdAt = date('Y-m-d H:i:s');
 			}
-			echo "<pre>";
 			$product->setData($row);
 			$product->getFinalPrice();
 			$product = $product->save();
-			// print_r($product);
-			// die();
 			if(!$product)
 			{
 				throw new Exception("System is unable to update.", 1);					
 			}
-
-			$product->saveCategories($request->getPost('category'));
+			Ccc::register('Product',$product);
 			$this->getMessage()->addMessage('product saved successfully.');
-			$this->redirect('grid',null,['id'=>null]);
-			
+			if($this->getRequest()->getRequest('tab')=='category')
+				{
+					$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+					$productBlock = Ccc::getBlock('Product_Edit')->toHtml();
+					$response = [
+						'status' => 'success',
+						'elements' =>[
+								[
+									'element' => '#indexContent',
+									'content' => $productBlock
+								],
+
+								[
+									'element' => '#indexMessage',
+									'content' => $messageBlock
+								]
+
+							]
+						];
+					$this->renderJson($response);
+				}
+				else
+				{
+					$this->gridAction();
+				}
 		} 
 		catch (Exception $e) 
 		{
@@ -180,6 +270,72 @@ class Controller_Product extends Controller_Admin_Action{
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
 			$this->redirect(Ccc::getBlock('Product_Grid')->getUrl('grid',null,['id'=>null]));
+		}
+	}
+
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "SELECT * FROM `product`";
+				$products = Ccc::getModel('product')->fetchAll($query);
+				foreach ($products as $key => $product) 
+				{
+					$media = $product->getMedia();
+					foreach ($media as $key => $value) 
+					{
+						$path = Ccc::getPath($value->getPath()).DIRECTORY_SEPARATOR.$value->media;
+						unlink($path);
+					}
+				}
+				$query = "DELETE FROM `product`";
+				
+				$delete = $this->getAdapter()->delete($query);
+				
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "SELECT * FROM `product` WHERE `productId` IN ({$ids})";
+				$products = Ccc::getModel('product')->fetchAll($query);
+				foreach ($products as $key => $product) 
+				{
+					$media = $product->getMedia();
+					foreach ($media as $key => $value) 
+					{
+						$path = Ccc::getPath($value->getPath()).DIRECTORY_SEPARATOR.$value->media;
+						unlink($path);
+					}
+				}
+				$query = "DELETE FROM `product` WHERE `productId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Product detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

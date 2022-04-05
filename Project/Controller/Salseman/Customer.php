@@ -1,36 +1,8 @@
 <?php 
 Ccc::loadClass('Controller_Admin_Action');
 
-class COntroller_Salseman_Customer extends Controller_Admin_Action
+class Controller_Salseman_Customer extends Controller_Admin_Action
 {
-	public function gridAction()
-	{
-		try
-		{
-			$this->setPageTitle('Salseman Customer Grid');
-			$id = (int)$this->getRequest()->getRequest('id');
-			if(!$id)
-			{
-				throw new Exception("Invalid Id.", 1);				
-			}
-			$salseman = Ccc::getModel('Salseman')->load($id);
-
-			if (!$salseman) 
-			{
-				throw new Exception("Unable to load Salseman.", 1);
-			}
-			$salsemanCustomer =Ccc::getBlock('Salseman_Customer_Grid')->setData(['id'=>$id]);
-			$content = $this->getLayout()->getContent();
-			$content->addChild($salsemanCustomer);
-			$this->renderLayout();
-		}
-		catch(Exception $e)
-		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','Salseman',null,true);
-		}
-		
-	}
 						
 	public function saveAction()
 	{
@@ -61,12 +33,12 @@ class COntroller_Salseman_Customer extends Controller_Admin_Action
 				}
 				$this->getMessage()->addMessage('Salseman Customer Updated Successfully.');
 			}
-			$this->redirect('grid');
+			$this->redirect('edit','Salseman');
 		}
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');
+			$this->redirect('edit','Salseman');
 		}
 	}
 }

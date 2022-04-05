@@ -4,23 +4,60 @@
 
 class Controller_Salseman extends Controller_Admin_Action
 {
-	public function gridAction()
+	public function indexAction()
 	{
-		$this->setPageTitle('Salseman Grid');
+		$this->setPageTitle('Admin Page');
 		$content = $this->getLayout()->getContent();
-		$salsemanRow = Ccc::getBlock('Salseman_Grid');
-		$content->addChild($salsemanRow);
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
 		$this->renderLayout();
 	}
 
+	public function gridAction()
+	{	
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$salsemanBlock = Ccc::getBlock('Salseman_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $salsemanBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+	}
+	
 	public function addAction()
 	{
 		$this->setPageTitle('Salseman Add');
 		$salseman = Ccc::getModel('Salseman');
-		$salsemanRow = Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman]);
-		$content = $this->getLayout()->getContent();
-		$content->addChild($salsemanRow);
-		$this->renderLayout();
+		Ccc::register('salseman',$salseman);
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$salsemanBlock = Ccc::getBlock('Salseman_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $salsemanBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function editAction()
@@ -40,16 +77,31 @@ class Controller_Salseman extends Controller_Admin_Action
       			throw new Exception("Unable to Load salseman.", 1);
       		}
 
-      		$salsemanRow = Ccc::getBlock('Salseman_Edit')->setdata(['salseman'=>$salseman]);
-			$content = $this->getLayout()->getContent();
-			$content->addChild($salsemanRow);
-			$this->renderLayout();
+			Ccc::register('salseman',$salseman);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$salsemanBlock = Ccc::getBlock('Salseman_Edit')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $salsemanBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 	}
 
@@ -85,13 +137,36 @@ class Controller_Salseman extends Controller_Admin_Action
 			{
 				throw new Exception("System is unable to Insert.", 1);
 			}
+			Ccc::register('salseman',$salseman);
 			$this->getMessage()->addMessage('Salseman saved successfully.');
-			$this->redirect('grid',null,['id'=>null]);
+			if($this->getRequest()->getRequest('tab')=='customer')
+			{
+				$this->getMessage()->addMessage('Customer saved successfully.');
+				$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+				$salsemanBlock = Ccc::getBlock('Salseman_Edit')->toHtml();
+				$response = [
+					'status' => 'success',
+					'elements' =>[
+							[
+								'element' => '#indexContent',
+								'content' => $salsemanBlock
+							],
+
+							[
+								'element' => '#indexMessage',
+								'content' => $messageBlock
+							]
+
+						]
+					];
+				$this->renderJson($response);
+			}
+			// $this->gridAction();
 		} 	
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 			
 		}
 	}
@@ -120,13 +195,56 @@ class Controller_Salseman extends Controller_Admin_Action
 										
 			}
 			$this->getMessage()->addMessage('Salseman deleted successfully.');
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
 				
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
+		}
+	}
+
+
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `salseman`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `salseman` WHERE `salsemanId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Salseman detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

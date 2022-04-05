@@ -7,6 +7,8 @@ class Block_Page_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Page Details');
+
 	}
 
 	public function setPager($pager)

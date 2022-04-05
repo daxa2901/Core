@@ -20,4 +20,9 @@ class Block_Order_Item_Grid extends Block_Core_Template
 		return Ccc::getRegistry('order');
 	}
 
+	public function getComments()
+	{
+		return Ccc::getRegistry('order')->getComments();
+	}
+
 }

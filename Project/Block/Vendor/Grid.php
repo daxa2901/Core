@@ -7,6 +7,7 @@ class Block_Vendor_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Vendor Details');
 	}
 
 	public function setPager($pager)
@@ -113,7 +114,7 @@ class Block_Vendor_Grid extends Block_Core_Grid
 		$startLimit = $this->getPager()->getStartLimit()-1;
 		$vendorRow = Ccc::getModel('Vendor');
 		$query = "SELECT v.*, a.`address` 
-		FROM `Vendor` v JOIN `vendor_address` a ON v.`vendorId` = a.`vendorId` order by v.`vendorId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
+		FROM `Vendor` v LEFT JOIN `vendor_address` a ON v.`vendorId` = a.`vendorId` order by v.`vendorId` desc LIMIT {$startLimit} , {$this->getPager()->getPerPageCount()}";
 		$vendors = $vendorRow->fetchAll($query);
 		if(!$vendors)
 		{

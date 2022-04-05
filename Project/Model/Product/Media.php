@@ -49,9 +49,9 @@ class Model_Product_Media extends Model_Core_Row
 
 	public function uploadImage($file)
 	{
-		$file_name = pathinfo($file['name']['fileName'],PATHINFO_FILENAME);
-		$temp_name=$file["tmp_name"]['fileName'];
-		$ext = strtolower(pathinfo($file['name']['fileName'],PATHINFO_EXTENSION));
+		$file_name = pathinfo($file['name'],PATHINFO_FILENAME);
+		$temp_name=$file["tmp_name"];
+		$ext = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));
 		if(!in_array($ext, ['png','jpg','jpeg']))
 		{
 			throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
