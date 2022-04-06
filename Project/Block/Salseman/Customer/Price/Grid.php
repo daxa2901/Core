@@ -10,7 +10,11 @@ class Block_Salseman_Customer_Price_Grid extends Block_Core_Template
 
 	public function getProducts()
 	{
-		return $this->getData();
+		return Ccc::getRegistry('products');
+	}
+	public function getSalseman()
+	{
+		return Ccc::getRegistry('salseman');
 	}
 
 }

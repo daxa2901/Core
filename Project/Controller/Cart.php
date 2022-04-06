@@ -3,15 +3,43 @@
 <?php
 class Controller_Cart extends Controller_Admin_Action
 {
+
+	public function indexAction()
+	{
+		$this->setPageTitle('Cart Page');
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
+		$this->renderLayout();
+	}
 	
 	public function gridAction()
 	{	
-		$this->setPageTitle('Cart Grid');
-		$content = $this->getLayout()->getContent();
-		Ccc::register('cart',$this->getMessage()->getSession()->cart);
-		$cart = Ccc::getBlock('Cart_Grid')->setdata(['cart'=>$this->getMessage()->getSession()->cart]);
-		$content->addChild($cart);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $cartBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+
+		// $this->setPageTitle('Cart Grid');
+		// $content = $this->getLayout()->getContent();
+		// Ccc::register('cart',$this->getMessage()->getSession()->cart);
+		// $cart = Ccc::getBlock('Cart_Grid')->setdata(['cart'=>$this->getMessage()->getSession()->cart]);
+		// $content->addChild($cart);
+		// $this->renderLayout();
 	}
 
 	public function createCartAction()
@@ -80,14 +108,53 @@ class Controller_Cart extends Controller_Admin_Action
 			}
 			$adminSession = Ccc::getModel('Admin_Session');
 			$adminSession->cart = $cart->cartId;
-			Ccc::getBlock('Cart_Grid')->setdata(['cart'=>$this->getMessage()->getSession()->cart]);
-			$this->redirect('grid',null,['id'=>null]);
+			// Ccc::getBlock('Cart_Grid')->setdata(['cart'=>$this->getMessage()->getSession()->cart]);
+			Ccc::register('cart',$this->getMessage()->getSession()->cart);
+			$this->getMessage()->addMessage('Cart loaded successfully.');
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+			// $this-s>redirect('grid',null,['id'=>null]);
 
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			Ccc::getBlock('Cart_Grid')->setdata(['cart'=>$this->getMessage()->getSession()->cart]);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+			
 		}
 	}
 
@@ -140,7 +207,7 @@ class Controller_Cart extends Controller_Admin_Action
 					throw new Exception("System is unable to update.", 1);
 				}
 			}
-			elseif (array_key_exists('productId',$cart)) 
+			if (array_key_exists('productId',$cart)) 
 			{
 				$subtotal = 0;
 				foreach ($cart['productId'] as $key => $value) 
@@ -157,7 +224,6 @@ class Controller_Cart extends Controller_Admin_Action
 					$itemModel->taxAmount = ($product->price * ($product->tax/100))*$quantity[$value];
 					$itemModel->createdAt = date('Y-m-d H:i:s');
 					$itemModel = $itemModel->save();
-
 					if (!$itemModel) 
 					{
 						throw new Exception("System is unable to insert.", 1);
@@ -298,13 +364,50 @@ class Controller_Cart extends Controller_Admin_Action
 				}
 			}
 
-			$this->getMessage()->addMessage("Cart items Saved successfully.",1);
-			$this->redirect('grid');		
+			$this->getMessage()->addMessage("Cart items Saved successfully....",1);
+			Ccc::register('cart',$this->getMessage()->getSession()->cart);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');		
+			Ccc::register('cart',$this->getMessage()->getSession()->cart);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+			// $this->redirect('grid');		
 		}
 	}
 
@@ -338,14 +441,51 @@ class Controller_Cart extends Controller_Admin_Action
 			{
 				throw new Exception("System is unable to delete record.", 1);
 			}
+			Ccc::register('cart',$this->getMessage()->getSession()->cart);
 			$this->getMessage()->addMessage('Cart item deleted successfully.');
-			$this->redirect('grid',null,['id'=>null]);	
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 				
 		} 
 		catch (Exception $e) 
 		{
-			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);Ccc::register('cart',$this->getMessage()->getSession()->cart);
+			Ccc::register('cart',$this->getMessage()->getSession()->cart);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$cartBlock = Ccc::getBlock('Cart_Grid')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $cartBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+			// $this->redirect('grid',null,['id'=>null]);	
 		}
 	}
 }

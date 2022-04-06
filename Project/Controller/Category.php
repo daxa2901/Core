@@ -3,24 +3,60 @@ Ccc::loadClass('Controller_Admin_Action');
 class Controller_Category extends Controller_Admin_Action 
 {
 
-	public function gridAction()
+	public function indexAction()
 	{
-		$this->setPageTitle('Category Grid');
+		$this->setPageTitle('Product Page');
 		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Grid');
-		$content->addChild($categoryRow);
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
 		$this->renderLayout();
+	}
+
+	public function gridAction()
+	{	
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$categoryBlock = Ccc::getBlock('Category_grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $categoryBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function addAction()
 	{
 		$this->setPageTitle('Category Add');
 		$category = Ccc::getModel('Category');
-		$content = $this->getLayout()->getContent();
-		$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
-		$content->addChild($categoryRow);
-		$this->renderLayout();
-		
+		Ccc::register('category',$category);
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$categoryBlock = Ccc::getBlock('Category_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $categoryBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function editAction()
@@ -38,16 +74,30 @@ class Controller_Category extends Controller_Admin_Action
 	 		{
       			throw new Exception("Unable to Load Category.", 1);
       		}
-      		$content = $this->getLayout()->getContent();
-			$categoryRow = Ccc::getBlock('Category_Edit')->setData(['category'=>$category]);
-			$content->addChild($categoryRow);
-			$this->renderLayout();
-		
+			Ccc::register('category',$category);
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$categoryBlock = Ccc::getBlock('Category_Edit')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $categoryBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 	}
 
@@ -90,8 +140,8 @@ class Controller_Category extends Controller_Admin_Action
 					$parent=$categoryRow->load($categoryRow->parentId);
 					$categoryRow->categoryPath = $parent->categoryPath.'/'.$id;
 				}
-				$update = $categoryRow->save();
-				if(!$update)
+				$category = $categoryRow->save();
+				if(!$category)
 				{
 					throw new Exception("System is unable to update.", 1);
 				}	
@@ -145,14 +195,38 @@ class Controller_Category extends Controller_Admin_Action
 				}				
 				$this->getMessage()->addMessage('Category Inserted Successfully.');
 			}
-		
-			$this->redirect('grid',null,['id'=>null]);
+			Ccc::register('category',$category);
+			if($this->getRequest()->getRequest('tab')=='media')
+			{
+				$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+				$categoryBlock = Ccc::getBlock('Category_Edit')->toHtml();
+				$response = [
+					'status' => 'success',
+					'elements' =>[
+							[
+								'element' => '#indexContent',
+								'content' => $categoryBlock
+							],
+
+							[
+								'element' => '#indexMessage',
+								'content' => $messageBlock
+							]
+
+						]
+					];
+				$this->renderJson($response);
+			}
+			else
+			{
+				$this->gridAction();
+			}
 		
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);	
+			$this->gridAction();
 		}
 	}
 	
@@ -184,12 +258,78 @@ class Controller_Category extends Controller_Admin_Action
 				throw new Exception("System is unable to  delete.", 1);
 			}
 			$this->getMessage()->addMessage('Category deleted successfully.');
-			$this->redirect('grid',null,['id'=>null]);		
+			$this->gridAction();
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);		
+			$this->gridAction();
+		}
+	}
+
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "SELECT * FROM `category`";
+				$categories = Ccc::getModel('Category')->fetchAll($query);
+				foreach ($categories as $key => $category) 
+				{
+					$media = $category->getMedia();
+					foreach ($media as $key => $value) 
+					{
+						$path = Ccc::getPath($value->getPath()).DIRECTORY_SEPARATOR.$value->media;
+						unlink($path);
+					}
+				}
+				$query = "DELETE FROM `category`";
+				
+				$delete = $this->getAdapter()->delete($query);
+				
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "SELECT * FROM `category` WHERE `categoryId` IN ({$ids})";
+				$categories = Ccc::getModel('Category')->fetchAll($query);
+				foreach ($categories as $key => $category) 
+				{
+					$media = $category->getMedia();
+					foreach ($media as $key => $value) 
+					{
+						$path = Ccc::getPath($value->getPath()).DIRECTORY_SEPARATOR.$value->media;
+						unlink($path);
+					}
+				}
+				$query = "DELETE FROM `category` WHERE `categoryId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Category detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

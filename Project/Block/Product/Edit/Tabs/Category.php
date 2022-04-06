@@ -10,6 +10,7 @@ class Block_Product_Edit_Tabs_Category extends Block_Core_Edit_Tabs_Content
 
 	public function getProduct()
 	{
+		// print_r(Ccc::getRegistry('Product'));
 		return Ccc::getRegistry('Product');
 	}
 	

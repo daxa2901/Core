@@ -9,6 +9,7 @@ class Block_ShippingMethod_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Shipping Details');
 	}
 	public function setPager($pager)
 	{

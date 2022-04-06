@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<?php echo $this->getHead()->toHtml(); ?>
-<body>
+<body class="sidebar-mini layout-fixed" style="height: auto;">
 	<table  class="w-100 " >
 		<tr>
 			<td> <?php echo $this->getHeader()->toHtml(); ?></td>

@@ -33,20 +33,49 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 			$products = Ccc::getModel('Product');
 			$query = "SELECT p.*,cp.`entityId`, cp.`price` as customerPrice FROM `product` p LEFT JOIN `customer_price` cp ON p.`productId` = cp.`productId` AND `customerId` = {$customerId} WHERE p.`status` = 1";
 			$products = $products->fetchAll($query);
-			$customerPriceGrid =Ccc::getBlock('Salseman_Customer_Price_Grid');
-			$customerPriceGrid->setData(['products'=>$products]);
-			$customerPriceGrid->salseman = $salseman;
-			$content = $this->getLayout()->getContent();
-			$content->addChild($customerPriceGrid);
-			$this->renderLayout();
+			Ccc::register('products',$products);
+			Ccc::register('salseman',$salseman);
+			$customerPriceBlock =Ccc::getBlock('Salseman_Customer_Price_Grid')->toHtml();
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $customerPriceBlock
+						],
 
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		}
 		catch(Exception $e)
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid','salseman_customer',null,true);
+			$customerPriceBlock =Ccc::getBlock('Salseman_Edit')->toHtml();
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $customerPriceBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
 		}
-		
 	}
 						
 	public function saveAction()
@@ -105,12 +134,12 @@ class Controller_Salseman_Customer_Price extends Controller_Admin_Action
 				
 				$this->getMessage()->addMessage('Customer price saved successfully.');
 			}
-			$this->redirect('grid');
+			$this->gridAction();
 		}
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid');
+			$this->gridAction();
 		}
 	}
 }

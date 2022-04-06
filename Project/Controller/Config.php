@@ -4,13 +4,35 @@
 class Controller_Config extends Controller_Admin_Action
 {
 	
+	public function indexAction()
+	{
+		$this->setPageTitle('ConfigPage');
+		$content = $this->getLayout()->getContent();
+		$adminRow = Ccc::getBlock('Admin_Index');
+		$content->addChild($adminRow);
+		$this->renderLayout();
+	}
+
 	public function gridAction()
 	{	
-		$this->setPageTitle('Config Grid');
-		$content = $this->getLayout()->getContent();
-		$config = Ccc::getBlock('Config_Grid');
-		$content->addChild($config);
-		$this->renderLayout();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$configBlock = Ccc::getBlock('Config_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $configBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
 	}
 
 	public function addAction()
@@ -18,11 +40,28 @@ class Controller_Config extends Controller_Admin_Action
 		$this->setPageTitle('Config Add');
 		$config = Ccc::getModel('Config');
 		Ccc::register('config',$config);
-		$content = $this->getLayout()->getContent();
-		$config = Ccc::getBlock('Config_Edit');
-		$content->addChild($config);
-		$this->renderLayout();
-		
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$configBlock = Ccc::getBlock('Config_Edit')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' =>[
+					[
+						'element' => '#indexContent',
+						'content' => $configBlock
+					],
+
+					[
+						'element' => '#indexMessage',
+						'content' => $messageBlock
+					]
+
+				]
+			];
+		$this->renderJson($response);
+		// $content = $this->getLayout()->getContent();
+		// $config = Ccc::getBlock('Config_Edit');
+		// $content->addChild($config);
+		// $this->renderLayout();
 	}
 
 	public function editAction()
@@ -41,15 +80,33 @@ class Controller_Config extends Controller_Admin_Action
       			throw new Exception("Unable to Load Config.", 1);
       		}
 			Ccc::register('config',$config);
-			$content = $this->getLayout()->getContent();
-			$config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
-			$content->addChild($config);
-			$this->renderLayout();
+			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+			$configBlock = Ccc::getBlock('Config_Edit')->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' =>[
+						[
+							'element' => '#indexContent',
+							'content' => $configBlock
+						],
+
+						[
+							'element' => '#indexMessage',
+							'content' => $messageBlock
+						]
+
+					]
+				];
+			$this->renderJson($response);
+			// $content = $this->getLayout()->getContent();
+			// $config = Ccc::getBlock('Config_Edit')->setData(['config'=>$config]);
+			// $content->addChild($config);
+			// $this->renderLayout();
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$this->redirect('grid',null,['id'=>null]);
+			$this->gridAction();
 		}
 		
 	}
@@ -87,12 +144,12 @@ class Controller_Config extends Controller_Admin_Action
 			}
 
 			$this->getMessage()->addMessage('Config saved Successfully.');
-   			$this->renderJson($config);
+			$this->gridAction();
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-   			$this->renderJson($e->getMessage());
+			$this->gridAction();
 		}
 	}
 
@@ -118,13 +175,54 @@ class Controller_Config extends Controller_Admin_Action
 				throw new Exception("System is unable to delete record.", 1);
 			}
 			$this->getMessage()->addMessage('Config Deleted Successfully.');
-   			$this->renderJson($delete);
-					
+			$this->gridAction();					
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-   			$this->renderJson($e->getMessage());
+			$this->gridAction();					
+		}
+	}
+
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `config`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `config` WHERE `configId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Config detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }

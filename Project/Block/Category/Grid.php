@@ -7,6 +7,7 @@ class Block_Category_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Category Details');
 	}
 	public function setPager($pager)
 	{

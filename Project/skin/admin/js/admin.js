@@ -70,6 +70,21 @@ var admin ={
 
 		});
 	},
+	uploadImage : function (){
+		const self = this;
+		$.ajax({
+			url: this.getUrl(),
+			type: this.getType(),
+			data : this.getData(),
+			contentType: false,
+   			processData:false,
+			success : function (data) {
+				self.manageElements(data.elements);
+			},
+			dataType : this.getDataType()
+
+		});
+	},
 
 	manageElements : function (elements) {
 		jQuery(elements).each(function (index,element) {

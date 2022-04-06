@@ -7,85 +7,29 @@
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
 	<script type="text/javascript" src="skin/admin/js/jQuery.js"></script>
 	<script type="text/javascript" src="skin/admin/js/admin.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script>
+	 <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/jqvmap/jqvmap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/dist/css/adminlte.min.css">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/daterangepicker/daterangepicker.css">
+  <!-- summernote -->
+  <link rel="stylesheet" href="skin/admin/bootstrap/plugins/summernote/summernote-bs4.min.css">
+
 	<title><?php echo $this->getTitle() ?></title>
-
-	<script type="text/javascript">
-		core = {
-			config:{
-				data : [],
-				form : null,
-				setData : function(data){
-					this.data = data;
-					return this;
-				},
-				getData : function(){
-					return this.data;
-				},
-				
-				setForm : function(form){
-					this.form = $(form);
-					return this;
-				},
-				getForm : function(){
-					return this.form;
-				},
-				validate : function(){
-					var canSubmit = true;
-					if(!jQuery("#name").val()){
-						alert("please enter name");
-						canSubmit = false;
-					}
-					if(!jQuery("#code").val()){
-						alert("please enter code");
-						canSubmit = false;
-					}
-					if(!jQuery("#Value").val()){
-						alert("please enter value");
-						canSubmit = false;
-					}
-					if(canSubmit == true){
-						this.callAjax();
-					}
-					return false;
-				},
-				callAjax : function(){
-					$.ajax({
-					  type: jQuery("#form-data").attr('method'),
-					  url: jQuery("#form-data").attr('action') ,
-					  data:  jQuery("#form-data").serialize(),
-					  success: function(data) {
-					  	$('#layout').load("<?php echo $this->getUrl('grid');?>");
-					},
-					dataType: "json"
-					});
-				},
-
-				addNew : function(){
-					 $.ajax({
-					  type:jQuery("#addNew").attr('method'),
-				 	  url: jQuery("#addNew").attr('action'),
-					  success: function(data) {
-					  	$('#layout').html(data);
-					},
-					dataType :'html'
-					});
-				},
-				
-				getData : function(){
-
-					$.ajax({
-					  type:'GET',
-				 	  url: '<?php echo $this->getUrl('grid','config');?>',
-					  success: function(data) {
-					  	// $('#layout').html(data);
-					},
-					dataType :'html'
-					});
-				},
-				
-			}
-		}
-
-	</script>
 </head>
 

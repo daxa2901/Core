@@ -14,12 +14,20 @@ class Block_Core_Grid extends Block_Core_Template
 		$this->prepareColumns();
 		$this->prepareActions();
 	}
+	public function getLogin()
+	{
+		return Ccc::getModel('Admin_Login')->isLoggedIn();
+	}
 	
 	public function getColumnValue($row,$key,$column)
 	{
 		if ($key == 'status') 
 		{
 			return $row->getStatus($row->$key);
+		}
+		if ($key == 'state') 
+		{
+			return $row->getState($row->$key);
 		}
 		if ($key == 'base') 
 		{

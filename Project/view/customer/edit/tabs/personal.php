@@ -1,50 +1,4 @@
 <?php $customer = $this->getCustomer();?>
-<div class="container w-50 my-3 shadow-lg bg-light">
-  <table class="form-group w-100" cellspacing="4">
-    <tr>
-      <td colspan="2"><b>Personal Information</b><hr></td>
-    </tr>
-    <tr>
-      <td >First Name :</td>
-      <td><input type="text" name="customer[firstName]" value="<?php echo $customer->firstName; ?>" class="form-control"></td>
-    </tr>
-    
-    <tr>
-      <td >Last Name :</td>
-      <td><input type="text" name="customer[lastName]" value="<?php echo $customer->lastName; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td >Email :</td>
-      <td><input type="text" name="customer[email]" value="<?php echo $customer->email; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td >Mobile :</td>
-      <td><input type="text" name="customer[mobile]" value="<?php echo $customer->mobile; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td >Status :</td>
-      <td>
-        <select name="customer[status]" class="form-select">
-          <?php foreach ($customer->getStatus() as $key => $val): ?>
-            <option <?php if($customer->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
-          <?php endforeach; ?>
-        </select>
-      </td>
-    </tr>
-    <tr>
-        <td>
-          <?php if($customer->customerId): ?>
-            <input type="hidden" name="customer[customerId]" value="<?php echo $customer->customerId; ?>">
-         <?php endif ?>
-        </td>
-        <td colspan="2">
-          <button type="button" name="submit" class="btn btn-primary my-2" id="customerSaveBtn">Save </button>
-          <button type="button" name="submit" class="btn btn-primary my-2" id = "customerSaveNext" value="saveAndNext">Save & Next</button>
-          <button type="button" class="btn btn-danger my-2" id = "customerCancelBtn">Cancel</button>
-        </td>
-      </tr>    
-  </table>  
-</div>
 
 <script type="text/javascript">
   jQuery("#customerSaveBtn").click(function () {
@@ -58,4 +12,52 @@
   admin.load();
 });
 
+jQuery("#customerSaveNext").click(function () {
+  admin.setForm(jQuery("#indexForm"));
+  admin.setUrl("<?php echo $this->getUrl('save',null,['tab'=>'address'])?>");
+  admin.load();
+});
+
 </script>
+<div class="row">
+    <div class="col-md-11">
+      <div class="card card-primary">
+        <div class="card-header">
+        </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label >First Name :</label>
+              <input type="text" class="form-control"  name="customer[firstName]" value="<?php echo $customer->firstName; ?>">
+            </div>
+            <div class="form-group">
+              <label >Last Name :</label>
+              <input type="text" class="form-control"  name="customer[lastName]" value="<?php echo $customer->lastName; ?>" >
+            </div>
+            <div class="form-group">
+              <label > Email :</label>
+              <input type="Email" class="form-control"  name="customer[email]" value="<?php echo $customer->email; ?>" >
+            </div>
+            <div class="form-group">
+              <label >Mobile :</label>
+              <input type="tel" class="form-control"  name="customer[mobile]" value="<?php echo $customer->mobile; ?>" >
+            </div>
+            <div class="form-group">
+              <label >Status :</label>
+              <select name="customer[status]" class="form-control">
+                <?php foreach ($customer->getStatus() as $key => $val): ?>
+                  <option <?php if($customer->status == $key): ?> selected <?php endif ?>value="<?php echo $key ?>"><?php echo $val ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          <div class="card-footer">
+            <?php if($customer->customerId): ?>
+              <input type="hidden" class="form-control"  name="customer[customerId]" value="<?php echo $customer->customerId; ?>" >
+            <?php endif; ?>
+            <button type="button" name="submit" class="btn btn-primary my-2" id="customerSaveBtn">Save </button>
+            <button type="button" name="submit" class="btn btn-primary my-2" id = "customerSaveNext" value="saveAndNext">Save & Next</button>
+            <button type="button" class="btn btn-danger my-2" id = "customerCancelBtn">Cancel</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -49,9 +49,9 @@ class Model_Category_Media extends Model_Core_Row
 
 	public function uploadImage($file)
 	{
-		$file_name = pathinfo($file['name']['fileName'],PATHINFO_FILENAME);
+		$file_name = pathinfo($file['name'],PATHINFO_FILENAME);
 		$temp_name=$file["tmp_name"];
-		$ext = strtolower(pathinfo($file['name']['fileName'],PATHINFO_EXTENSION));
+		$ext = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));
 		if(!in_array($ext, ['png','jpg','jpeg']))
 		{
 			throw new Exception("Image must of type JPG, JPEG or  PNG", 1);
@@ -59,7 +59,7 @@ class Model_Category_Media extends Model_Core_Row
 		
 		$imagename=$file_name.'_'.date("dmYhms").'.'.$ext;
 		$path = Ccc::getPath($this->getPath()).DIRECTORY_SEPARATOR.$imagename;
-		if(!move_uploaded_file($temp_name['fileName'], $path))
+		if(!move_uploaded_file($temp_name, $path))
 		{
 			throw new Exception("Unable to Upload image.", 1);
 		}

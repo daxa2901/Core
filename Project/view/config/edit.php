@@ -40,7 +40,7 @@
     </table>  
   </form>
 </div>
-
+<!-- 
 <script type="text/javascript">
   $(document).on('click','#cancel',function () {
   event.preventDefault();
@@ -55,4 +55,4 @@
 
 });
 
-</script>
+</script> -->

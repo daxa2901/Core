@@ -1,40 +1,59 @@
 <?php $address = $this->getAddress(); ?>
-<div class="container w-50 my-3 shadow-lg bg-light">
-  <table class = "form-group w-100" cellspacing="4">
-    
-    <tr>
-      <td colspan="2"><b>Address Information</b><hr></td>
-    </tr>
-    <tr>
-      <td>Address :</td>
-      <td><input type="text" name="address[address]" value="<?php echo $address->address; ?>" class="form-control"></td>
-    </tr>
-    
-    <tr>
-      <td>City :</td>
-      <td><input type="text" name="address[city]" value="<?php echo $address->city; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td>State :</td>
-      <td><input type="text" name="address[state]" value="<?php echo $address->state; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td>Postal Code :</td>
-      <td><input type="text" name="address[postalCode]" value="<?php echo $address->postalCode; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td>Country :</td>
-      <td><input type="text" name="address[country]" value="<?php echo $address->country; ?>" class="form-control"></td>
-    </tr>
-    <tr>
-      <td></td>
-      <?php if($address->addressId): ?>
-        <input type="hidden" name="address[addressId]" value="<?php echo $address->addressId; ?>">
-      <?php endif ?>
-      <td>
-        <button type="submit" name="submit" class="btn btn-primary my-2">Save </button>
-        <a href="<?php echo  $this->getUrl('grid',null,['id'=>null]);?>"><button type="button" class="btn btn-danger my-2">Cancel</button></a>
-      </td>
-    </tr>    
-  </table>  
+<?php $vendor = $this->getVendor(); ?>
+<div class="row">
+    <div class="col-md-11">
+      <div class="card card-primary">
+        <div class="card-header">
+        </div>
+          <div class="card-body">
+            <div>
+            </div>
+            <div class="form-group">
+              <label >Address :</label>
+              <input type="text" class="form-control"  name="address[address]" value="<?php echo $address->address; ?>">
+            </div>
+            <div class="form-group">
+              <label >City :</label>
+              <input type="text" class="form-control"  name="address[city]" value="<?php echo $address->city; ?>" >
+            </div>
+            <div class="form-group">
+              <label > State :</label>
+              <input type="text" class="form-control"  name="address[state]" value="<?php echo $address->state; ?>" >
+            </div>
+            <div class="form-group">
+              <label >Country :</label>
+              <input type="text" class="form-control"  name="address[country]" value="<?php echo $address->country; ?>" >
+            </div>
+           <div class="form-group">
+              <label >Postal Code :</label>
+              <input type="mobile" class="form-control"  name="address[postalCode]" value="<?php echo $address->postalCode; ?>" >
+            </div>
+            <?php if($address->addressId): ?>
+              <input type="hidden" name="address[addressId]" value="<?php echo $address->addressId; ?>">
+            <?php endif ?>
+            <?php if($vendor->vendorId): ?>
+              <input type="hidden" name="vendorId" value="<?php echo $vendor->vendorId; ?>">
+            <?php endif ?>
+      
+            <div class="card-footer">
+             <button type="button" name="submit" class="btn btn-primary my-2" id="vendorAddressSaveBtn">Save </button>
+            <button type="button" class="btn btn-danger my-2" id="vendorAddressCancelBtn">Cancel</button>
+            
+          </div>
+          </div>
+      </div>
+    </div>
 </div>
+<script type="text/javascript">
+  jQuery("#vendorAddressSaveBtn").click(function () {
+    admin.setForm(jQuery("#indexForm"));
+    // alert("<?php echo $this->getEdit()->getEditUrl()?>");
+    admin.setUrl("<?php echo $this->getEdit()->getEditUrl()?>");
+    admin.load();
+  });
+
+   jQuery("#vendorAddressCancelBtn").click(function () {
+    admin.setUrl("<?php echo $this->getUrl('grid',null,['id'=>null])?>");
+    admin.load();
+  });
+</script>

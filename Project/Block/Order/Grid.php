@@ -9,6 +9,7 @@ class Block_Order_Grid extends Block_Core_Grid
 	public function __construct()
 	{
 		parent::__construct();
+		$this->setTitle('Order Details');
 	}
 
 	public function setPager($pager)
@@ -26,26 +27,17 @@ class Block_Order_Grid extends Block_Core_Grid
 		return $this->pager;
 	}
 	
-	public function getEditUrl($order)
+	public function getViewUrl($order)
 	{
-		return $this->getUrl('edit',null,['id'=>$order->orderId]);
-	}
-	
-	public function getDeleteUrl($order)
-	{
-		return $this->getUrl('delete',null,['id'=>$order->orderId]);
+		return $this->getUrl('view',null,['id'=>$order->orderId]);
 	}
 	public function prepareActions()
 	{
 		$this->addAction([
 			'title'=>'View',
 			'method'=>'getViewUrl',
-			],'edit');
+			],'view');
 		
-		$this->addAction([
-			'title'=>'Delete',
-			'method'=>'getDeleteUrl',
-			],'delete');
 		return $this;
 	}
 

@@ -56,7 +56,7 @@ class Controller_Admin_Login extends Controller_Admin_Action
 			{
 				$this->getMessage()->addMessage('You are logged in successfully.');
 			}
-			$this->redirect('grid','product');
+			$this->redirect('index','product');
 		} 
 		catch (Exception $e) 
 		{

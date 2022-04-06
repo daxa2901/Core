@@ -1,8 +1,7 @@
 <?php $paymentMethods  = $this->getPaymentMethods()?>
 <?php $cart  = $this->getCart()?>
 
-<form class="mx-auto" action="<?php echo  $this->getUrl('save');?>" method="POST">
-	<table class="w-100 border text-center">
+	<table id="example2" class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
 		<thead >
 			<th colspan="2"><h3> <b>Payment Method</b></h3></th>
 		</thead>
@@ -21,7 +20,7 @@
 	        		</tr>
 	        	<?php endforeach; ?>
 	        	<tr>
-					<td colspan="2"><button type="submit" class="btn btn-primary my-3 w-25"> Update </button></td>
+					<td colspan="2"><button type="button" class="btn btn-primary my-3 w-25" id="paymentSaveBtn"> Update </button></td>
 	        	</tr>
 	    <?php else: ?>
 	    	<tr>
@@ -29,4 +28,11 @@
 	    	</tr>
 	    <?php endif; ?>
 	</table>
-</form>
+
+<script type="text/javascript">
+jQuery("#paymentSaveBtn").click(function () {
+	admin.setForm(jQuery("#indexForm"));
+	admin.setUrl("<?php echo $this->getUrl('save','cart')?>");
+	admin.load();
+});
+</script>

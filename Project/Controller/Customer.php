@@ -96,30 +96,11 @@ class Controller_Customer extends Controller_Admin_Action{
 				]
 			];
 			$this->renderJson($response);
-
-		
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
-			$customerBlock = Ccc::getBlock('Customer_Edit')->toHtml();
-			$response = [
-			'status' => 'success',
-			'elements' =>[
-					[
-						'element' => '#indexContent',
-						'content' => $customerBlock
-					],
-
-					[
-						'element' => '#indexMessage',
-						'content' => $messageBlock
-					]
-
-				]
-			];
-			$this->renderJson($response);
+			$this->gridAction();
 		}
 	}
 	protected function saveCustomer()
@@ -132,7 +113,6 @@ class Controller_Customer extends Controller_Admin_Action{
 		}
 					
 		$row = $request->getPost('customer');
-		
 		if (array_key_exists('customerId', $row)) 
 		{
 			if(!(int)$row['customerId'])
@@ -165,24 +145,10 @@ class Controller_Customer extends Controller_Admin_Action{
 		return $customer;
 	}
 
-	protected function saveAddress()
+	protected function saveAddress($customer)
 	{
 
 		$request = $this->getRequest();
-		if (!array_key_exists('customer',$request->getPost())) 
-		{
-			throw new Exception("First enter details of customer.", 1);
-		}
-		$customer =$request->getPost('customer');
-		$customer = Ccc::getModel('Customer')->load($customer['customerId']);
-
-		if (!$customer) 
-		{
-			throw new Exception("No record found.", 1);
-		}
-
-		$request = $this->getRequest();
-		
 		if(!$request->isPost() || !$request->getPost('billingAddress')) 
 		{
 			throw new Exception("Invalid Request.", 1);				
@@ -232,58 +198,64 @@ class Controller_Customer extends Controller_Admin_Action{
 		{
 			if ($this->getRequest()->getPost('customer')) 
 			{
+				
 				$customer = $this->saveCustomer();
 				Ccc::register('customer',$customer);
+				if($this->getRequest()->getRequest('tab')=='address')
+				{
+					$this->getMessage()->addMessage('Customer saved successfully.');
+					$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+					$customerBlock = Ccc::getBlock('Customer_Edit')->toHtml();
+					$response = [
+						'status' => 'success',
+						'elements' =>[
+								[
+									'element' => '#indexContent',
+									'content' => $customerBlock
+								],
+
+								[
+									'element' => '#indexMessage',
+									'content' => $messageBlock
+								]
+
+							]
+						];
+					$this->renderJson($response);
+
+				}
+				else
+				{
+					$this->getMessage()->addMessage('Customer saved successfully.');
+					$this->gridAction();
+				}
 
 			}
-			if ($this->getRequest()->getPost('billingAddress')) 
+			elseif ($this->getRequest()->getPost('billingAddress')) 
 			{
-				$customer = $this->saveAddress();
+				$customerId = (int)$this->getRequest()->getPost('customerId');
+				if (!$customerId) 
+				{
+					throw new Exception("First enter details of Customer.", 1);
+				}
+				$customer = Ccc::getModel('Customer')->load($customerId);
+				if (!$customer) 
+				{
+					throw new Exception("No record found.", 1);
+				}
+				$customer = $this->saveAddress($customer);
+				$this->getMessage()->addMessage('Customer saved successfully.');
+				$this->gridAction();
 			}
-			$this->getMessage()->addMessage('Customer saved successfully.');
-			
-			$customerBlock = Ccc::getBlock('Customer_Grid')->toHtml();
-			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
-
-			$response = [
-			'status' => 'success',
-			'elements' =>[
-					[
-						'element' => '#indexContent',
-						'content' => $customerBlock
-					],
-
-					[
-						'element' => '#indexMessage',
-						'content' => $messageBlock
-					]
-
-				]
-			];
-			$this->renderJson($response);
+			else
+			{
+				$this->gridAction();
+			}
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$customerBlock = Ccc::getBlock('Customer_Grid')->toHtml();
-			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
-
-			$response = [
-			'status' => 'success',
-			'elements' =>[
-					[
-						'element' => '#indexContent',
-						'content' => $customerBlock
-					],
-
-					[
-						'element' => '#indexMessage',
-						'content' => $messageBlock
-					]
-
-				]
-			];
-			$this->renderJson($response);
+			$this->gridAction();
 		}
 	}
 
@@ -311,47 +283,54 @@ class Controller_Customer extends Controller_Admin_Action{
 			}
 
 			$this->getMessage()->addMessage('Customer details deleted successfully.');
-			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
-			$customerBlock = Ccc::getBlock('Customer_Grid')->toHtml();
-			$response = [
-			'status' => 'success',
-			'elements' =>[
-					[
-						'element' => '#indexContent',
-						'content' => $customerBlock
-					],
-
-					[
-						'element' => '#indexMessage',
-						'content' => $messageBlock
-					]
-
-				]
-			];
-			$this->renderJson($response);
-				
+			$this->gridAction()	;
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage(),get_class($this->getMessage())::ERROR);
-			$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
-			$customerBlock = Ccc::getBlock('Customer_Grid')->toHtml();
-			$response = [
-			'status' => 'success',
-			'elements' =>[
-					[
-						'element' => '#indexContent',
-						'content' => $customerBlock
-					],
+			$this->gridAction();
+		}
+	}
 
-					[
-						'element' => '#indexMessage',
-						'content' => $messageBlock
-					]
-
-				]
-			];
-			$this->renderJson($response);
+	public function multipleDeleteAction()
+	{
+		try 
+		{
+			$messages = $this->getMessage();
+			$request = $this->getRequest();
+			if(!$request->isPost('delete'))
+			{
+				throw new Exception("Invalid Request.", 1);				
+			}
+			
+			$row = $request->getPost('delete');
+			if (array_key_exists('all',$row)) 
+			{
+				$query = "DELETE FROM `customer`";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			else
+			{
+				$ids = implode(',',array_values($row['selected']));
+				$query = "DELETE FROM `customer` WHERE `customerId` IN ({$ids})";
+				$delete = $this->getAdapter()->delete($query);
+				if (!$delete) 
+				{
+					throw new Exception("System is unable to delete.", 1);
+				}
+			}
+			$messages->addMessage('Customer detail deleted successfully.');
+			$this->gridAction();
+			
+		} 
+		catch (Exception $e) 
+		{
+			$messages->addMessage($e->getMessage(),get_class($messages)::ERROR);
+			$this->gridAction();
 		}
 	}
 }
