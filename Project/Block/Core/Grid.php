@@ -25,6 +25,10 @@ class Block_Core_Grid extends Block_Core_Template
 		{
 			return $row->getStatus($row->$key);
 		}
+		if ($key == 'state') 
+		{
+			return $row->getState($row->$key);
+		}
 		if ($key == 'base') 
 		{
 			return ($row->base) ?  "<img src=".$row->getBase()->getImageUrl()." alt =  'no'  height='50px' width='50px' />" : 'No Image';

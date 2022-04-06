@@ -321,6 +321,8 @@ class Controller_Order extends Controller_Admin_Action
 	  		{
 	  			throw new Exception("System is unable to insert.", 1);
 	  		}
+	  		$order->status = $comment->status;
+	  		$order->save();
 			$this->gridAction();			
 		} 
 		catch (Exception $e) 
